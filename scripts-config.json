@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "export:excel": "node scripts/exportToExcel.js",
+    "import:excel": "node scripts/importFromExcel.js",
+    "sync:firebase": "node scripts/syncToFirebase.js",
+    "backup:data": "node scripts/backupData.js"
+  }
+}
