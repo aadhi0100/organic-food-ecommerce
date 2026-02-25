@@ -1,6 +1,6 @@
 ORGANIC FOOD PRODUCTS CATALOG
 Total Products: 60
-Last Updated: 2026-02-24T06:25:24.926Z
+Last Updated: 2026-02-25T07:46:03.143Z
 
 ================================================================================
 
@@ -8,7 +8,7 @@ Product 1:
   ID: 1
   Name: Organic Apples
   Category: Fruits
-  Price: $4.99
+  Price: $5.00
   Stock: 50 units
   Rating: 4.5/5 (120 reviews)
   Organic: Yes
@@ -22,7 +22,7 @@ Product 2:
   ID: 2
   Name: Organic Bananas
   Category: Fruits
-  Price: $3.49
+  Price: $3.00
   Stock: 80 units
   Rating: 4.7/5 (95 reviews)
   Organic: Yes
@@ -36,7 +36,7 @@ Product 3:
   ID: 3
   Name: Organic Carrots
   Category: Vegetables
-  Price: $2.99
+  Price: $3.00
   Stock: 60 units
   Rating: 4.6/5 (78 reviews)
   Organic: Yes
@@ -50,7 +50,7 @@ Product 4:
   ID: 4
   Name: Organic Spinach
   Category: Vegetables
-  Price: $3.99
+  Price: $4.00
   Stock: 40 units
   Rating: 4.8/5 (102 reviews)
   Organic: Yes
@@ -64,7 +64,7 @@ Product 5:
   ID: 5
   Name: Organic Tomatoes
   Category: Vegetables
-  Price: $5.49
+  Price: $5.00
   Stock: 55 units
   Rating: 4.4/5 (88 reviews)
   Organic: Yes
@@ -78,7 +78,7 @@ Product 6:
   ID: 6
   Name: Organic Milk
   Category: Dairy
-  Price: $6.99
+  Price: $7.00
   Stock: 30 units
   Rating: 4.9/5 (156 reviews)
   Organic: Yes
@@ -92,7 +92,7 @@ Product 7:
   ID: 7
   Name: Organic Eggs
   Category: Dairy
-  Price: $7.99
+  Price: $8.00
   Stock: 45 units
   Rating: 4.7/5 (134 reviews)
   Organic: Yes
@@ -106,7 +106,7 @@ Product 8:
   ID: 8
   Name: Organic Bread
   Category: Bakery
-  Price: $5.99
+  Price: $6.00
   Stock: 25 units
   Rating: 4.5/5 (67 reviews)
   Organic: Yes
@@ -120,7 +120,7 @@ Product 9:
   ID: 9
   Name: Organic Honey
   Category: Pantry
-  Price: $12.99
+  Price: $13.00
   Stock: 35 units
   Rating: 4.9/5 (201 reviews)
   Organic: Yes
@@ -134,7 +134,7 @@ Product 10:
   ID: 10
   Name: Organic Quinoa
   Category: Grains
-  Price: $8.99
+  Price: $9.00
   Stock: 50 units
   Rating: 4.6/5 (89 reviews)
   Organic: Yes
@@ -148,7 +148,7 @@ Product 11:
   ID: 11
   Name: Organic Avocados
   Category: Fruits
-  Price: $6.99
+  Price: $7.00
   Stock: 40 units
   Rating: 4.8/5 (145 reviews)
   Organic: Yes
@@ -162,7 +162,7 @@ Product 12:
   ID: 12
   Name: Organic Blueberries
   Category: Fruits
-  Price: $9.99
+  Price: $10.00
   Stock: 30 units
   Rating: 4.9/5 (178 reviews)
   Organic: Yes
@@ -176,7 +176,7 @@ Product 13:
   ID: 13
   Name: Organic Strawberries
   Category: Fruits
-  Price: $8.49
+  Price: $8.00
   Stock: 35 units
   Rating: 4.7/5 (132 reviews)
   Organic: Yes
@@ -190,7 +190,7 @@ Product 14:
   ID: 14
   Name: Organic Oranges
   Category: Fruits
-  Price: $5.99
+  Price: $6.00
   Stock: 60 units
   Rating: 4.6/5 (98 reviews)
   Organic: Yes
@@ -204,7 +204,7 @@ Product 15:
   ID: 15
   Name: Organic Grapes
   Category: Fruits
-  Price: $7.49
+  Price: $7.00
   Stock: 45 units
   Rating: 4.5/5 (87 reviews)
   Organic: Yes
@@ -218,7 +218,7 @@ Product 16:
   ID: 16
   Name: Organic Broccoli
   Category: Vegetables
-  Price: $3.49
+  Price: $3.00
   Stock: 50 units
   Rating: 4.7/5 (76 reviews)
   Organic: Yes
@@ -232,7 +232,7 @@ Product 17:
   ID: 17
   Name: Organic Bell Peppers
   Category: Vegetables
-  Price: $4.99
+  Price: $5.00
   Stock: 40 units
   Rating: 4.6/5 (65 reviews)
   Organic: Yes
@@ -246,7 +246,7 @@ Product 18:
   ID: 18
   Name: Organic Cucumbers
   Category: Vegetables
-  Price: $2.49
+  Price: $2.00
   Stock: 55 units
   Rating: 4.4/5 (54 reviews)
   Organic: Yes
@@ -260,7 +260,7 @@ Product 19:
   ID: 19
   Name: Organic Lettuce
   Category: Vegetables
-  Price: $2.99
+  Price: $3.00
   Stock: 45 units
   Rating: 4.5/5 (62 reviews)
   Organic: Yes
@@ -274,7 +274,7 @@ Product 20:
   ID: 20
   Name: Organic Potatoes
   Category: Vegetables
-  Price: $3.99
+  Price: $4.00
   Stock: 70 units
   Rating: 4.6/5 (91 reviews)
   Organic: Yes
@@ -288,7 +288,7 @@ Product 21:
   ID: 21
   Name: Organic Cheese
   Category: Dairy
-  Price: $9.99
+  Price: $10.00
   Stock: 25 units
   Rating: 4.8/5 (112 reviews)
   Organic: Yes
@@ -302,7 +302,7 @@ Product 22:
   ID: 22
   Name: Organic Yogurt
   Category: Dairy
-  Price: $5.49
+  Price: $5.00
   Stock: 40 units
   Rating: 4.7/5 (98 reviews)
   Organic: Yes
@@ -316,7 +316,7 @@ Product 23:
   ID: 23
   Name: Organic Butter
   Category: Dairy
-  Price: $6.49
+  Price: $6.00
   Stock: 30 units
   Rating: 4.6/5 (76 reviews)
   Organic: Yes
@@ -330,7 +330,7 @@ Product 24:
   ID: 24
   Name: Organic Cream
   Category: Dairy
-  Price: $4.99
+  Price: $5.00
   Stock: 20 units
   Rating: 4.5/5 (54 reviews)
   Organic: Yes
@@ -344,7 +344,7 @@ Product 25:
   ID: 25
   Name: Organic Whole Wheat Flour
   Category: Bakery
-  Price: $7.99
+  Price: $8.00
   Stock: 50 units
   Rating: 4.7/5 (89 reviews)
   Organic: Yes
@@ -358,7 +358,7 @@ Product 26:
   ID: 26
   Name: Organic Oats
   Category: Grains
-  Price: $6.49
+  Price: $6.00
   Stock: 60 units
   Rating: 4.8/5 (134 reviews)
   Organic: Yes
@@ -372,7 +372,7 @@ Product 27:
   ID: 27
   Name: Organic Brown Rice
   Category: Grains
-  Price: $8.49
+  Price: $8.00
   Stock: 55 units
   Rating: 4.6/5 (92 reviews)
   Organic: Yes
@@ -386,7 +386,7 @@ Product 28:
   ID: 28
   Name: Organic Pasta
   Category: Grains
-  Price: $5.99
+  Price: $6.00
   Stock: 45 units
   Rating: 4.5/5 (78 reviews)
   Organic: Yes
@@ -400,7 +400,7 @@ Product 29:
   ID: 29
   Name: Organic Olive Oil
   Category: Pantry
-  Price: $14.99
+  Price: $15.00
   Stock: 40 units
   Rating: 4.9/5 (167 reviews)
   Organic: Yes
@@ -414,7 +414,7 @@ Product 30:
   ID: 30
   Name: Organic Coconut Oil
   Category: Pantry
-  Price: $11.99
+  Price: $12.00
   Stock: 35 units
   Rating: 4.7/5 (123 reviews)
   Organic: Yes
@@ -428,7 +428,7 @@ Product 31:
   ID: 31
   Name: Organic Almonds
   Category: Nuts
-  Price: $13.99
+  Price: $14.00
   Stock: 50 units
   Rating: 4.8/5 (145 reviews)
   Organic: Yes
@@ -442,7 +442,7 @@ Product 32:
   ID: 32
   Name: Organic Walnuts
   Category: Nuts
-  Price: $12.99
+  Price: $13.00
   Stock: 45 units
   Rating: 4.7/5 (98 reviews)
   Organic: Yes
@@ -456,7 +456,7 @@ Product 33:
   ID: 33
   Name: Organic Cashews
   Category: Nuts
-  Price: $15.99
+  Price: $16.00
   Stock: 40 units
   Rating: 4.9/5 (156 reviews)
   Organic: Yes
@@ -470,7 +470,7 @@ Product 34:
   ID: 34
   Name: Organic Peanut Butter
   Category: Pantry
-  Price: $9.99
+  Price: $10.00
   Stock: 35 units
   Rating: 4.6/5 (112 reviews)
   Organic: Yes
@@ -484,7 +484,7 @@ Product 35:
   ID: 35
   Name: Organic Green Tea
   Category: Beverages
-  Price: $8.99
+  Price: $9.00
   Stock: 60 units
   Rating: 4.8/5 (189 reviews)
   Organic: Yes
@@ -498,7 +498,7 @@ Product 36:
   ID: 36
   Name: Organic Coffee Beans
   Category: Beverages
-  Price: $16.99
+  Price: $17.00
   Stock: 50 units
   Rating: 4.9/5 (234 reviews)
   Organic: Yes
@@ -512,7 +512,7 @@ Product 37:
   ID: 37
   Name: Organic Apple Juice
   Category: Beverages
-  Price: $6.99
+  Price: $7.00
   Stock: 40 units
   Rating: 4.7/5 (98 reviews)
   Organic: Yes
@@ -526,7 +526,7 @@ Product 38:
   ID: 38
   Name: Organic Orange Juice
   Category: Beverages
-  Price: $7.49
+  Price: $7.00
   Stock: 35 units
   Rating: 4.6/5 (87 reviews)
   Organic: Yes
@@ -540,7 +540,7 @@ Product 39:
   ID: 39
   Name: Organic Maple Syrup
   Category: Pantry
-  Price: $18.99
+  Price: $19.00
   Stock: 30 units
   Rating: 4.9/5 (178 reviews)
   Organic: Yes
@@ -554,7 +554,7 @@ Product 40:
   ID: 40
   Name: Organic Dark Chocolate
   Category: Snacks
-  Price: $7.99
+  Price: $8.00
   Stock: 45 units
   Rating: 4.8/5 (201 reviews)
   Organic: Yes
@@ -568,7 +568,7 @@ Product 41:
   ID: 41
   Name: Organic Granola
   Category: Snacks
-  Price: $8.49
+  Price: $8.00
   Stock: 40 units
   Rating: 4.7/5 (134 reviews)
   Organic: Yes
@@ -582,7 +582,7 @@ Product 42:
   ID: 42
   Name: Organic Chia Seeds
   Category: Grains
-  Price: $10.99
+  Price: $11.00
   Stock: 50 units
   Rating: 4.8/5 (156 reviews)
   Organic: Yes
@@ -596,7 +596,7 @@ Product 43:
   ID: 43
   Name: Organic Flax Seeds
   Category: Grains
-  Price: $9.49
+  Price: $9.00
   Stock: 45 units
   Rating: 4.6/5 (98 reviews)
   Organic: Yes
@@ -610,7 +610,7 @@ Product 44:
   ID: 44
   Name: Organic Lentils
   Category: Grains
-  Price: $5.99
+  Price: $6.00
   Stock: 60 units
   Rating: 4.7/5 (112 reviews)
   Organic: Yes
@@ -624,7 +624,7 @@ Product 45:
   ID: 45
   Name: Organic Black Beans
   Category: Grains
-  Price: $4.99
+  Price: $5.00
   Stock: 55 units
   Rating: 4.5/5 (87 reviews)
   Organic: Yes
@@ -638,7 +638,7 @@ Product 46:
   ID: 46
   Name: Organic Chickpeas
   Category: Grains
-  Price: $5.49
+  Price: $5.00
   Stock: 50 units
   Rating: 4.6/5 (94 reviews)
   Organic: Yes
@@ -652,7 +652,7 @@ Product 47:
   ID: 47
   Name: Organic Kale
   Category: Vegetables
-  Price: $3.99
+  Price: $4.00
   Stock: 35 units
   Rating: 4.8/5 (123 reviews)
   Organic: Yes
@@ -666,7 +666,7 @@ Product 48:
   ID: 48
   Name: Organic Sweet Potatoes
   Category: Vegetables
-  Price: $4.49
+  Price: $4.00
   Stock: 50 units
   Rating: 4.7/5 (109 reviews)
   Organic: Yes
@@ -680,7 +680,7 @@ Product 49:
   ID: 49
   Name: Organic Mushrooms
   Category: Vegetables
-  Price: $6.99
+  Price: $7.00
   Stock: 30 units
   Rating: 4.6/5 (76 reviews)
   Organic: Yes
@@ -694,7 +694,7 @@ Product 50:
   ID: 50
   Name: Organic Ginger Root
   Category: Vegetables
-  Price: $3.49
+  Price: $3.00
   Stock: 40 units
   Rating: 4.5/5 (65 reviews)
   Organic: Yes
@@ -708,7 +708,7 @@ Product 51:
   ID: 51
   Name: Organic Garlic
   Category: Vegetables
-  Price: $2.99
+  Price: $3.00
   Stock: 60 units
   Rating: 4.7/5 (98 reviews)
   Organic: Yes
@@ -722,7 +722,7 @@ Product 52:
   ID: 52
   Name: Organic Onions
   Category: Vegetables
-  Price: $2.49
+  Price: $2.00
   Stock: 70 units
   Rating: 4.4/5 (82 reviews)
   Organic: Yes
@@ -736,7 +736,7 @@ Product 53:
   ID: 53
   Name: Organic Lemons
   Category: Fruits
-  Price: $4.99
+  Price: $5.00
   Stock: 50 units
   Rating: 4.6/5 (87 reviews)
   Organic: Yes
@@ -750,7 +750,7 @@ Product 54:
   ID: 54
   Name: Organic Limes
   Category: Fruits
-  Price: $4.49
+  Price: $4.00
   Stock: 45 units
   Rating: 4.5/5 (73 reviews)
   Organic: Yes
@@ -764,7 +764,7 @@ Product 55:
   ID: 55
   Name: Organic Mangoes
   Category: Fruits
-  Price: $7.99
+  Price: $8.00
   Stock: 35 units
   Rating: 4.9/5 (167 reviews)
   Organic: Yes
@@ -778,7 +778,7 @@ Product 56:
   ID: 56
   Name: Organic Pineapple
   Category: Fruits
-  Price: $6.99
+  Price: $7.00
   Stock: 30 units
   Rating: 4.8/5 (145 reviews)
   Organic: Yes
@@ -792,7 +792,7 @@ Product 57:
   ID: 57
   Name: Organic Watermelon
   Category: Fruits
-  Price: $8.99
+  Price: $9.00
   Stock: 25 units
   Rating: 4.7/5 (123 reviews)
   Organic: Yes
@@ -806,7 +806,7 @@ Product 58:
   ID: 58
   Name: Organic Cantaloupe
   Category: Fruits
-  Price: $5.99
+  Price: $6.00
   Stock: 30 units
   Rating: 4.6/5 (89 reviews)
   Organic: Yes
@@ -820,7 +820,7 @@ Product 59:
   ID: 59
   Name: Organic Peaches
   Category: Fruits
-  Price: $6.49
+  Price: $6.00
   Stock: 40 units
   Rating: 4.7/5 (112 reviews)
   Organic: Yes
@@ -834,7 +834,7 @@ Product 60:
   ID: 60
   Name: Organic Plums
   Category: Fruits
-  Price: $5.49
+  Price: $5.00
   Stock: 35 units
   Rating: 4.5/5 (76 reviews)
   Organic: Yes
