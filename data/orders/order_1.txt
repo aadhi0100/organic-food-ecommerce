@@ -1,0 +1,22 @@
+Order ID: 1
+User ID: 4
+Status: pending
+Total: ₹637.44
+Created: 2026-02-24T06:15:45.384Z
+
+Shipping Address:
+  Name: Customer User
+  Street: No 16
+  City: Selaiyur
+  State: Tamil Nadu
+  ZIP: 600073
+  Phone: 9445231232
+
+Order Items:
+
+Item 1:
+  Product ID: 2
+  Quantity: 2
+  Product: Organic Bananas
+  Price: ₹289.67
+  Subtotal: ₹579.34

@@ -1,0 +1,7 @@
+ID: 5
+Name: John Smith
+Email: customer2@organic.com
+Role: customer
+Phone: +1234567894
+Address: 321 Main St, NY
+Created: 2026-02-24T06:25:24.925Z

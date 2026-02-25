@@ -1,0 +1,7 @@
+ID: 3
+Name: Vendor Two
+Email: vendor2@organic.com
+Role: vendor
+Phone: +1234567893
+Address: 789 Vendor Blvd, NY
+Created: 2026-02-24T06:25:24.924Z

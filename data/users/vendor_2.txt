@@ -1,0 +1,7 @@
+ID: 2
+Name: Vendor User
+Email: vendor@organic.com
+Role: vendor
+Phone: +1234567891
+Address: 456 Vendor Ave, NY
+Created: 2026-02-24T06:25:24.922Z

@@ -1,0 +1,7 @@
+ID: 4
+Name: Customer User
+Email: customer@organic.com
+Role: customer
+Phone: +1234567892
+Address: 789 Customer Rd, NY
+Created: 2026-02-24T06:25:24.925Z
