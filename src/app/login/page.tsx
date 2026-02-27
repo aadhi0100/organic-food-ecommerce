@@ -22,7 +22,23 @@ export default function LoginPage() {
     
     try {
       await login(email, password)
-      router.push('/')
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+      const userData = await res.json()
+      
+      // Redirect based on role
+      if (userData.role === 'admin') {
+        router.push('/dashboard/admin')
+      } else if (userData.role === 'vendor') {
+        router.push('/dashboard/vendor')
+      } else if (userData.role === 'customer') {
+        router.push('/dashboard/customer')
+      } else {
+        router.push('/')
+      }
     } catch (err) {
       setError('Invalid credentials')
     } finally {

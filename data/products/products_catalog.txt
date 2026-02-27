@@ -1,6 +1,6 @@
 ORGANIC FOOD PRODUCTS CATALOG
-Total Products: 60
-Last Updated: 2026-02-25T07:46:03.143Z
+Total Products: 40
+Last Updated: 2026-02-27T09:07:38.413Z
 
 ================================================================================
 
@@ -8,13 +8,13 @@ Product 1:
   ID: 1
   Name: Organic Apples
   Category: Fruits
-  Price: $5.00
+  Price: ₹120.00
   Stock: 50 units
   Rating: 4.5/5 (120 reviews)
   Organic: Yes
   Featured: Yes
   Shop ID: 1
-  Description: Fresh organic apples from local farms
+  Description: Fresh Himalayan organic apples
 
 --------------------------------------------------------------------------------
 
@@ -22,13 +22,13 @@ Product 2:
   ID: 2
   Name: Organic Bananas
   Category: Fruits
-  Price: $3.00
+  Price: ₹60.00
   Stock: 80 units
   Rating: 4.7/5 (95 reviews)
   Organic: Yes
   Featured: No
   Shop ID: 1
-  Description: Sweet organic bananas rich in potassium
+  Description: Sweet Kerala organic bananas
 
 --------------------------------------------------------------------------------
 
@@ -36,13 +36,13 @@ Product 3:
   ID: 3
   Name: Organic Carrots
   Category: Vegetables
-  Price: $3.00
+  Price: ₹50.00
   Stock: 60 units
   Rating: 4.6/5 (78 reviews)
   Organic: Yes
   Featured: Yes
   Shop ID: 2
-  Description: Crunchy organic carrots loaded with beta-carotene
+  Description: Fresh organic carrots from Punjab
 
 --------------------------------------------------------------------------------
 
@@ -50,13 +50,13 @@ Product 4:
   ID: 4
   Name: Organic Spinach
   Category: Vegetables
-  Price: $4.00
+  Price: ₹40.00
   Stock: 40 units
   Rating: 4.8/5 (102 reviews)
   Organic: Yes
   Featured: No
   Shop ID: 2
-  Description: Fresh organic spinach leaves packed with iron
+  Description: Fresh palak leaves rich in iron
 
 --------------------------------------------------------------------------------
 
@@ -64,13 +64,13 @@ Product 5:
   ID: 5
   Name: Organic Tomatoes
   Category: Vegetables
-  Price: $5.00
+  Price: ₹80.00
   Stock: 55 units
   Rating: 4.4/5 (88 reviews)
   Organic: Yes
   Featured: Yes
   Shop ID: 2
-  Description: Juicy organic tomatoes bursting with flavor
+  Description: Juicy desi tomatoes
 
 --------------------------------------------------------------------------------
 
@@ -78,13 +78,13 @@ Product 6:
   ID: 6
   Name: Organic Milk
   Category: Dairy
-  Price: $7.00
+  Price: ₹70.00
   Stock: 30 units
   Rating: 4.9/5 (156 reviews)
   Organic: Yes
   Featured: No
   Shop ID: 3
-  Description: Fresh organic whole milk from grass-fed cows
+  Description: Fresh A2 organic milk from desi cows
 
 --------------------------------------------------------------------------------
 
@@ -92,13 +92,13 @@ Product 7:
   ID: 7
   Name: Organic Eggs
   Category: Dairy
-  Price: $8.00
+  Price: ₹90.00
   Stock: 45 units
   Rating: 4.7/5 (134 reviews)
   Organic: Yes
   Featured: Yes
   Shop ID: 3
-  Description: Free-range organic eggs from happy hens
+  Description: Free-range desi eggs
 
 --------------------------------------------------------------------------------
 
@@ -106,13 +106,13 @@ Product 8:
   ID: 8
   Name: Organic Bread
   Category: Bakery
-  Price: $6.00
+  Price: ₹60.00
   Stock: 25 units
   Rating: 4.5/5 (67 reviews)
   Organic: Yes
   Featured: No
   Shop ID: 4
-  Description: Whole grain organic bread baked fresh daily
+  Description: Whole wheat atta bread
 
 --------------------------------------------------------------------------------
 
@@ -120,13 +120,13 @@ Product 9:
   ID: 9
   Name: Organic Honey
   Category: Pantry
-  Price: $13.00
+  Price: ₹350.00
   Stock: 35 units
   Rating: 4.9/5 (201 reviews)
   Organic: Yes
   Featured: Yes
   Shop ID: 4
-  Description: Pure organic honey from wildflower meadows
+  Description: Pure Himalayan wildflower honey
 
 --------------------------------------------------------------------------------
 
@@ -134,41 +134,41 @@ Product 10:
   ID: 10
   Name: Organic Quinoa
   Category: Grains
-  Price: $9.00
+  Price: ₹250.00
   Stock: 50 units
   Rating: 4.6/5 (89 reviews)
   Organic: Yes
   Featured: No
   Shop ID: 4
-  Description: Premium organic quinoa - complete protein source
+  Description: Premium imported organic quinoa
 
 --------------------------------------------------------------------------------
 
 Product 11:
   ID: 11
-  Name: Organic Avocados
+  Name: Organic Mangoes
   Category: Fruits
-  Price: $7.00
+  Price: ₹180.00
   Stock: 40 units
-  Rating: 4.8/5 (145 reviews)
+  Rating: 4.9/5 (245 reviews)
   Organic: Yes
   Featured: Yes
   Shop ID: 1
-  Description: Creamy organic avocados rich in healthy fats
+  Description: Alphonso mangoes from Ratnagiri
 
 --------------------------------------------------------------------------------
 
 Product 12:
   ID: 12
-  Name: Organic Blueberries
-  Category: Fruits
-  Price: $10.00
-  Stock: 30 units
-  Rating: 4.9/5 (178 reviews)
+  Name: Organic Basmati Rice
+  Category: Grains
+  Price: ₹180.00
+  Stock: 100 units
+  Rating: 4.8/5 (312 reviews)
   Organic: Yes
   Featured: Yes
-  Shop ID: 1
-  Description: Sweet organic blueberries packed with antioxidants
+  Shop ID: 4
+  Description: Premium aged basmati rice
 
 --------------------------------------------------------------------------------
 
@@ -176,13 +176,13 @@ Product 13:
   ID: 13
   Name: Organic Strawberries
   Category: Fruits
-  Price: $8.00
+  Price: ₹200.00
   Stock: 35 units
   Rating: 4.7/5 (132 reviews)
   Organic: Yes
   Featured: Yes
   Shop ID: 1
-  Description: Fresh organic strawberries, sweet and juicy
+  Description: Fresh Mahabaleshwar strawberries
 
 --------------------------------------------------------------------------------
 
@@ -190,13 +190,13 @@ Product 14:
   ID: 14
   Name: Organic Oranges
   Category: Fruits
-  Price: $6.00
+  Price: ₹100.00
   Stock: 60 units
   Rating: 4.6/5 (98 reviews)
   Organic: Yes
   Featured: No
   Shop ID: 1
-  Description: Vitamin C rich organic oranges
+  Description: Nagpur oranges rich in Vitamin C
 
 --------------------------------------------------------------------------------
 
@@ -204,13 +204,13 @@ Product 15:
   ID: 15
   Name: Organic Grapes
   Category: Fruits
-  Price: $7.00
+  Price: ₹120.00
   Stock: 45 units
   Rating: 4.5/5 (87 reviews)
   Organic: Yes
   Featured: No
   Shop ID: 1
-  Description: Seedless organic grapes, perfect for snacking
+  Description: Nashik seedless grapes
 
 --------------------------------------------------------------------------------
 
@@ -218,27 +218,27 @@ Product 16:
   ID: 16
   Name: Organic Broccoli
   Category: Vegetables
-  Price: $3.00
+  Price: ₹80.00
   Stock: 50 units
   Rating: 4.7/5 (76 reviews)
   Organic: Yes
   Featured: Yes
   Shop ID: 2
-  Description: Fresh organic broccoli crowns
+  Description: Fresh broccoli from hill stations
 
 --------------------------------------------------------------------------------
 
 Product 17:
   ID: 17
-  Name: Organic Bell Peppers
+  Name: Organic Capsicum
   Category: Vegetables
-  Price: $5.00
+  Price: ₹90.00
   Stock: 40 units
   Rating: 4.6/5 (65 reviews)
   Organic: Yes
   Featured: No
   Shop ID: 2
-  Description: Colorful organic bell peppers
+  Description: Colorful shimla mirch
 
 --------------------------------------------------------------------------------
 
@@ -246,13 +246,13 @@ Product 18:
   ID: 18
   Name: Organic Cucumbers
   Category: Vegetables
-  Price: $2.00
+  Price: ₹40.00
   Stock: 55 units
   Rating: 4.4/5 (54 reviews)
   Organic: Yes
   Featured: No
   Shop ID: 2
-  Description: Crisp organic cucumbers
+  Description: Crisp kheera
 
 --------------------------------------------------------------------------------
 
@@ -260,13 +260,13 @@ Product 19:
   ID: 19
   Name: Organic Lettuce
   Category: Vegetables
-  Price: $3.00
+  Price: ₹60.00
   Stock: 45 units
   Rating: 4.5/5 (62 reviews)
   Organic: Yes
   Featured: No
   Shop ID: 2
-  Description: Fresh organic lettuce heads
+  Description: Fresh salad patta
 
 --------------------------------------------------------------------------------
 
@@ -274,55 +274,55 @@ Product 20:
   ID: 20
   Name: Organic Potatoes
   Category: Vegetables
-  Price: $4.00
+  Price: ₹50.00
   Stock: 70 units
   Rating: 4.6/5 (91 reviews)
   Organic: Yes
   Featured: Yes
   Shop ID: 2
-  Description: Organic potatoes, perfect for any meal
+  Description: Desi aloo perfect for any meal
 
 --------------------------------------------------------------------------------
 
 Product 21:
   ID: 21
-  Name: Organic Cheese
+  Name: Organic Paneer
   Category: Dairy
-  Price: $10.00
+  Price: ₹180.00
   Stock: 25 units
   Rating: 4.8/5 (112 reviews)
   Organic: Yes
   Featured: Yes
   Shop ID: 3
-  Description: Artisan organic cheese
+  Description: Fresh cottage cheese
 
 --------------------------------------------------------------------------------
 
 Product 22:
   ID: 22
-  Name: Organic Yogurt
+  Name: Organic Dahi
   Category: Dairy
-  Price: $5.00
+  Price: ₹60.00
   Stock: 40 units
   Rating: 4.7/5 (98 reviews)
   Organic: Yes
   Featured: No
   Shop ID: 3
-  Description: Creamy organic yogurt
+  Description: Creamy organic curd
 
 --------------------------------------------------------------------------------
 
 Product 23:
   ID: 23
-  Name: Organic Butter
+  Name: Organic Ghee
   Category: Dairy
-  Price: $6.00
+  Price: ₹450.00
   Stock: 30 units
-  Rating: 4.6/5 (76 reviews)
+  Rating: 4.9/5 (176 reviews)
   Organic: Yes
-  Featured: No
+  Featured: Yes
   Shop ID: 3
-  Description: Rich organic butter
+  Description: Pure desi cow ghee
 
 --------------------------------------------------------------------------------
 
@@ -330,27 +330,27 @@ Product 24:
   ID: 24
   Name: Organic Cream
   Category: Dairy
-  Price: $5.00
+  Price: ₹80.00
   Stock: 20 units
   Rating: 4.5/5 (54 reviews)
   Organic: Yes
   Featured: No
   Shop ID: 3
-  Description: Fresh organic heavy cream
+  Description: Fresh malai
 
 --------------------------------------------------------------------------------
 
 Product 25:
   ID: 25
-  Name: Organic Whole Wheat Flour
-  Category: Bakery
-  Price: $8.00
+  Name: Organic Atta
+  Category: Grains
+  Price: ₹120.00
   Stock: 50 units
-  Rating: 4.7/5 (89 reviews)
+  Rating: 4.7/5 (189 reviews)
   Organic: Yes
   Featured: Yes
   Shop ID: 4
-  Description: Stone-ground organic whole wheat flour
+  Description: Stone-ground whole wheat flour
 
 --------------------------------------------------------------------------------
 
@@ -358,7 +358,7 @@ Product 26:
   ID: 26
   Name: Organic Oats
   Category: Grains
-  Price: $6.00
+  Price: ₹150.00
   Stock: 60 units
   Rating: 4.8/5 (134 reviews)
   Organic: Yes
@@ -372,13 +372,13 @@ Product 27:
   ID: 27
   Name: Organic Brown Rice
   Category: Grains
-  Price: $8.00
+  Price: ₹140.00
   Stock: 55 units
   Rating: 4.6/5 (92 reviews)
   Organic: Yes
   Featured: No
   Shop ID: 4
-  Description: Long grain organic brown rice
+  Description: Nutritious brown rice
 
 --------------------------------------------------------------------------------
 
@@ -386,27 +386,27 @@ Product 28:
   ID: 28
   Name: Organic Pasta
   Category: Grains
-  Price: $6.00
+  Price: ₹120.00
   Stock: 45 units
   Rating: 4.5/5 (78 reviews)
   Organic: Yes
   Featured: No
   Shop ID: 4
-  Description: Whole wheat organic pasta
+  Description: Whole wheat pasta
 
 --------------------------------------------------------------------------------
 
 Product 29:
   ID: 29
-  Name: Organic Olive Oil
+  Name: Organic Mustard Oil
   Category: Pantry
-  Price: $15.00
+  Price: ₹200.00
   Stock: 40 units
-  Rating: 4.9/5 (167 reviews)
+  Rating: 4.8/5 (167 reviews)
   Organic: Yes
   Featured: Yes
   Shop ID: 4
-  Description: Extra virgin organic olive oil
+  Description: Cold-pressed sarson ka tel
 
 --------------------------------------------------------------------------------
 
@@ -414,13 +414,13 @@ Product 30:
   ID: 30
   Name: Organic Coconut Oil
   Category: Pantry
-  Price: $12.00
+  Price: ₹250.00
   Stock: 35 units
   Rating: 4.7/5 (123 reviews)
   Organic: Yes
   Featured: No
   Shop ID: 4
-  Description: Virgin organic coconut oil
+  Description: Virgin nariyal tel
 
 --------------------------------------------------------------------------------
 
@@ -428,13 +428,13 @@ Product 31:
   ID: 31
   Name: Organic Almonds
   Category: Nuts
-  Price: $14.00
+  Price: ₹400.00
   Stock: 50 units
   Rating: 4.8/5 (145 reviews)
   Organic: Yes
   Featured: Yes
   Shop ID: 4
-  Description: Raw organic almonds
+  Description: Premium badam
 
 --------------------------------------------------------------------------------
 
@@ -442,13 +442,13 @@ Product 32:
   ID: 32
   Name: Organic Walnuts
   Category: Nuts
-  Price: $13.00
+  Price: ₹450.00
   Stock: 45 units
   Rating: 4.7/5 (98 reviews)
   Organic: Yes
   Featured: No
   Shop ID: 4
-  Description: Premium organic walnuts
+  Description: Premium akhrot
 
 --------------------------------------------------------------------------------
 
@@ -456,13 +456,13 @@ Product 33:
   ID: 33
   Name: Organic Cashews
   Category: Nuts
-  Price: $16.00
+  Price: ₹500.00
   Stock: 40 units
   Rating: 4.9/5 (156 reviews)
   Organic: Yes
   Featured: Yes
   Shop ID: 4
-  Description: Roasted organic cashews
+  Description: Premium kaju
 
 --------------------------------------------------------------------------------
 
@@ -470,13 +470,13 @@ Product 34:
   ID: 34
   Name: Organic Peanut Butter
   Category: Pantry
-  Price: $10.00
+  Price: ₹280.00
   Stock: 35 units
   Rating: 4.6/5 (112 reviews)
   Organic: Yes
   Featured: No
   Shop ID: 4
-  Description: Creamy organic peanut butter
+  Description: Creamy moongfali butter
 
 --------------------------------------------------------------------------------
 
@@ -484,69 +484,69 @@ Product 35:
   ID: 35
   Name: Organic Green Tea
   Category: Beverages
-  Price: $9.00
+  Price: ₹220.00
   Stock: 60 units
   Rating: 4.8/5 (189 reviews)
   Organic: Yes
   Featured: Yes
   Shop ID: 4
-  Description: Premium organic green tea leaves
+  Description: Premium Darjeeling green tea
 
 --------------------------------------------------------------------------------
 
 Product 36:
   ID: 36
-  Name: Organic Coffee Beans
+  Name: Organic Coffee
   Category: Beverages
-  Price: $17.00
+  Price: ₹380.00
   Stock: 50 units
   Rating: 4.9/5 (234 reviews)
   Organic: Yes
   Featured: Yes
   Shop ID: 4
-  Description: Fair trade organic coffee beans
+  Description: Coorg arabica coffee beans
 
 --------------------------------------------------------------------------------
 
 Product 37:
   ID: 37
-  Name: Organic Apple Juice
-  Category: Beverages
-  Price: $7.00
+  Name: Organic Turmeric Powder
+  Category: Spices
+  Price: ₹120.00
   Stock: 40 units
-  Rating: 4.7/5 (98 reviews)
+  Rating: 4.8/5 (198 reviews)
   Organic: Yes
-  Featured: No
-  Shop ID: 1
-  Description: Fresh pressed organic apple juice
+  Featured: Yes
+  Shop ID: 4
+  Description: Pure haldi powder
 
 --------------------------------------------------------------------------------
 
 Product 38:
   ID: 38
-  Name: Organic Orange Juice
-  Category: Beverages
-  Price: $7.00
+  Name: Organic Chilli Powder
+  Category: Spices
+  Price: ₹100.00
   Stock: 35 units
-  Rating: 4.6/5 (87 reviews)
+  Rating: 4.7/5 (87 reviews)
   Organic: Yes
   Featured: No
-  Shop ID: 1
-  Description: Freshly squeezed organic orange juice
+  Shop ID: 4
+  Description: Spicy lal mirch powder
 
 --------------------------------------------------------------------------------
 
 Product 39:
   ID: 39
-  Name: Organic Maple Syrup
+  Name: Organic Jaggery
   Category: Pantry
-  Price: $19.00
+  Price: ₹80.00
   Stock: 30 units
   Rating: 4.9/5 (178 reviews)
   Organic: Yes
   Featured: Yes
   Shop ID: 4
-  Description: Pure organic maple syrup
+  Description: Pure gur
 
 --------------------------------------------------------------------------------
 
@@ -554,293 +554,13 @@ Product 40:
   ID: 40
   Name: Organic Dark Chocolate
   Category: Snacks
-  Price: $8.00
+  Price: ₹180.00
   Stock: 45 units
   Rating: 4.8/5 (201 reviews)
   Organic: Yes
   Featured: Yes
   Shop ID: 4
-  Description: 70% cacao organic dark chocolate
-
---------------------------------------------------------------------------------
-
-Product 41:
-  ID: 41
-  Name: Organic Granola
-  Category: Snacks
-  Price: $8.00
-  Stock: 40 units
-  Rating: 4.7/5 (134 reviews)
-  Organic: Yes
-  Featured: No
-  Shop ID: 4
-  Description: Crunchy organic granola mix
-
---------------------------------------------------------------------------------
-
-Product 42:
-  ID: 42
-  Name: Organic Chia Seeds
-  Category: Grains
-  Price: $11.00
-  Stock: 50 units
-  Rating: 4.8/5 (156 reviews)
-  Organic: Yes
-  Featured: Yes
-  Shop ID: 4
-  Description: Nutrient-rich organic chia seeds
-
---------------------------------------------------------------------------------
-
-Product 43:
-  ID: 43
-  Name: Organic Flax Seeds
-  Category: Grains
-  Price: $9.00
-  Stock: 45 units
-  Rating: 4.6/5 (98 reviews)
-  Organic: Yes
-  Featured: No
-  Shop ID: 4
-  Description: Ground organic flax seeds
-
---------------------------------------------------------------------------------
-
-Product 44:
-  ID: 44
-  Name: Organic Lentils
-  Category: Grains
-  Price: $6.00
-  Stock: 60 units
-  Rating: 4.7/5 (112 reviews)
-  Organic: Yes
-  Featured: No
-  Shop ID: 4
-  Description: Protein-rich organic lentils
-
---------------------------------------------------------------------------------
-
-Product 45:
-  ID: 45
-  Name: Organic Black Beans
-  Category: Grains
-  Price: $5.00
-  Stock: 55 units
-  Rating: 4.5/5 (87 reviews)
-  Organic: Yes
-  Featured: No
-  Shop ID: 4
-  Description: Organic black beans
-
---------------------------------------------------------------------------------
-
-Product 46:
-  ID: 46
-  Name: Organic Chickpeas
-  Category: Grains
-  Price: $5.00
-  Stock: 50 units
-  Rating: 4.6/5 (94 reviews)
-  Organic: Yes
-  Featured: No
-  Shop ID: 4
-  Description: Versatile organic chickpeas
-
---------------------------------------------------------------------------------
-
-Product 47:
-  ID: 47
-  Name: Organic Kale
-  Category: Vegetables
-  Price: $4.00
-  Stock: 35 units
-  Rating: 4.8/5 (123 reviews)
-  Organic: Yes
-  Featured: Yes
-  Shop ID: 2
-  Description: Superfood organic kale
-
---------------------------------------------------------------------------------
-
-Product 48:
-  ID: 48
-  Name: Organic Sweet Potatoes
-  Category: Vegetables
-  Price: $4.00
-  Stock: 50 units
-  Rating: 4.7/5 (109 reviews)
-  Organic: Yes
-  Featured: Yes
-  Shop ID: 2
-  Description: Nutritious organic sweet potatoes
-
---------------------------------------------------------------------------------
-
-Product 49:
-  ID: 49
-  Name: Organic Mushrooms
-  Category: Vegetables
-  Price: $7.00
-  Stock: 30 units
-  Rating: 4.6/5 (76 reviews)
-  Organic: Yes
-  Featured: No
-  Shop ID: 2
-  Description: Fresh organic mushrooms
-
---------------------------------------------------------------------------------
-
-Product 50:
-  ID: 50
-  Name: Organic Ginger Root
-  Category: Vegetables
-  Price: $3.00
-  Stock: 40 units
-  Rating: 4.5/5 (65 reviews)
-  Organic: Yes
-  Featured: No
-  Shop ID: 2
-  Description: Fresh organic ginger root
-
---------------------------------------------------------------------------------
-
-Product 51:
-  ID: 51
-  Name: Organic Garlic
-  Category: Vegetables
-  Price: $3.00
-  Stock: 60 units
-  Rating: 4.7/5 (98 reviews)
-  Organic: Yes
-  Featured: No
-  Shop ID: 2
-  Description: Aromatic organic garlic bulbs
-
---------------------------------------------------------------------------------
-
-Product 52:
-  ID: 52
-  Name: Organic Onions
-  Category: Vegetables
-  Price: $2.00
-  Stock: 70 units
-  Rating: 4.4/5 (82 reviews)
-  Organic: Yes
-  Featured: No
-  Shop ID: 2
-  Description: Fresh organic onions
-
---------------------------------------------------------------------------------
-
-Product 53:
-  ID: 53
-  Name: Organic Lemons
-  Category: Fruits
-  Price: $5.00
-  Stock: 50 units
-  Rating: 4.6/5 (87 reviews)
-  Organic: Yes
-  Featured: No
-  Shop ID: 1
-  Description: Zesty organic lemons
-
---------------------------------------------------------------------------------
-
-Product 54:
-  ID: 54
-  Name: Organic Limes
-  Category: Fruits
-  Price: $4.00
-  Stock: 45 units
-  Rating: 4.5/5 (73 reviews)
-  Organic: Yes
-  Featured: No
-  Shop ID: 1
-  Description: Fresh organic limes
-
---------------------------------------------------------------------------------
-
-Product 55:
-  ID: 55
-  Name: Organic Mangoes
-  Category: Fruits
-  Price: $8.00
-  Stock: 35 units
-  Rating: 4.9/5 (167 reviews)
-  Organic: Yes
-  Featured: Yes
-  Shop ID: 1
-  Description: Sweet organic mangoes
-
---------------------------------------------------------------------------------
-
-Product 56:
-  ID: 56
-  Name: Organic Pineapple
-  Category: Fruits
-  Price: $7.00
-  Stock: 30 units
-  Rating: 4.8/5 (145 reviews)
-  Organic: Yes
-  Featured: Yes
-  Shop ID: 1
-  Description: Tropical organic pineapple
-
---------------------------------------------------------------------------------
-
-Product 57:
-  ID: 57
-  Name: Organic Watermelon
-  Category: Fruits
-  Price: $9.00
-  Stock: 25 units
-  Rating: 4.7/5 (123 reviews)
-  Organic: Yes
-  Featured: Yes
-  Shop ID: 1
-  Description: Juicy organic watermelon
-
---------------------------------------------------------------------------------
-
-Product 58:
-  ID: 58
-  Name: Organic Cantaloupe
-  Category: Fruits
-  Price: $6.00
-  Stock: 30 units
-  Rating: 4.6/5 (89 reviews)
-  Organic: Yes
-  Featured: No
-  Shop ID: 1
-  Description: Sweet organic cantaloupe
-
---------------------------------------------------------------------------------
-
-Product 59:
-  ID: 59
-  Name: Organic Peaches
-  Category: Fruits
-  Price: $6.00
-  Stock: 40 units
-  Rating: 4.7/5 (112 reviews)
-  Organic: Yes
-  Featured: No
-  Shop ID: 1
-  Description: Ripe organic peaches
-
---------------------------------------------------------------------------------
-
-Product 60:
-  ID: 60
-  Name: Organic Plums
-  Category: Fruits
-  Price: $5.00
-  Stock: 35 units
-  Rating: 4.5/5 (76 reviews)
-  Organic: Yes
-  Featured: No
-  Shop ID: 1
-  Description: Fresh organic plums
+  Description: 70% cacao chocolate
 
 --------------------------------------------------------------------------------
 

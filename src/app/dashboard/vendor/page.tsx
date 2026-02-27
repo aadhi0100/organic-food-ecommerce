@@ -144,7 +144,7 @@ export default function VendorDashboard() {
               </div>
             </div>
             <h3 className="text-gray-600 text-sm mb-1">Est. Revenue</h3>
-            <p className="text-3xl font-bold">${totalRevenue.toFixed(0)}</p>
+            <p className="text-3xl font-bold">₹{totalRevenue.toFixed(0)}</p>
           </div>
 
           <div className="bg-white rounded-xl shadow-md p-6">

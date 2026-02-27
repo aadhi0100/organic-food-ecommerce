@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
 import { User, Mail, Phone, MapPin, Save, Edit, CreditCard, Calendar, DollarSign, Package, Award, Receipt } from 'lucide-react'
 import type { Order } from '@/types'
+import { formatIndianCurrency } from '@/utils/indianFormat'
 
 interface PaymentHistory {
   orderId: string
@@ -87,7 +88,7 @@ export default function CustomerProfile() {
                 <h3 className="text-lg font-bold">Total Spent</h3>
                 <DollarSign size={24} />
               </div>
-              <p className="text-4xl font-bold mb-2">${totalSpent.toFixed(2)}</p>
+              <p className="text-4xl font-bold mb-2">{formatIndianCurrency(totalSpent)}</p>
               <p className="text-green-100 text-sm">Lifetime purchases</p>
             </div>
 
@@ -245,7 +246,7 @@ export default function CustomerProfile() {
                               {new Date(payment.date).toLocaleDateString()}
                             </td>
                             <td className="py-3 px-4 font-bold text-green-600">
-                              ${payment.amount.toFixed(2)}
+                              {formatIndianCurrency(payment.amount)}
                             </td>
                             <td className="py-3 px-4 text-sm">{payment.method}</td>
                             <td className="py-3 px-4">
@@ -273,25 +274,25 @@ export default function CustomerProfile() {
                   <div className="border-b pb-4">
                     <p className="text-sm text-gray-600 mb-1">Average Order</p>
                     <p className="font-bold text-green-600">
-                      ${totalOrders > 0 ? (totalSpent / totalOrders).toFixed(2) : '0.00'}
+                      {formatIndianCurrency(totalOrders > 0 ? totalSpent / totalOrders : 0)}
                     </p>
                   </div>
                   <div className="border-b pb-4">
                     <p className="text-sm text-gray-600 mb-1">Loyalty Tier</p>
                     <p className="font-bold">
-                      {totalSpent >= 500 ? '💎 Platinum' :
-                       totalSpent >= 300 ? '🏆 Gold' :
-                       totalSpent >= 150 ? '🥈 Silver' :
-                       totalSpent >= 50 ? '🥉 Bronze' : '⭐ New Member'}
+                      {totalSpent >= 50000 ? '💎 Platinum' :
+                       totalSpent >= 30000 ? '🏆 Gold' :
+                       totalSpent >= 15000 ? '🥈 Silver' :
+                       totalSpent >= 5000 ? '🥉 Bronze' : '⭐ New Member'}
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600 mb-1">Current Discount</p>
                     <p className="font-bold text-green-600">
-                      {totalSpent >= 500 ? '20% OFF' :
-                       totalSpent >= 300 ? '15% OFF' :
-                       totalSpent >= 150 ? '10% OFF' :
-                       totalSpent >= 50 ? '5% OFF' : '0% OFF'}
+                      {totalSpent >= 50000 ? '20% OFF' :
+                       totalSpent >= 30000 ? '15% OFF' :
+                       totalSpent >= 15000 ? '10% OFF' :
+                       totalSpent >= 5000 ? '5% OFF' : '0% OFF'}
                     </p>
                   </div>
                 </div>

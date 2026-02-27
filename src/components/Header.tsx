@@ -3,17 +3,20 @@
 import Link from 'next/link'
 import { useCart } from '@/hooks/useCart'
 import { useAuth } from '@/context/AuthContext'
-import { ShoppingCart, User, Menu, Search } from 'lucide-react'
+import { useTheme } from '@/context/ThemeContext'
+import { ShoppingCart, User, Menu, Moon, Sun } from 'lucide-react'
 import { useState } from 'react'
+import LanguageSelector from './LanguageSelector'
 
 export function Header() {
   const { getItemCount } = useCart()
   const { user, logout } = useAuth()
+  const { theme, toggleTheme } = useTheme()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const itemCount = getItemCount()
 
   return (
-    <header className="bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg sticky top-0 z-50">
+    <header className="bg-gradient-to-r from-green-600 to-green-700 dark:from-green-800 dark:to-green-900 text-white shadow-lg sticky top-0 z-40">
       <div className="container mx-auto px-4">
         <nav className="flex justify-between items-center py-4">
           <Link href="/" className="text-2xl font-bold flex items-center gap-2 hover:opacity-90 transition">
@@ -27,7 +30,17 @@ export function Header() {
             <Link href="/contact" className="hover:text-green-200 transition">Contact</Link>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <LanguageSelector />
+            
+            <button 
+              onClick={toggleTheme}
+              className="hover:text-green-200 transition p-2"
+              aria-label="Toggle theme"
+            >
+              {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+            </button>
+            
             <Link href="/cart" className="relative hover:text-green-200 transition">
               <ShoppingCart size={24} />
               {itemCount > 0 && (

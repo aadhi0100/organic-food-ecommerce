@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
-import { ShoppingCart, Package, TrendingUp, Gift, Award, History, Tag, ShoppingBag } from 'lucide-react'
+import { ShoppingCart, Package, TrendingUp, Gift, Award, History, Tag, ShoppingBag, Store, Send } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { Order, CartItem } from '@/types'
@@ -25,12 +25,19 @@ export default function CustomerDashboard() {
   const [discountTier, setDiscountTier] = useState('Bronze')
   const [discountPercentage, setDiscountPercentage] = useState(0)
   const [totalCarts, setTotalCarts] = useState(0)
+  const [showVendorRequest, setShowVendorRequest] = useState(false)
+  const [vendorRequestSent, setVendorRequestSent] = useState(false)
+  const [requestMessage, setRequestMessage] = useState('')
 
   useEffect(() => {
     if (!user || user.role !== 'customer') {
       router.push('/login')
       return
     }
+
+    const requests = JSON.parse(localStorage.getItem('vendorRequests') || '[]')
+    const userRequest = requests.find((r: any) => r.userId === user.id)
+    if (userRequest) setVendorRequestSent(true)
 
     fetch('/api/orders')
       .then(r => r.json())
@@ -65,7 +72,30 @@ export default function CustomerDashboard() {
         setCartHistory(history)
         setLoading(false)
       })
+
+    const savedCartHistory = localStorage.getItem(`cartHistory_${user.id}`)
+    if (savedCartHistory) {
+      const parsedHistory = JSON.parse(savedCartHistory)
+      setCartHistory((prev) => [...parsedHistory, ...prev])
+    }
   }, [user, router])
+
+  const handleVendorRequest = () => {
+    const request = {
+      userId: user?.id,
+      userName: user?.name,
+      userEmail: user?.email,
+      message: requestMessage,
+      date: new Date().toISOString(),
+      status: 'pending'
+    }
+    const requests = JSON.parse(localStorage.getItem('vendorRequests') || '[]')
+    requests.push(request)
+    localStorage.setItem('vendorRequests', JSON.stringify(requests))
+    setVendorRequestSent(true)
+    setShowVendorRequest(false)
+    setRequestMessage('')
+  }
 
   if (loading) {
     return (
@@ -105,6 +135,39 @@ export default function CustomerDashboard() {
           <p className="text-gray-600">Welcome back, {user?.name}!</p>
         </div>
 
+        {!vendorRequestSent && (
+          <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl shadow-lg p-6 text-white mb-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-2xl font-bold mb-2">Want to Sell Your Products?</h3>
+                <p className="text-white/90 mb-4">Become a vendor and start selling organic products on our platform!</p>
+                <button
+                  onClick={() => setShowVendorRequest(true)}
+                  className="bg-white text-purple-600 px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition flex items-center gap-2"
+                >
+                  <Store size={20} />
+                  Request to Become Vendor
+                </button>
+              </div>
+              <div className="text-6xl hidden md:block">🏪</div>
+            </div>
+          </div>
+        )}
+
+        {vendorRequestSent && (
+          <div className="bg-green-50 border border-green-200 rounded-xl p-6 mb-8">
+            <div className="flex items-center gap-3">
+              <div className="bg-green-100 p-3 rounded-full">
+                <Store className="text-green-600" size={24} />
+              </div>
+              <div>
+                <h3 className="font-bold text-green-800 text-lg">Vendor Request Submitted!</h3>
+                <p className="text-green-700">Your request to become a vendor is under review. We'll contact you soon.</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <div className={`bg-gradient-to-br ${getTierColor(discountTier)} rounded-xl shadow-lg p-6 text-white col-span-1 lg:col-span-2`}>
             <div className="flex items-center justify-between mb-4">
@@ -132,7 +195,7 @@ export default function CustomerDashboard() {
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm">Progress to {discountTier === 'Platinum' ? 'Max Tier' : 'Next Tier'}</span>
                 <span className="text-sm font-bold">
-                  ${totalSpent.toFixed(0)} / ${discountTier === 'Platinum' ? '500+' : discountTier === 'Gold' ? '500' : discountTier === 'Silver' ? '300' : '150'}
+                  ₹{totalSpent.toFixed(0)} / ₹{discountTier === 'Platinum' ? '50,000+' : discountTier === 'Gold' ? '50,000' : discountTier === 'Silver' ? '30,000' : '15,000'}
                 </span>
               </div>
               <div className="w-full bg-white/30 rounded-full h-2">
@@ -292,30 +355,83 @@ export default function CustomerDashboard() {
             <div className={`border-2 rounded-lg p-4 ${discountTier === 'Bronze' ? 'border-orange-500 bg-orange-50' : 'border-gray-200'}`}>
               <div className="text-3xl mb-2">🥉</div>
               <h3 className="font-bold mb-1">Bronze</h3>
-              <p className="text-sm text-gray-600 mb-2">Spend $50+</p>
+              <p className="text-sm text-gray-600 mb-2">Spend ₹5,000+</p>
               <p className="text-lg font-bold text-orange-600">5% OFF</p>
             </div>
             <div className={`border-2 rounded-lg p-4 ${discountTier === 'Silver' ? 'border-gray-500 bg-gray-50' : 'border-gray-200'}`}>
               <div className="text-3xl mb-2">🥈</div>
               <h3 className="font-bold mb-1">Silver</h3>
-              <p className="text-sm text-gray-600 mb-2">Spend $150+</p>
+              <p className="text-sm text-gray-600 mb-2">Spend ₹15,000+</p>
               <p className="text-lg font-bold text-gray-600">10% OFF</p>
             </div>
             <div className={`border-2 rounded-lg p-4 ${discountTier === 'Gold' ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200'}`}>
               <div className="text-3xl mb-2">🏆</div>
               <h3 className="font-bold mb-1">Gold</h3>
-              <p className="text-sm text-gray-600 mb-2">Spend $300+</p>
+              <p className="text-sm text-gray-600 mb-2">Spend ₹30,000+</p>
               <p className="text-lg font-bold text-yellow-600">15% OFF</p>
             </div>
             <div className={`border-2 rounded-lg p-4 ${discountTier === 'Platinum' ? 'border-gray-600 bg-gray-50' : 'border-gray-200'}`}>
               <div className="text-3xl mb-2">💎</div>
               <h3 className="font-bold mb-1">Platinum</h3>
-              <p className="text-sm text-gray-600 mb-2">Spend $500+</p>
+              <p className="text-sm text-gray-600 mb-2">Spend ₹50,000+</p>
               <p className="text-lg font-bold text-gray-700">20% OFF</p>
             </div>
           </div>
         </div>
       </div>
+
+      {showVendorRequest && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-8">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold">Become a Vendor</h2>
+              <button onClick={() => setShowVendorRequest(false)}>
+                <span className="text-2xl">&times;</span>
+              </button>
+            </div>
+
+            <div className="mb-6">
+              <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
+                <h3 className="font-bold text-purple-800 mb-2">Benefits:</h3>
+                <ul className="space-y-2 text-sm text-purple-700">
+                  <li className="flex items-center gap-2"><span className="text-green-600">✓</span>Reach thousands of customers</li>
+                  <li className="flex items-center gap-2"><span className="text-green-600">✓</span>Manage your own products</li>
+                  <li className="flex items-center gap-2"><span className="text-green-600">✓</span>Track sales and revenue</li>
+                  <li className="flex items-center gap-2"><span className="text-green-600">✓</span>Grow your organic business</li>
+                </ul>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Why do you want to become a vendor?</label>
+                <textarea
+                  value={requestMessage}
+                  onChange={(e) => setRequestMessage(e.target.value)}
+                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500"
+                  rows={4}
+                  placeholder="Tell us about your products..."
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <button
+                onClick={handleVendorRequest}
+                disabled={!requestMessage.trim()}
+                className="flex-1 bg-purple-600 text-white py-3 rounded-lg font-bold hover:bg-purple-700 transition flex items-center justify-center gap-2 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              >
+                <Send size={20} />
+                Submit Request
+              </button>
+              <button
+                onClick={() => setShowVendorRequest(false)}
+                className="px-6 py-3 border border-gray-300 rounded-lg font-bold hover:bg-gray-50 transition"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

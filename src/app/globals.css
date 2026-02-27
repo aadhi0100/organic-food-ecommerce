@@ -1,3 +1,47 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap');
+
+@layer base {
+  .font-hindi {
+    font-family: 'Noto Sans Devanagari', sans-serif;
+  }
+  .font-tamil {
+    font-family: 'Noto Sans Tamil', sans-serif;
+  }
+  .font-telugu {
+    font-family: 'Noto Sans Telugu', sans-serif;
+  }
+  .font-bengali {
+    font-family: 'Noto Sans Bengali', sans-serif;
+  }
+  .font-marathi {
+    font-family: 'Noto Sans Devanagari', sans-serif;
+  }
+}
+
+@layer utilities {
+  .container-mobile {
+    @apply px-4 mx-auto max-w-7xl;
+  }
+  .text-responsive {
+    @apply text-sm sm:text-base md:text-lg;
+  }
+  .heading-responsive {
+    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl;
+  }
+  .card-mobile {
+    @apply p-4 sm:p-6 rounded-lg shadow-md;
+  }
+  .btn-mobile {
+    @apply px-4 py-2 sm:px-6 sm:py-3 text-sm sm:text-base rounded-lg;
+  }
+  .grid-responsive {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4;
+  }
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+}

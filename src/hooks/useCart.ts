@@ -16,7 +16,18 @@ export const useCart = create<CartStore>()(persist((set, get) => ({
   items: [],
   addItem: (product, quantity = 1) => set((state) => {
     const existing = state.items.find(i => i.productId === product.id)
+    const currentTotal = state.items.reduce((sum, item) => sum + item.quantity, 0)
+    
+    // Allow up to 100 items per product, 500 total items in cart
     if (existing) {
+      if (existing.quantity + quantity > 100) {
+        alert('Maximum 100 units per product allowed')
+        return state
+      }
+      if (currentTotal + quantity > 500) {
+        alert('Cart limit: 500 items maximum')
+        return state
+      }
       return {
         items: state.items.map(i => 
           i.productId === product.id 
@@ -24,6 +35,10 @@ export const useCart = create<CartStore>()(persist((set, get) => ({
             : i
         )
       }
+    }
+    if (currentTotal + quantity > 500) {
+      alert('Cart limit: 500 items maximum')
+      return state
     }
     return { items: [...state.items, { productId: product.id, quantity, product }] }
   }),

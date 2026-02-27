@@ -25,7 +25,7 @@ export const ExcelExport = {
     
     orders.forEach(order => {
       const address = `${order.shippingAddress.street} ${order.shippingAddress.city} ${order.shippingAddress.state} ${order.shippingAddress.zipCode}`
-      csv += `${order.id},${order.userId},${order.status},$${order.total.toFixed(2)},${order.items.length},"${order.createdAt}","${address}"\n`
+      csv += `${order.id},${order.userId},${order.status},₹${order.total.toFixed(2)},${order.items.length},"${order.createdAt}","${address}"\n`
     })
     
     fs.writeFileSync(filePath, csv, 'utf-8')
@@ -38,7 +38,7 @@ export const ExcelExport = {
     let csv = 'ID,Name,Category,Price,Stock,Rating,Reviews,Organic,Featured,Shop ID\n'
     
     products.forEach(product => {
-      csv += `${product.id},"${product.name}",${product.category},$${product.price},${product.stock},${product.rating},${product.reviews},${product.organic},${product.featured},${product.shopId}\n`
+      csv += `${product.id},"${product.name}",${product.category},₹${product.price},${product.stock},${product.rating},${product.reviews},${product.organic},${product.featured},${product.shopId}\n`
     })
     
     fs.writeFileSync(filePath, csv, 'utf-8')
@@ -53,7 +53,7 @@ export const ExcelExport = {
     items.forEach(item => {
       if (item.product) {
         const subtotal = item.product.price * item.quantity
-        csv += `${item.productId},"${item.product.name}",${item.quantity},$${item.product.price},$${subtotal.toFixed(2)}\n`
+        csv += `${item.productId},"${item.product.name}",${item.quantity},₹${item.product.price},₹${subtotal.toFixed(2)}\n`
       }
     })
     

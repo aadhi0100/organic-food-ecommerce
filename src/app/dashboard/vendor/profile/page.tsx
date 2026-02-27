@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { User, Mail, Phone, MapPin, Store, Save, Edit, Building, DollarSign, Package, TrendingUp } from 'lucide-react'
 import Image from 'next/image'
 import type { Shop } from '@/types'
+import { formatIndianCurrency } from '@/utils/indianFormat'
 
 export default function VendorProfile() {
   const { user } = useAuth()
@@ -70,7 +71,7 @@ export default function VendorProfile() {
                 <h3 className="text-lg font-bold">Total Revenue</h3>
                 <DollarSign size={24} />
               </div>
-              <p className="text-4xl font-bold mb-2">${totalRevenue.toLocaleString()}</p>
+              <p className="text-4xl font-bold mb-2">{formatIndianCurrency(totalRevenue)}</p>
               <p className="text-green-100 text-sm">From all shops</p>
             </div>
 
@@ -218,7 +219,7 @@ export default function VendorProfile() {
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-gray-600">Revenue:</span>
-                          <span className="font-bold text-green-600">${shop.revenue.toLocaleString()}</span>
+                          <span className="font-bold text-green-600">{formatIndianCurrency(shop.revenue)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600">Orders:</span>

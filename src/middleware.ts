@@ -26,10 +26,10 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Checkout and order success - require login but not admin
+  // Checkout - require login
   if (path.startsWith('/checkout') || path.startsWith('/order-success')) {
-    if (!userRole || userRole === 'admin') {
-      return NextResponse.redirect(new URL('/login', request.url))
+    if (!userRole) {
+      return NextResponse.redirect(new URL('/login?redirect=' + path, request.url))
     }
   }
 

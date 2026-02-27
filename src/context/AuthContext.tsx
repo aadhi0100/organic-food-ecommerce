@@ -22,8 +22,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (stored) {
       const userData = JSON.parse(stored)
       setUser(userData)
-      // Restore cookie on page load
-      document.cookie = `userRole=${userData.role}; path=/; max-age=86400`
     }
     setIsLoading(false)
   }, [])
@@ -33,27 +31,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
+      credentials: 'include'
     })
     if (!res.ok) throw new Error('Login failed')
     const userData = await res.json()
     setUser(userData)
     localStorage.setItem('user', JSON.stringify(userData))
     
-    // Set cookie for middleware
-    document.cookie = `userRole=${userData.role}; path=/; max-age=86400`
-    
-    // Log activity
     logActivity.userLogin(userData.id, userData.email)
   }
 
-  const logout = () => {
+  const logout = async () => {
     if (user) {
       logActivity.userLogout(user.id)
     }
+    
+    await fetch('/api/auth/logout', {
+      method: 'POST',
+      credentials: 'include'
+    })
+    
     setUser(null)
     localStorage.removeItem('user')
-    // Remove cookie
-    document.cookie = 'userRole=; path=/; max-age=0'
   }
 
   return <AuthContext.Provider value={{ user, login, logout, isLoading }}>{children}</AuthContext.Provider>

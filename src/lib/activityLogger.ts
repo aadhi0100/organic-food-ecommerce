@@ -34,7 +34,7 @@ class ActivityLogger {
       userId,
       data,
       timestamp: new Date().toISOString(),
-      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'server'
     }
     
     this.logs.push(activity)

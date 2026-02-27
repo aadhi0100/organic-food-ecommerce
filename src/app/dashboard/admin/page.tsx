@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
-import { Package, DollarSign, ShoppingCart, Users, TrendingUp, Store, MapPin, UserCheck, Activity } from 'lucide-react'
+import { Package, DollarSign, ShoppingCart, Users, TrendingUp, Store, MapPin, UserCheck, Activity, Trash2, X, Save } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { Order, Shop, User } from '@/types'
@@ -19,6 +19,8 @@ export default function AdminDashboard() {
   const [recentOrders, setRecentOrders] = useState<Order[]>([])
   const [vendors, setVendors] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
+  const [showAddVendor, setShowAddVendor] = useState(false)
+  const [vendorForm, setVendorForm] = useState({ name: '', email: '', password: '', phone: '', address: '' })
 
   useEffect(() => {
     if (!user || user.role !== 'admin') {
@@ -35,15 +37,38 @@ export default function AdminDashboard() {
       setShops(shopsData)
       setRecentOrders(ordersData.slice(0, 10))
       
-      // Mock vendor data
-      const vendorList: User[] = [
+      // Load vendors from localStorage
+      const storedVendors = localStorage.getItem('vendors')
+      const vendorList: User[] = storedVendors ? JSON.parse(storedVendors) : [
         { id: '2', email: 'vendor@organic.com', name: 'Vendor User', role: 'vendor', phone: '+1234567891', address: '456 Vendor Ave, NY' },
         { id: '3', email: 'vendor2@organic.com', name: 'Vendor Two', role: 'vendor', phone: '+1234567893', address: '789 Vendor Blvd, NY' },
       ]
       setVendors(vendorList)
+      if (!storedVendors) localStorage.setItem('vendors', JSON.stringify(vendorList))
       setLoading(false)
     })
   }, [user, router])
+
+  const handleAddVendor = () => {
+    const newVendor: User = {
+      id: String(Date.now()),
+      ...vendorForm,
+      role: 'vendor'
+    }
+    const updatedVendors = [...vendors, newVendor]
+    setVendors(updatedVendors)
+    localStorage.setItem('vendors', JSON.stringify(updatedVendors))
+    setShowAddVendor(false)
+    setVendorForm({ name: '', email: '', password: '', phone: '', address: '' })
+  }
+
+  const handleDeleteVendor = (id: string) => {
+    if (confirm('Are you sure you want to delete this vendor?')) {
+      const updatedVendors = vendors.filter(v => v.id !== id)
+      setVendors(updatedVendors)
+      localStorage.setItem('vendors', JSON.stringify(updatedVendors))
+    }
+  }
 
   if (loading) {
     return (
@@ -74,11 +99,24 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Admin Dashboard</h1>
-          <p className="text-gray-600">Welcome back, {user?.name}</p>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h1 className="heading-responsive font-bold">Admin Dashboard</h1>
+              <p className="text-responsive text-gray-600">Welcome back, {user?.name}</p>
+            </div>
+            <button
+              onClick={() => {
+                const data = { totalRevenue: stats?.totalRevenue, totalOrders: stats?.totalOrders, totalProducts: stats?.totalProducts, activeVendors: vendors.length, totalCustomers: stats?.totalCustomers }
+                import('@/lib/pdfGenerator').then(({ PDFGenerator }) => PDFGenerator.generateAdminReport(data))
+              }}
+              className="btn-mobile bg-green-600 text-white font-bold hover:bg-green-700 transition"
+            >
+              Download Report
+            </button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid-responsive gap-6 mb-8">
           <div className="bg-white rounded-xl shadow-md p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="bg-green-100 p-3 rounded-lg">
@@ -87,7 +125,7 @@ export default function AdminDashboard() {
               <span className="text-green-600 text-sm font-medium">+12.5%</span>
             </div>
             <h3 className="text-gray-600 text-sm mb-1">Total Revenue</h3>
-            <p className="text-3xl font-bold">${stats?.totalRevenue?.toLocaleString() || 0}</p>
+            <p className="text-3xl font-bold">₹{stats?.totalRevenue?.toLocaleString('en-IN') || 0}</p>
           </div>
 
           <div className="bg-white rounded-xl shadow-md p-6">
@@ -130,7 +168,7 @@ export default function AdminDashboard() {
               <h3 className="text-lg font-bold">Vendor Revenue</h3>
               <Activity size={24} />
             </div>
-            <p className="text-4xl font-bold mb-2">${totalVendorRevenue.toLocaleString()}</p>
+            <p className="text-4xl font-bold mb-2">₹{totalVendorRevenue.toLocaleString('en-IN')}</p>
             <p className="text-green-100">Total from all vendors</p>
           </div>
 
@@ -199,13 +237,13 @@ export default function AdminDashboard() {
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, value }) => `${name}: $${value}k`}
+                  label={({ name, value }) => `${name}: ₹${value}k`}
                   outerRadius={100}
                   fill="#8884d8"
                   dataKey="amount"
                 >
                   {categoryData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length] || '#8884d8'} />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -214,10 +252,19 @@ export default function AdminDashboard() {
           </div>
 
           <div className="bg-white rounded-xl shadow-md p-6">
-            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <UserCheck className="text-purple-600" />
-              Vendor Performance
-            </h2>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold flex items-center gap-2">
+                <UserCheck className="text-purple-600" />
+                Vendor Management
+              </h2>
+              <button
+                onClick={() => setShowAddVendor(true)}
+                className="bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700 transition flex items-center gap-2"
+              >
+                <Users size={18} />
+                Add Vendor
+              </button>
+            </div>
             <div className="space-y-4">
               {vendors.map((vendor, idx) => {
                 const vendorShops = shops.filter(s => s.owner === vendor.email)
@@ -230,9 +277,18 @@ export default function AdminDashboard() {
                         <h3 className="font-bold text-lg">{vendor.name}</h3>
                         <p className="text-sm text-gray-600">{vendor.email}</p>
                       </div>
-                      <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
-                        Active
-                      </span>
+                      <div className="flex gap-2">
+                        <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
+                          Active
+                        </span>
+                        <button
+                          onClick={() => handleDeleteVendor(vendor.id)}
+                          className="text-red-600 hover:bg-red-50 p-1 rounded transition"
+                          title="Delete Vendor"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </div>
                     <div className="grid grid-cols-3 gap-4 mt-4">
                       <div>
@@ -245,7 +301,7 @@ export default function AdminDashboard() {
                       </div>
                       <div>
                         <p className="text-xs text-gray-600">Revenue</p>
-                        <p className="text-xl font-bold text-green-600">${vendorRevenue.toLocaleString()}</p>
+                        <p className="text-xl font-bold text-green-600">₹{vendorRevenue.toLocaleString('en-IN')}</p>
                       </div>
                     </div>
                   </div>
@@ -278,7 +334,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Revenue:</span>
-                    <span className="font-bold text-green-600">${shop.revenue.toLocaleString()}</span>
+                    <span className="font-bold text-green-600">₹{shop.revenue.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Rating:</span>
@@ -310,7 +366,7 @@ export default function AdminDashboard() {
                     <td className="py-3 px-4 font-medium">#{order.id}</td>
                     <td className="py-3 px-4">{order.shippingAddress.fullName}</td>
                     <td className="py-3 px-4">{order.items.length} items</td>
-                    <td className="py-3 px-4 font-bold">${order.total.toFixed(2)}</td>
+                    <td className="py-3 px-4 font-bold">₹{order.total.toFixed(2)}</td>
                     <td className="py-3 px-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                         order.status === 'delivered' ? 'bg-green-100 text-green-700' :
@@ -331,6 +387,92 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+
+      {showAddVendor && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-8">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold">Add New Vendor</h2>
+              <button onClick={() => setShowAddVendor(false)}>
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Name</label>
+                <input
+                  type="text"
+                  value={vendorForm.name}
+                  onChange={(e) => setVendorForm({ ...vendorForm, name: e.target.value })}
+                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500"
+                  placeholder="John Doe"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Email</label>
+                <input
+                  type="email"
+                  value={vendorForm.email}
+                  onChange={(e) => setVendorForm({ ...vendorForm, email: e.target.value })}
+                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500"
+                  placeholder="vendor@example.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Password</label>
+                <input
+                  type="password"
+                  value={vendorForm.password}
+                  onChange={(e) => setVendorForm({ ...vendorForm, password: e.target.value })}
+                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500"
+                  placeholder="••••••••"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Phone</label>
+                <input
+                  type="tel"
+                  value={vendorForm.phone}
+                  onChange={(e) => setVendorForm({ ...vendorForm, phone: e.target.value })}
+                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500"
+                  placeholder="+91 1234567890"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Address</label>
+                <textarea
+                  value={vendorForm.address}
+                  onChange={(e) => setVendorForm({ ...vendorForm, address: e.target.value })}
+                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500"
+                  rows={2}
+                  placeholder="123 Street, City"
+                />
+              </div>
+
+              <div className="flex gap-4 pt-4">
+                <button
+                  onClick={handleAddVendor}
+                  className="flex-1 bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition flex items-center justify-center gap-2"
+                >
+                  <Save size={20} />
+                  Add Vendor
+                </button>
+                <button
+                  onClick={() => setShowAddVendor(false)}
+                  className="px-6 py-3 border border-gray-300 rounded-lg font-bold hover:bg-gray-50 transition"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

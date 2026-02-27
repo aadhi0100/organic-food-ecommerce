@@ -1,22 +1,29 @@
 Order ID: 1
-User ID: 4
+User ID: 6
 Status: pending
-Total: ₹637.44
-Created: 2026-02-24T06:15:45.384Z
+Total: ₹283.20
+Created: 2026-02-26T17:34:20.390Z
 
 Shipping Address:
-  Name: Customer User
-  Street: No 16
-  City: Selaiyur
+  Name: aadhi
+  Street: 
+  City: Chennai
   State: Tamil Nadu
-  ZIP: 600073
-  Phone: 9445231232
+  ZIP: 
+  Phone: +91 9445231232
 
 Order Items:
 
 Item 1:
-  Product ID: 2
-  Quantity: 2
-  Product: Organic Bananas
-  Price: ₹289.67
-  Subtotal: ₹579.34
+  Product ID: 16
+  Quantity: 1
+  Product: Organic Broccoli
+  Price: ₹80
+  Subtotal: ₹80.00
+
+Item 2:
+  Product ID: 15
+  Quantity: 1
+  Product: Organic Grapes
+  Price: ₹120
+  Subtotal: ₹120.00

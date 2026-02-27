@@ -202,7 +202,7 @@ export default function CartPage() {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-4">
-              {items.map(item => (
+              {items.map(item => item.product && (
                 <div key={item.productId} className="bg-white rounded-xl shadow-md p-6 flex gap-6">
                   <div className="relative w-32 h-32 rounded-lg overflow-hidden flex-shrink-0">
                     <Image
@@ -390,7 +390,21 @@ export default function CartPage() {
                 )}
 
                 <Link href="/checkout">
-                  <button className="w-full bg-green-600 text-white py-4 rounded-lg font-bold hover:bg-green-700 transition mb-3">
+                  <button 
+                    onClick={() => {
+                      if (user && items.length > 0) {
+                        const cartSnapshot = {
+                          date: new Date().toISOString(),
+                          items: items,
+                          total: finalTotal
+                        }
+                        const existingHistory = JSON.parse(localStorage.getItem(`cartHistory_${user.id}`) || '[]')
+                        existingHistory.push(cartSnapshot)
+                        localStorage.setItem(`cartHistory_${user.id}`, JSON.stringify(existingHistory))
+                      }
+                    }}
+                    className="w-full bg-green-600 text-white py-4 rounded-lg font-bold hover:bg-green-700 transition mb-3"
+                  >
                     Proceed to Checkout
                   </button>
                 </Link>

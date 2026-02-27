@@ -11,7 +11,7 @@ export default function ContactPage() {
     e.preventDefault()
     
     try {
-      await fetch('/api/messages', {
+      const response = await fetch('/api/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -19,13 +19,16 @@ export default function ContactPage() {
           name: formData.name,
           email: formData.email,
           subject: formData.subject,
-          message: formData.message
+          message: formData.message,
+          timestamp: new Date().toISOString()
         })
       })
       
-      setIsSubmitted(true)
-      setTimeout(() => setIsSubmitted(false), 3000)
-      setFormData({ name: '', email: '', subject: '', message: '' })
+      if (response.ok) {
+        setIsSubmitted(true)
+        setTimeout(() => setIsSubmitted(false), 3000)
+        setFormData({ name: '', email: '', subject: '', message: '' })
+      }
     } catch (error) {
       console.error('Failed to send message')
     }
@@ -50,8 +53,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-bold mb-1">Phone</h3>
-                  <p className="text-gray-600">(555) 123-4567</p>
-                  <p className="text-sm text-gray-500">Mon-Fri 9am-6pm</p>
+                  <p className="text-gray-600">+91 98765 43210</p>
+                  <p className="text-sm text-gray-500">Mon-Fri 9am-6pm IST</p>
                 </div>
               </div>
 
@@ -61,7 +64,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-bold mb-1">Email</h3>
-                  <p className="text-gray-600">info@organicfood.com</p>
+                  <p className="text-gray-600">info@organicfood.in</p>
                   <p className="text-sm text-gray-500">We'll respond within 24 hours</p>
                 </div>
               </div>
@@ -72,8 +75,9 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-bold mb-1">Address</h3>
-                  <p className="text-gray-600">123 Organic Street</p>
-                  <p className="text-gray-600">Green City, GC 12345</p>
+                  <p className="text-gray-600">123 MG Road, Koramangala</p>
+                  <p className="text-gray-600">Bangalore, Karnataka 560034</p>
+                  <p className="text-gray-600">India</p>
                 </div>
               </div>
             </div>

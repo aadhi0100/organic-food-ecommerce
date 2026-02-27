@@ -51,8 +51,8 @@ export const FileStorage = {
         content += `  Quantity: ${item.quantity}\n`
         if (item.product) {
           content += `  Product Name: ${item.product.name}\n`
-          content += `  Price: $${item.product.price}\n`
-          content += `  Subtotal: $${(item.product.price * item.quantity).toFixed(2)}\n`
+          content += `  Price: ₹${item.product.price}\n`
+          content += `  Subtotal: ₹${(item.product.price * item.quantity).toFixed(2)}\n`
         }
       })
       fs.writeFileSync(filePath, content, 'utf-8')
@@ -71,7 +71,8 @@ export const FileStorage = {
         if (line.includes('Product ID:')) {
           currentItem.productId = line.split(': ')[1]
         } else if (line.includes('Quantity:') && !line.includes('Product')) {
-          currentItem.quantity = parseInt(line.split(': ')[1])
+          const quantityStr = line.split(': ')[1]
+          currentItem.quantity = parseInt(quantityStr || '0')
           if (currentItem.productId) {
             items.push(currentItem)
             currentItem = {}
@@ -91,7 +92,7 @@ export const FileStorage = {
   orders: {
     save: (order: Order) => {
       const filePath = path.join(DATA_DIR, 'orders', `order_${order.id}.txt`)
-      let content = `Order ID: ${order.id}\nUser ID: ${order.userId}\nStatus: ${order.status}\nTotal: $${order.total.toFixed(2)}\nCreated: ${order.createdAt}\n\n`
+      let content = `Order ID: ${order.id}\nUser ID: ${order.userId}\nStatus: ${order.status}\nTotal: ₹${order.total.toFixed(2)}\nCreated: ${order.createdAt}\n\n`
       content += `Shipping Address:\n`
       content += `  Name: ${order.shippingAddress.fullName}\n`
       content += `  Street: ${order.shippingAddress.street}\n`
@@ -106,8 +107,8 @@ export const FileStorage = {
         content += `  Quantity: ${item.quantity}\n`
         if (item.product) {
           content += `  Product: ${item.product.name}\n`
-          content += `  Price: $${item.product.price}\n`
-          content += `  Subtotal: $${(item.product.price * item.quantity).toFixed(2)}\n`
+          content += `  Price: ₹${item.product.price}\n`
+          content += `  Subtotal: ₹${(item.product.price * item.quantity).toFixed(2)}\n`
         }
       })
       fs.writeFileSync(filePath, content, 'utf-8')
@@ -124,11 +125,11 @@ export const FileStorage = {
         const order: any = { items: [], shippingAddress: {} }
         
         lines.forEach(line => {
-          if (line.startsWith('Order ID:')) order.id = line.split(': ')[1]
-          else if (line.startsWith('User ID:')) order.userId = line.split(': ')[1]
-          else if (line.startsWith('Status:')) order.status = line.split(': ')[1]
-          else if (line.startsWith('Total:')) order.total = parseFloat(line.split('$')[1])
-          else if (line.startsWith('Created:')) order.createdAt = line.split(': ')[1]
+          if (line.startsWith('Order ID:')) order.id = line.split(': ')[1] || ''
+          else if (line.startsWith('User ID:')) order.userId = line.split(': ')[1] || ''
+          else if (line.startsWith('Status:')) order.status = line.split(': ')[1] || ''
+          else if (line.startsWith('Total:')) order.total = parseFloat(line.split('₹')[1] || '0')
+          else if (line.startsWith('Created:')) order.createdAt = line.split(': ')[1] || ''
         })
         return order as Order
       })
@@ -151,7 +152,7 @@ export const FileStorage = {
         content += `  ID: ${product.id}\n`
         content += `  Name: ${product.name}\n`
         content += `  Category: ${product.category}\n`
-        content += `  Price: $${product.price.toFixed(2)}\n`
+        content += `  Price: ₹${product.price.toFixed(2)}\n`
         content += `  Stock: ${product.stock} units\n`
         content += `  Rating: ${product.rating}/5 (${product.reviews} reviews)\n`
         content += `  Organic: ${product.organic ? 'Yes' : 'No'}\n`
@@ -162,6 +163,10 @@ export const FileStorage = {
       })
       
       fs.writeFileSync(filePath, content, 'utf-8')
+    },
+    
+    getAll: (): Product[] => {
+      return []
     }
   },
 
