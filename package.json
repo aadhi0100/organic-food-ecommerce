@@ -16,7 +16,9 @@
     "db:studio": "prisma studio",
     "download-images": "node download-images.js",
     "deploy": "npm run build && vercel --prod",
-    "git-push": "git add . && git commit -m \"Auto update\" && git push"
+    "git-push": "git add . && git commit -m \"Auto update\" && git push",
+    "start-all": "start http://localhost:3000 && start chrome --app=http://localhost:3000 --window-size=375,812 && npm run dev",
+    "dev-prod": "concurrently \"npm run dev\" \"vercel --prod\""
   },
   "dependencies": {
     "@firebase/auth": "^1.12.0",

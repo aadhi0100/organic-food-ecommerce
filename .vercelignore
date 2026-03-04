@@ -1,0 +1,52 @@
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+jest.config.js
+jest.setup.js
+
+# Development
+.env.local
+.env.development
+*.bat
+*.ps1
+
+# Documentation
+*.md
+!README.md
+
+# Build artifacts
+.next
+out
+dist
+build
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data (use database in production)
+data/
+backups/
+logs/
+exports/
+
+# Misc
+.vercel
+.git
+.github

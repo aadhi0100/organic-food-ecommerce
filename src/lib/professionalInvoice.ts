@@ -40,19 +40,22 @@ export function generateProfessionalInvoice(data: InvoiceData): jsPDF {
   doc.rect(0, 35, pageWidth, 10, 'F')
   
   // Company Logo Area
-  doc.setFontSize(45)
-  doc.setTextColor(255, 255, 255)
-  doc.text('🌿', 15, 30)
+  doc.setFillColor(255, 255, 255)
+  doc.circle(25, 22, 8, 'F')
+  doc.setFontSize(20)
+  doc.setTextColor(22, 163, 74)
+  doc.text('OF', 25, 25, { align: 'center' })
   
   // Company Name & Tagline
   doc.setFontSize(26)
   doc.setFont('helvetica', 'bold')
+  doc.setTextColor(255, 255, 255)
   doc.text('ORGANIC FOOD STORE', 45, 22)
   
   doc.setFontSize(9)
   doc.setFont('helvetica', 'normal')
   doc.text('Premium Organic Products | Farm to Table | 100% Certified', 45, 29)
-  doc.text('📧 info@organicfood.com | 📞 +91 1800-123-4567 | 🌐 www.organicfood.com', 45, 36)
+  doc.text('Email: info@organicfood.com | Phone: +91 1800-123-4567 | Web: www.organicfood.com', 45, 36)
   
   // Invoice Title Badge
   doc.setFillColor(255, 255, 255)
@@ -101,8 +104,8 @@ export function generateProfessionalInvoice(data: InvoiceData): jsPDF {
   
   doc.setFontSize(8)
   doc.setFont('helvetica', 'normal')
-  doc.text(`📧 ${data.customerEmail}`, 18, 71)
-  doc.text(`📞 ${data.customerPhone}`, 18, 76)
+  doc.text(`Email: ${data.customerEmail}`, 18, 71)
+  doc.text(`Phone: ${data.customerPhone}`, 18, 76)
   
   // Shipping Address Section
   doc.setFillColor(240, 253, 244)
@@ -118,14 +121,17 @@ export function generateProfessionalInvoice(data: InvoiceData): jsPDF {
   doc.setTextColor(0, 0, 0)
   doc.setFontSize(8)
   doc.setFont('helvetica', 'normal')
-  const addressLines = doc.splitTextToSize(data.shippingAddress.street, 50)
   let yPos = 64
-  addressLines.forEach((line: string) => {
-    doc.text(line, 83, yPos)
-    yPos += 4
-  })
+  if (data.shippingAddress.street) {
+    const addressLines = doc.splitTextToSize(data.shippingAddress.street, 50)
+    addressLines.forEach((line: string) => {
+      doc.text(line, 83, yPos)
+      yPos += 4
+    })
+  }
   doc.text(`${data.shippingAddress.city}, ${data.shippingAddress.state}`, 83, yPos)
-  doc.text(`${data.shippingAddress.zipCode}, ${data.shippingAddress.country}`, 83, yPos + 4)
+  yPos += 4
+  doc.text(`${data.shippingAddress.zipCode}, ${data.shippingAddress.country}`, 83, yPos)
   
   // Delivery & Payment Info
   doc.setFillColor(254, 249, 195)
@@ -137,19 +143,20 @@ export function generateProfessionalInvoice(data: InvoiceData): jsPDF {
   doc.setTextColor(146, 64, 14)
   doc.setFontSize(9)
   doc.setFont('helvetica', 'bold')
-  doc.text('📦 DELIVERY INFO', 18, 98)
+  doc.text('DELIVERY INFO', 18, 98)
   doc.setFont('helvetica', 'normal')
-  doc.text(`Expected: ${new Date(data.deliveryDate).toLocaleDateString('en-IN', { 
-    weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' 
+  const deliveryDate = new Date(data.deliveryDate)
+  doc.text(`Expected: ${deliveryDate.toLocaleDateString('en-IN', { 
+    day: '2-digit', month: 'short', year: 'numeric' 
   })}`, 18, 104)
   
   doc.setFont('helvetica', 'bold')
-  doc.text('🔢 TRACKING', 100, 98)
+  doc.text('TRACKING', 100, 98)
   doc.setFont('helvetica', 'normal')
   doc.text(data.trackingNumber, 100, 104)
   
   doc.setFont('helvetica', 'bold')
-  doc.text('💳 PAYMENT', 155, 98)
+  doc.text('PAYMENT', 155, 98)
   doc.setFont('helvetica', 'normal')
   doc.text(data.paymentMethod, 155, 104)
   
@@ -240,7 +247,7 @@ export function generateProfessionalInvoice(data: InvoiceData): jsPDF {
   
   doc.setFontSize(7)
   doc.setFont('helvetica', 'normal')
-  doc.text('🌿 Fresh Organic Products | 🚚 Fast Delivery | ✅ 100% Quality Assured', pageWidth / 2, footerY + 13, { align: 'center' })
+  doc.text('Fresh Organic Products | Fast Delivery | 100% Quality Assured', pageWidth / 2, footerY + 13, { align: 'center' })
   doc.text('This is a computer-generated invoice and does not require a signature', pageWidth / 2, footerY + 17, { align: 'center' })
   
   return doc

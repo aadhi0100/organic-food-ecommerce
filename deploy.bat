@@ -1,34 +1,34 @@
 @echo off
 echo ========================================
-echo Vercel Deployment Script
+echo   DEPLOYING TO VERCEL
 echo ========================================
 echo.
-
-echo [1/5] Checking Git status...
-git status
+echo Target: organic-food-ifq5ca1u8-aadhityaezhumalai-5234s-projects.vercel.app
 echo.
 
-echo [2/5] Adding all changes...
-git add .
+cd /d "%~dp0"
+
+echo [1/3] Building project...
+call npm run build
+if errorlevel 1 (
+    echo.
+    echo ERROR: Build failed!
+    pause
+    exit /b 1
+)
+
 echo.
+echo [2/3] Deploying to production...
+call vercel --prod --yes
 
-echo [3/5] Committing changes...
-set /p commit_msg="Enter commit message (or press Enter for default): "
-if "%commit_msg%"=="" set commit_msg=Deploy to Vercel
-
-git commit -m "%commit_msg%"
 echo.
-
-echo [4/5] Pushing to repository...
-git push
-echo.
-
-echo [5/5] Deployment triggered!
+echo [3/3] Done!
 echo.
 echo ========================================
-echo Your app will be live in 2-3 minutes
-echo Check status at: https://vercel.com/dashboard
+echo   DEPLOYMENT COMPLETE!
 echo ========================================
 echo.
-
+echo Your app is live at:
+echo https://organic-food-ifq5ca1u8-aadhityaezhumalai-5234s-projects.vercel.app
+echo.
 pause
