@@ -1,4 +1,4 @@
-// File: D:\ecommerce\organic-food-app\src\app\products\page.tsx
+// File: d:\ecommerce\organic-food-app\src\app\products\page.tsx
 import * as entry from '../../../../src/app/products/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
