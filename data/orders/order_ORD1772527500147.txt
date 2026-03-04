@@ -1,0 +1,22 @@
+Order ID: ORD1772527500147
+User ID: 6
+Status: confirmed
+Total: ₹257.24
+Created: 2026-03-03T08:45:00.147Z
+
+Shipping Address:
+  Name: undefined
+  Street: 
+  City: Chennai
+  State: Tamil Nadu
+  ZIP: 
+  Phone: undefined
+
+Order Items:
+
+Item 1:
+  Product ID: 1
+  Quantity: 2
+  Product: Organic Apples
+  Price: ₹89
+  Subtotal: ₹178.00

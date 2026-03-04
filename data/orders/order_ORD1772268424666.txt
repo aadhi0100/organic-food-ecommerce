@@ -1,0 +1,29 @@
+Order ID: ORD1772268424666
+User ID: 6
+Status: confirmed
+Total: ₹200.60
+Created: 2026-02-28T08:47:04.666Z
+
+Shipping Address:
+  Name: undefined
+  Street: 
+  City: Chennai
+  State: Tamil Nadu
+  ZIP: 
+  Phone: undefined
+
+Order Items:
+
+Item 1:
+  Product ID: 2
+  Quantity: 1
+  Product: Organic Bananas
+  Price: ₹60
+  Subtotal: ₹60.00
+
+Item 2:
+  Product ID: 6
+  Quantity: 1
+  Product: Organic Milk
+  Price: ₹70
+  Subtotal: ₹70.00

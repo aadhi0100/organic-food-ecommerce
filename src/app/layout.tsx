@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { AuthProvider } from '@/context/AuthContext'
 import { ThemeProvider } from '@/context/ThemeContext'
@@ -12,14 +12,24 @@ import FestivalOfferBanner from '@/components/FestivalOfferBanner'
 export const metadata: Metadata = {
   title: 'Organic Food Store - Fresh Organic Products Delivered',
   description: 'Shop 100% certified organic fruits, vegetables, dairy, and more. Fresh organic food delivered to your door.',
+  keywords: ['organic food', 'fresh produce', 'organic vegetables', 'organic fruits', 'healthy food'],
   manifest: '/manifest.json',
-  themeColor: '#16a34a',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=5',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
     title: 'Organic Food',
   },
+  icons: {
+    icon: '/icons/icon-192.png',
+    apple: '/icons/icon-192.png',
+  },
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#16a34a',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

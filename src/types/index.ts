@@ -35,9 +35,16 @@ export interface Order {
   userId: string
   items: CartItem[]
   total: number
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'confirmed'
   shippingAddress: Address
   createdAt: string
+  orderDate?: string
+  customerName?: string
+  customerEmail?: string
+  customerPhone?: string
+  deliveryDate?: string
+  trackingNumber?: string
+  paymentMethod?: string
 }
 
 export interface Address {
@@ -47,6 +54,7 @@ export interface Address {
   state: string
   zipCode: string
   phone: string
+  country?: string
   lat?: number
   lng?: number
 }

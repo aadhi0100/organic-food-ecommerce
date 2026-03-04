@@ -5,15 +5,17 @@ import Image from 'next/image'
 import { ShoppingBag, Leaf, Award, Truck, ArrowRight } from 'lucide-react'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useLanguage } from '@/context/LanguageContext'
 
 export default function HomePage() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
+  const { t } = useLanguage()
 
   const features = [
-    { icon: <Leaf size={40} />, title: '100% Organic', desc: 'Certified organic products', color: 'green' },
-    { icon: <Truck size={40} />, title: 'Fast Delivery', desc: 'Same day delivery available', color: 'blue' },
-    { icon: <Award size={40} />, title: 'Best Quality', desc: 'Premium quality guaranteed', color: 'purple' },
-    { icon: <ShoppingBag size={40} />, title: 'Easy Shopping', desc: 'Simple and secure checkout', color: 'orange' }
+    { icon: <Leaf size={40} />, title: t('certified'), desc: t('qualityProducts'), color: 'green' },
+    { icon: <Truck size={40} />, title: t('fastDelivery'), desc: t('farmFresh'), color: 'blue' },
+    { icon: <Award size={40} />, title: t('bestQuality'), desc: t('healthFirst'), color: 'purple' },
+    { icon: <ShoppingBag size={40} />, title: t('easyShopping'), desc: t('shopOrganic'), color: 'orange' }
   ]
 
   return (
@@ -23,7 +25,7 @@ export default function HomePage() {
         <div className="absolute inset-0 z-0">
           <Image
             src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=1920"
-            alt="Organic Food"
+            alt={t('organicFood')}
             fill
             className="object-cover brightness-50 dark:brightness-40"
             priority
@@ -45,7 +47,7 @@ export default function HomePage() {
             transition={{ delay: 0.2, duration: 0.8 }}
             className="text-6xl md:text-7xl font-bold mb-6"
           >
-            Fresh Organic Food
+            {t('freshOrganic')}
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 30 }}
@@ -53,7 +55,7 @@ export default function HomePage() {
             transition={{ delay: 0.4, duration: 0.8 }}
             className="text-xl md:text-2xl mb-8 text-gray-200"
           >
-            Farm-fresh organic products delivered to your doorstep
+            {t('farmFresh')}
           </motion.p>
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
@@ -63,12 +65,12 @@ export default function HomePage() {
           >
             <Link href="/products">
               <button className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full font-bold text-lg transition transform hover:scale-105 shadow-2xl flex items-center gap-2">
-                Shop Now <ArrowRight size={20} />
+                {t('shopNow')} <ArrowRight size={20} />
               </button>
             </Link>
             <Link href="/login">
               <button className="bg-white hover:bg-gray-100 text-green-600 px-8 py-4 rounded-full font-bold text-lg transition transform hover:scale-105 shadow-2xl">
-                Sign In
+                {t('login')}
               </button>
             </Link>
           </motion.div>
@@ -83,7 +85,7 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="text-4xl font-bold text-center mb-16 dark:text-white"
           >
-            Why Choose Us
+            {t('whyChooseUs')}
           </motion.h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, idx) => (
@@ -128,7 +130,7 @@ export default function HomePage() {
             >
               <Image
                 src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800"
-                alt="Fresh Produce"
+                alt={t('freshOrganic')}
                 fill
                 className="object-cover"
               />
@@ -138,27 +140,27 @@ export default function HomePage() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-5xl font-bold mb-6 dark:text-white">Farm Fresh Organic Products</h2>
+              <h2 className="text-5xl font-bold mb-6 dark:text-white">{t('freshOrganic')}</h2>
               <p className="text-xl text-gray-700 dark:text-gray-300 mb-8">
-                We source directly from certified organic farms across India, ensuring the highest quality and freshness for your family.
+                {t('farmFresh')}
               </p>
               <ul className="space-y-4 mb-8">
                 <li className="flex items-center gap-3 text-lg dark:text-gray-200">
                   <span className="text-green-600 dark:text-green-400 text-2xl">✓</span>
-                  <span>100% Certified Organic</span>
+                  <span>{t('certified')}</span>
                 </li>
                 <li className="flex items-center gap-3 text-lg dark:text-gray-200">
                   <span className="text-green-600 dark:text-green-400 text-2xl">✓</span>
-                  <span>No Pesticides or Chemicals</span>
+                  <span>{t('bestQuality')}</span>
                 </li>
                 <li className="flex items-center gap-3 text-lg dark:text-gray-200">
                   <span className="text-green-600 dark:text-green-400 text-2xl">✓</span>
-                  <span>Direct from Farmers</span>
+                  <span>{t('fastDelivery')}</span>
                 </li>
               </ul>
               <Link href="/products">
                 <button className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full font-bold text-lg transition transform hover:scale-105">
-                  Explore Products
+                  {t('products')}
                 </button>
               </Link>
             </motion.div>

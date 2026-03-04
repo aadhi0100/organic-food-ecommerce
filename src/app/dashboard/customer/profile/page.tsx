@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/context/AuthContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { useRouter } from 'next/navigation'
 import { User, Mail, Phone, MapPin, Save, Edit, CreditCard, Calendar, DollarSign, Package, Award, Receipt } from 'lucide-react'
 import type { Order } from '@/types'
@@ -17,6 +18,7 @@ interface PaymentHistory {
 
 export default function CustomerProfile() {
   const { user } = useAuth()
+  const { t } = useLanguage()
   const router = useRouter()
   const [editing, setEditing] = useState(false)
   const [orders, setOrders] = useState<Order[]>([])
@@ -66,7 +68,7 @@ export default function CustomerProfile() {
 
   const handleSave = () => {
     setEditing(false)
-    alert('Profile updated successfully!')
+    alert(t('profileUpdated'))
   }
 
   const totalSpent = orders.reduce((sum, o) => sum + o.total, 0)
@@ -78,36 +80,36 @@ export default function CustomerProfile() {
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2">My Profile</h1>
-            <p className="text-gray-600">Manage your account information</p>
+            <h1 className="text-4xl font-bold mb-2">{t('myProfile')}</h1>
+            <p className="text-gray-600">{t('manageAccountInfo')}</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold">Total Spent</h3>
+                <h3 className="text-lg font-bold">{t('totalSpent')}</h3>
                 <DollarSign size={24} />
               </div>
               <p className="text-4xl font-bold mb-2">{formatIndianCurrency(totalSpent)}</p>
-              <p className="text-green-100 text-sm">Lifetime purchases</p>
+              <p className="text-green-100 text-sm">{t('lifetimePurchases')}</p>
             </div>
 
             <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold">Total Orders</h3>
+                <h3 className="text-lg font-bold">{t('totalOrders')}</h3>
                 <Package size={24} />
               </div>
               <p className="text-4xl font-bold mb-2">{totalOrders}</p>
-              <p className="text-blue-100 text-sm">Completed orders</p>
+              <p className="text-blue-100 text-sm">{t('completedOrders')}</p>
             </div>
 
             <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold">Loyalty Points</h3>
+                <h3 className="text-lg font-bold">{t('points')}</h3>
                 <Award size={24} />
               </div>
               <p className="text-4xl font-bold mb-2">{loyaltyPoints}</p>
-              <p className="text-purple-100 text-sm">Reward points</p>
+              <p className="text-purple-100 text-sm">{t('rewardPoints')}</p>
             </div>
           </div>
 
@@ -115,18 +117,18 @@ export default function CustomerProfile() {
             <div className="lg:col-span-2 space-y-6">
               <div className="bg-white rounded-xl shadow-md p-8">
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold">Personal Information</h2>
+                  <h2 className="text-2xl font-bold">{t('personalInformation')}</h2>
                   <button
                     onClick={() => editing ? handleSave() : setEditing(true)}
                     className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
                   >
-                    {editing ? <><Save size={18} /> Save</> : <><Edit size={18} /> Edit</>}
+                    {editing ? <><Save size={18} /> {t('save')}</> : <><Edit size={18} /> {t('edit')}</>}
                   </button>
                 </div>
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Full Name</label>
+                    <label className="block text-sm font-medium mb-2">{t('fullName')}</label>
                     <div className="flex items-center gap-3">
                       <User className="text-gray-400" size={20} />
                       <input
@@ -140,7 +142,7 @@ export default function CustomerProfile() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2">Email</label>
+                    <label className="block text-sm font-medium mb-2">{t('email')}</label>
                     <div className="flex items-center gap-3">
                       <Mail className="text-gray-400" size={20} />
                       <input
@@ -153,7 +155,7 @@ export default function CustomerProfile() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2">Phone</label>
+                    <label className="block text-sm font-medium mb-2">{t('phone')}</label>
                     <div className="flex items-center gap-3">
                       <Phone className="text-gray-400" size={20} />
                       <input
@@ -167,7 +169,7 @@ export default function CustomerProfile() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2">Address</label>
+                    <label className="block text-sm font-medium mb-2">{t('address')}</label>
                     <div className="flex items-center gap-3">
                       <MapPin className="text-gray-400" size={20} />
                       <input
@@ -182,7 +184,7 @@ export default function CustomerProfile() {
 
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-sm font-medium mb-2">City</label>
+                      <label className="block text-sm font-medium mb-2">{t('city')}</label>
                       <input
                         type="text"
                         value={profile.city}
@@ -192,7 +194,7 @@ export default function CustomerProfile() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2">State</label>
+                      <label className="block text-sm font-medium mb-2">{t('state')}</label>
                       <input
                         type="text"
                         value={profile.state}
@@ -202,7 +204,7 @@ export default function CustomerProfile() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2">ZIP Code</label>
+                      <label className="block text-sm font-medium mb-2">{t('zipCode')}</label>
                       <input
                         type="text"
                         value={profile.zipCode}
@@ -218,24 +220,24 @@ export default function CustomerProfile() {
               <div className="bg-white rounded-xl shadow-md p-8">
                 <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
                   <Receipt className="text-green-600" />
-                  Payment History
+                  {t('paymentHistory')}
                 </h2>
                 
                 {payments.length === 0 ? (
                   <div className="text-center py-12">
                     <CreditCard className="mx-auto text-gray-300 mb-4" size={64} />
-                    <p className="text-gray-600">No payment history yet</p>
+                    <p className="text-gray-600">{t('noPaymentHistory')}</p>
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead>
                         <tr className="border-b">
-                          <th className="text-left py-3 px-4">Order ID</th>
-                          <th className="text-left py-3 px-4">Date</th>
-                          <th className="text-left py-3 px-4">Amount</th>
-                          <th className="text-left py-3 px-4">Method</th>
-                          <th className="text-left py-3 px-4">Status</th>
+                          <th className="text-left py-3 px-4">{t('orderId')}</th>
+                          <th className="text-left py-3 px-4">{t('date')}</th>
+                          <th className="text-left py-3 px-4">{t('totalAmount')}</th>
+                          <th className="text-left py-3 px-4">{t('method')}</th>
+                          <th className="text-left py-3 px-4">{t('status')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -265,29 +267,29 @@ export default function CustomerProfile() {
 
             <div className="lg:col-span-1">
               <div className="bg-white rounded-xl shadow-md p-6 sticky top-24">
-                <h2 className="text-xl font-bold mb-6">Quick Stats</h2>
+                <h2 className="text-xl font-bold mb-6">{t('quickStats')}</h2>
                 <div className="space-y-4">
                   <div className="border-b pb-4">
-                    <p className="text-sm text-gray-600 mb-1">Member Since</p>
+                    <p className="text-sm text-gray-600 mb-1">{t('memberSince')}</p>
                     <p className="font-bold">January 2024</p>
                   </div>
                   <div className="border-b pb-4">
-                    <p className="text-sm text-gray-600 mb-1">Average Order</p>
+                    <p className="text-sm text-gray-600 mb-1">{t('averageOrder')}</p>
                     <p className="font-bold text-green-600">
                       {formatIndianCurrency(totalOrders > 0 ? totalSpent / totalOrders : 0)}
                     </p>
                   </div>
                   <div className="border-b pb-4">
-                    <p className="text-sm text-gray-600 mb-1">Loyalty Tier</p>
+                    <p className="text-sm text-gray-600 mb-1">{t('loyaltyTier')}</p>
                     <p className="font-bold">
-                      {totalSpent >= 50000 ? '💎 Platinum' :
-                       totalSpent >= 30000 ? '🏆 Gold' :
-                       totalSpent >= 15000 ? '🥈 Silver' :
-                       totalSpent >= 5000 ? '🥉 Bronze' : '⭐ New Member'}
+                      {totalSpent >= 50000 ? `💎 ${t('platinum')}` :
+                       totalSpent >= 30000 ? `🏆 ${t('gold')}` :
+                       totalSpent >= 15000 ? `🥈 ${t('silver')}` :
+                       totalSpent >= 5000 ? `🥉 ${t('bronze')}` : `⭐ ${t('newMember')}`}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">Current Discount</p>
+                    <p className="text-sm text-gray-600 mb-1">{t('currentDiscount')}</p>
                     <p className="font-bold text-green-600">
                       {totalSpent >= 50000 ? '20% OFF' :
                        totalSpent >= 30000 ? '15% OFF' :

@@ -1,6 +1,6 @@
 # 🌿 Organic Food E-Commerce
 
-Premium organic food marketplace with advanced features.
+Premium organic food marketplace for Indian market with multi-role support.
 
 ## 🚀 Quick Start
 
@@ -9,18 +9,7 @@ npm install
 npm run dev
 ```
 
-Visit: http://localhost:3000
-
-## ✅ Features
-
-- Dark Mode Toggle
-- Real-Time Notifications
-- Advanced Search & Filters
-- PWA Support (Install as App)
-- Wishlist with Animations
-- Social Sharing
-- Smooth Animations
-- Offline Support
+Visit: **http://localhost:3000**
 
 ## 🎮 Test Accounts
 
@@ -30,20 +19,31 @@ Visit: http://localhost:3000
 | Vendor | vendor@organic.com | vendor123 |
 | Customer | customer@organic.com | customer123 |
 
+## ✅ Key Features
+
+- Multi-role dashboards (Customer, Vendor, Admin)
+- Dark mode & multi-language (English, Hindi, Tamil)
+- PWA support (installable app)
+- Indian payments (UPI, Paytm, etc.)
+- Order tracking & invoices
+- Real-time notifications
+- Advanced search & filters
+- Wishlist & social sharing
+
+## 🛠️ Tech Stack
+
+Next.js 14 • TypeScript • Tailwind CSS • Framer Motion • Zustand • NextAuth.js
+
+## 📚 Documentation
+
+See **[DOCUMENTATION.md](./DOCUMENTATION.md)** for complete guide.
+
 ## 📱 Deploy
 
 ```bash
 npm i -g vercel
 vercel
 ```
-
-## 📚 Documentation
-
-See **GUIDE.md** for complete documentation.
-
-## 🛠️ Tech Stack
-
-Next.js 14 • TypeScript • Tailwind CSS • Framer Motion
 
 ---
 

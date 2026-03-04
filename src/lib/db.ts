@@ -369,9 +369,20 @@ export const db = {
   orders: {
     create: async (order: Omit<Order, 'id' | 'createdAt'>) => {
       const newOrder: Order = {
-        ...order,
-        id: String(orderIdCounter++),
+        id: `ORD${Date.now()}`,
+        userId: order.userId,
+        items: order.items,
+        total: order.total,
+        status: order.status,
+        shippingAddress: order.shippingAddress,
         createdAt: new Date().toISOString(),
+        orderDate: order.orderDate || new Date().toISOString(),
+        customerName: order.customerName || '',
+        customerEmail: order.customerEmail || '',
+        customerPhone: order.customerPhone || '',
+        deliveryDate: order.deliveryDate || '',
+        trackingNumber: order.trackingNumber || '',
+        paymentMethod: order.paymentMethod || 'cash',
       }
       orders.push(newOrder)
       storage.save('orders', orders)
@@ -390,7 +401,7 @@ export const db = {
         orderId: newOrder.id,
         amount: newOrder.total,
         status: 'completed',
-        paymentMethod: 'cash',
+        paymentMethod: order.paymentMethod || 'cash',
         userId: newOrder.userId
       })
       
@@ -405,13 +416,46 @@ export const db = {
       return newOrder
     },
     findByUserId: async (userId: string) => orders.filter(o => o.userId === userId),
-    findAll: async () => orders,
-    findById: async (id: string) => orders.find(o => o.id === id),
+    getAll: async () => {
+      // Load from file storage if available
+      if (typeof window === 'undefined') {
+        try {
+          const fileOrders = FileStorage.orders.getAll()
+          if (fileOrders.length > 0) {
+            orders = fileOrders
+          }
+        } catch (error) {
+          console.log('File storage load skipped')
+        }
+      }
+      return orders
+    },
+    findById: async (id: string) => {
+      // Load from file storage if available
+      if (typeof window === 'undefined') {
+        try {
+          const fileOrders = FileStorage.orders.getAll()
+          if (fileOrders.length > 0) {
+            orders = fileOrders
+          }
+        } catch (error) {
+          console.log('File storage load skipped')
+        }
+      }
+      return orders.find(o => o.id === id)
+    },
     updateStatus: async (id: string, status: Order['status']) => {
       const order = orders.find(o => o.id === id)
       if (order) {
         order.status = status
         storage.save('orders', orders)
+        if (typeof window === 'undefined') {
+          try {
+            FileStorage.orders.save(order)
+          } catch (error) {
+            console.log('File storage update skipped')
+          }
+        }
       }
     }
   },

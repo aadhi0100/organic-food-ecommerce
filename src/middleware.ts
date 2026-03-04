@@ -26,16 +26,9 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Checkout - require login
-  if (path.startsWith('/checkout') || path.startsWith('/order-success')) {
-    if (!userRole) {
-      return NextResponse.redirect(new URL('/login?redirect=' + path, request.url))
-    }
-  }
-
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/checkout', '/order-success']
+  matcher: ['/dashboard/:path*']
 }

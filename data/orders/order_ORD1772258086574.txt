@@ -1,0 +1,36 @@
+Order ID: ORD1772258086574
+User ID: 6
+Status: confirmed
+Total: ₹224.20
+Created: 2026-02-28T05:54:46.574Z
+
+Shipping Address:
+  Name: undefined
+  Street: 
+  City: Chennai
+  State: Tamil Nadu
+  ZIP: 
+  Phone: undefined
+
+Order Items:
+
+Item 1:
+  Product ID: 2
+  Quantity: 1
+  Product: Organic Bananas
+  Price: ₹60
+  Subtotal: ₹60.00
+
+Item 2:
+  Product ID: 3
+  Quantity: 1
+  Product: Organic Carrots
+  Price: ₹50
+  Subtotal: ₹50.00
+
+Item 3:
+  Product ID: 4
+  Quantity: 1
+  Product: Organic Spinach
+  Price: ₹40
+  Subtotal: ₹40.00

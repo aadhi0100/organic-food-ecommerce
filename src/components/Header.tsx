@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useCart } from '@/hooks/useCart'
 import { useAuth } from '@/context/AuthContext'
 import { useTheme } from '@/context/ThemeContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { ShoppingCart, User, Menu, Moon, Sun } from 'lucide-react'
 import { useState } from 'react'
 import LanguageSelector from './LanguageSelector'
@@ -12,6 +13,7 @@ export function Header() {
   const { getItemCount } = useCart()
   const { user, logout } = useAuth()
   const { theme, toggleTheme } = useTheme()
+  const { t } = useLanguage()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const itemCount = getItemCount()
 
@@ -21,13 +23,13 @@ export function Header() {
         <nav className="flex justify-between items-center py-4">
           <Link href="/" className="text-2xl font-bold flex items-center gap-2 hover:opacity-90 transition">
             <span className="text-3xl">🌿</span>
-            <span>Organic Food</span>
+            <span>{t('organicFood')}</span>
           </Link>
           
           <div className="hidden md:flex items-center gap-6">
-            <Link href="/products" className="hover:text-green-200 transition">Products</Link>
-            <Link href="/about" className="hover:text-green-200 transition">About</Link>
-            <Link href="/contact" className="hover:text-green-200 transition">Contact</Link>
+            <Link href="/products" className="hover:text-green-200 transition">{t('products')}</Link>
+            <Link href="/about" className="hover:text-green-200 transition">{t('about')}</Link>
+            <Link href="/contact" className="hover:text-green-200 transition">{t('contact')}</Link>
           </div>
 
           <div className="flex items-center gap-3">
@@ -63,11 +65,11 @@ export function Header() {
                   <User size={20} />
                   <span className="hidden md:inline">{user.name}</span>
                 </Link>
-                <button onClick={logout} className="text-sm hover:text-green-200 transition">Logout</button>
+                <button onClick={logout} className="text-sm hover:text-green-200 transition">{t('logout')}</button>
               </div>
             ) : (
               <Link href="/login" className="bg-white text-green-600 px-4 py-2 rounded-lg hover:bg-green-50 transition font-medium">
-                Login
+                {t('login')}
               </Link>
             )}
             
@@ -79,9 +81,9 @@ export function Header() {
         
         {isMenuOpen && (
           <div className="md:hidden pb-4 space-y-2">
-            <Link href="/products" className="block py-2 hover:text-green-200">Products</Link>
-            <Link href="/about" className="block py-2 hover:text-green-200">About</Link>
-            <Link href="/contact" className="block py-2 hover:text-green-200">Contact</Link>
+            <Link href="/products" className="block py-2 hover:text-green-200">{t('products')}</Link>
+            <Link href="/about" className="block py-2 hover:text-green-200">{t('about')}</Link>
+            <Link href="/contact" className="block py-2 hover:text-green-200">{t('contact')}</Link>
           </div>
         )}
       </div>

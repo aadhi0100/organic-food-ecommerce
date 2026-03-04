@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useCart } from '@/hooks/useCart'
 import { useAuth } from '@/context/AuthContext'
+import { useLanguage } from '@/context/LanguageContext'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Trash2, Plus, Minus, ShoppingBag, History, TrendingUp, Calendar, DollarSign, Package } from 'lucide-react'
@@ -19,6 +20,7 @@ interface CartHistoryItem {
 export default function CartPage() {
   const { items, removeItem, updateQuantity, getTotal, clearCart } = useCart()
   const { user } = useAuth()
+  const { t } = useLanguage()
   const router = useRouter()
   const [cartHistory, setCartHistory] = useState<CartHistoryItem[]>([])
   const [showHistory, setShowHistory] = useState(false)
@@ -86,8 +88,8 @@ export default function CartPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center">
             <ShoppingBag className="mx-auto text-gray-300 mb-6" size={80} />
-            <h1 className="text-3xl font-bold mb-4">Your Cart is Empty</h1>
-            <p className="text-gray-600 mb-8">Add some organic products to get started!</p>
+            <h1 className="text-3xl font-bold mb-4">{t('cartEmpty')}</h1>
+            <p className="text-gray-600 mb-8">{t('farmFresh')}</p>
             
             {user && cartHistory.length > 0 && (
               <button
@@ -101,7 +103,7 @@ export default function CartPage() {
             
             <Link href="/products">
               <button className="bg-green-600 text-white px-8 py-4 rounded-lg font-bold hover:bg-green-700 transition">
-                Browse Products
+                {t('products')}
               </button>
             </Link>
           </div>
@@ -114,7 +116,7 @@ export default function CartPage() {
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold">Shopping Cart</h1>
+          <h1 className="text-4xl font-bold">{t('cart')}</h1>
           {user && cartHistory.length > 0 && (
             <button
               onClick={() => setShowHistory(!showHistory)}
@@ -256,11 +258,11 @@ export default function CartPage() {
 
             <div className="lg:col-span-1">
               <div className="bg-white rounded-xl shadow-md p-6 sticky top-24">
-                <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
+                <h2 className="text-2xl font-bold mb-6">{t('orderSummary')}</h2>
                 
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Subtotal</span>
+                    <span className="text-gray-600">{t('subtotal')}</span>
                     <span className="font-bold">₹{subtotal.toFixed(2)}</span>
                   </div>
                   
@@ -282,13 +284,13 @@ export default function CartPage() {
                   </div>
                   
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Delivery Charges</span>
+                    <span className="text-gray-600">{t('deliveryCharges')}</span>
                     <span className="font-medium">₹{deliveryCharges.toFixed(2)}</span>
                   </div>
                   
                   <div className="border-t pt-3">
                     <div className="flex justify-between text-xl">
-                      <span className="font-bold">Total</span>
+                      <span className="font-bold">{t('total')}</span>
                       <span className="font-bold text-green-600">₹{finalTotal.toFixed(2)}</span>
                     </div>
                   </div>
@@ -405,13 +407,13 @@ export default function CartPage() {
                     }}
                     className="w-full bg-green-600 text-white py-4 rounded-lg font-bold hover:bg-green-700 transition mb-3"
                   >
-                    Proceed to Checkout
+                    {t('proceedToCheckout')}
                   </button>
                 </Link>
                 
                 <Link href="/products">
                   <button className="w-full border border-gray-300 py-4 rounded-lg font-bold hover:bg-gray-50 transition">
-                    Continue Shopping
+                    {t('continueShopping')}
                   </button>
                 </Link>
               </div>

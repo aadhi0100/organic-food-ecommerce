@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/context/AuthContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { useRouter } from 'next/navigation'
 import { ShoppingCart, Package, TrendingUp, Gift, Award, History, Tag, ShoppingBag, Store, Send } from 'lucide-react'
 import Image from 'next/image'
@@ -17,6 +18,7 @@ interface CartHistory {
 
 export default function CustomerDashboard() {
   const { user } = useAuth()
+  const { t } = useLanguage()
   const router = useRouter()
   const [orders, setOrders] = useState<Order[]>([])
   const [cartHistory, setCartHistory] = useState<CartHistory[]>([])
@@ -266,6 +268,177 @@ export default function CustomerDashboard() {
             <h3 className="text-gray-600 text-sm mb-1">Avg Order Value</h3>
             <p className="text-3xl font-bold">{formatIndianCurrency(averageOrderValue)}</p>
           </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+            <Package className="text-green-600" />
+            Order History & Tracking
+          </h2>
+          {orders.length === 0 ? (
+            <div className="text-center py-12">
+              <Package className="mx-auto text-gray-300 mb-4" size={64} />
+              <p className="text-gray-600 mb-4">No orders yet</p>
+              <Link href="/products">
+                <button className="bg-green-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-700 transition">
+                  Start Shopping
+                </button>
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {orders.map((order, idx) => (
+                <div key={idx} className="border-2 border-gray-200 rounded-lg p-6 hover:shadow-xl transition">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+                    <div>
+                      <h3 className="font-bold text-xl">Order #{order.id}</h3>
+                      <p className="text-sm text-gray-600">
+                        Placed on {new Date(order.orderDate || order.createdAt || new Date().toISOString()).toLocaleDateString('en-IN', { 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric'
+                        })}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end gap-2">
+                      <div className="text-right">
+                        <p className="text-sm text-gray-600">Total Amount</p>
+                        <p className="text-2xl font-bold text-green-600">{formatIndianCurrency(order.total)}</p>
+                      </div>
+                      <span className={`px-4 py-1 rounded-full text-sm font-bold ${
+                        order.status === 'delivered' ? 'bg-green-100 text-green-700' :
+                        order.status === 'shipped' ? 'bg-blue-100 text-blue-700' :
+                        order.status === 'confirmed' ? 'bg-yellow-100 text-yellow-700' :
+                        'bg-gray-100 text-gray-700'
+                      }`}>
+                        {order.status?.toUpperCase() || 'CONFIRMED'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Delivery Tracking */}
+                  {order.trackingNumber && (
+                    <div className="bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-200 rounded-lg p-4 mb-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <h4 className="font-bold text-green-800 flex items-center gap-2">
+                            <Package size={20} />
+                            Delivery Tracking
+                          </h4>
+                          <p className="text-sm text-gray-600 mt-1">
+                            Tracking Number: <span className="font-mono font-bold text-green-700">{order.trackingNumber}</span>
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs text-gray-600">Expected Delivery</p>
+                          <p className="font-bold text-green-700">
+                            {new Date(order.deliveryDate || new Date().toISOString()).toLocaleDateString('en-IN', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric'
+                            })}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {/* Delivery Progress */}
+                      <div className="relative">
+                        <div className="flex justify-between items-center">
+                          <div className="flex flex-col items-center flex-1">
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                              order.status ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-600'
+                            }`}>
+                              ✓
+                            </div>
+                            <p className="text-xs mt-2 font-medium">Confirmed</p>
+                          </div>
+                          <div className={`flex-1 h-1 ${
+                            order.status === 'shipped' || order.status === 'delivered' ? 'bg-green-500' : 'bg-gray-300'
+                          }`}></div>
+                          <div className="flex flex-col items-center flex-1">
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                              order.status === 'shipped' || order.status === 'delivered' ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-600'
+                            }`}>
+                              📦
+                            </div>
+                            <p className="text-xs mt-2 font-medium">Shipped</p>
+                          </div>
+                          <div className={`flex-1 h-1 ${
+                            order.status === 'delivered' ? 'bg-green-500' : 'bg-gray-300'
+                          }`}></div>
+                          <div className="flex flex-col items-center flex-1">
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                              order.status === 'delivered' ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-600'
+                            }`}>
+                              🏠
+                            </div>
+                            <p className="text-xs mt-2 font-medium">Delivered</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Order Items */}
+                  <div className="space-y-3">
+                    {order.items.map((item, itemIdx) => (
+                      <div key={itemIdx} className="flex items-center gap-4 bg-gray-50 p-3 rounded-lg">
+                        {item.product && (
+                          <>
+                            <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                              <Image 
+                                src={item.product.image} 
+                                alt={item.product.name} 
+                                fill 
+                                className="object-cover" 
+                              />
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="font-bold">{item.product.name}</h4>
+                              <p className="text-sm text-gray-600">
+                                {formatIndianCurrency(item.product.price)} × {item.quantity}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-bold">{formatIndianCurrency(item.product.price * item.quantity)}</p>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Shipping Address */}
+                  {order.shippingAddress && (
+                    <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <h4 className="font-bold text-blue-800 mb-2">Shipping Address</h4>
+                      <p className="text-sm text-gray-700">
+                        {order.shippingAddress.street}, {order.shippingAddress.city}<br />
+                        {order.shippingAddress.state} - {order.shippingAddress.zipCode}<br />
+                        {order.shippingAddress.country || 'India'}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Download Invoice Button */}
+                  <div className="mt-4 flex gap-3">
+                    <a 
+                      href={`/api/orders/${order.id}/invoice`}
+                      download
+                      className="flex-1 bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition text-center"
+                    >
+                      📄 Download Invoice
+                    </a>
+                    {order.trackingNumber && (
+                      <button className="px-6 py-3 border-2 border-green-600 text-green-600 rounded-lg font-bold hover:bg-green-50 transition">
+                        Track Order
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="bg-white rounded-xl shadow-md p-6 mb-8">

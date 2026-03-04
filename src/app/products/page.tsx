@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { ProductCard } from '@/components/ProductCard'
 import AdvancedSearch, { SearchFilters } from '@/components/AdvancedSearch'
 import { LoadingScreen, MiniLoader } from '@/components/LoadingScreen'
+import { useLanguage } from '@/context/LanguageContext'
+import { translateProducts } from '@/utils/productTranslate'
 import type { Product } from '@/types'
 import { motion } from 'framer-motion'
 
@@ -13,16 +15,18 @@ export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const { t, language } = useLanguage()
 
   useEffect(() => {
     fetch('/api/products')
       .then(res => res.json())
       .then(data => {
-        setProducts(data)
-        setFilteredProducts(data)
+        const translatedData = translateProducts(data, language)
+        setProducts(translatedData)
+        setFilteredProducts(translatedData)
         setIsLoading(false)
       })
-  }, [])
+  }, [language])
 
   const handleSearch = (query: string, filters: SearchFilters) => {
     let filtered = [...products]
@@ -68,8 +72,8 @@ export default function ProductsPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-4xl font-bold mb-2 dark:text-white">Our Products</h1>
-        <p className="text-gray-600 dark:text-gray-400">Fresh organic products delivered to your door</p>
+        <h1 className="text-4xl font-bold mb-2 dark:text-white">{t('products')}</h1>
+        <p className="text-gray-600 dark:text-gray-400">{t('farmFresh')}</p>
       </motion.div>
 
       <motion.div 
@@ -85,12 +89,12 @@ export default function ProductsPage() {
         <LoadingScreen />
       ) : filteredProducts.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-600 dark:text-gray-400 text-lg">No products found</p>
+          <p className="text-gray-600 dark:text-gray-400 text-lg">{t('noProductsFound')}</p>
         </div>
       ) : (
         <>
           <div className="mb-4 text-gray-600 dark:text-gray-400">
-            Showing {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''}
+            {t('showingResults')} {filteredProducts.length} {t('products').toLowerCase()}
           </div>
           <motion.div 
             initial={{ opacity: 0 }}

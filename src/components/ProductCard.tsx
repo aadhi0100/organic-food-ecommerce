@@ -5,12 +5,14 @@ import Link from 'next/link'
 import type { Product } from '@/types'
 import { formatIndianCurrency } from '@/utils/indianFormat'
 import { useCart } from '@/hooks/useCart'
+import { useLanguage } from '@/context/LanguageContext'
 import { ShoppingCart, Star } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { WishlistButton } from './Wishlist'
 
 export function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart()
+  const { t } = useLanguage()
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -41,7 +43,7 @@ export function ProductCard({ product }: { product: Product }) {
           )}
           {product.organic && (
             <span className="absolute bottom-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold">
-              Organic
+              {t('certified')}
             </span>
           )}
         </div>
@@ -53,7 +55,7 @@ export function ProductCard({ product }: { product: Product }) {
           <div className="flex items-center gap-1 mb-2">
             <Star size={16} className="fill-yellow-400 text-yellow-400" />
             <span className="text-sm font-medium dark:text-white">{product.rating}</span>
-            <span className="text-xs text-gray-500 dark:text-gray-400">({product.reviews})</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">({product.reviews} {t('reviews')})</span>
           </div>
           
           <div className="flex items-center justify-between">
@@ -61,14 +63,14 @@ export function ProductCard({ product }: { product: Product }) {
             <button
               onClick={handleAddToCart}
               className="bg-green-600 text-white p-2 rounded-lg hover:bg-green-700 transition"
-              aria-label="Add to cart"
+              aria-label={t('addToCart')}
             >
               <ShoppingCart size={20} />
             </button>
           </div>
           
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-            {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+            {product.stock > 0 ? `${product.stock} ${t('inStock')}` : t('outOfStock')}
           </p>
         </div>
       </Link>

@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Mail, Lock, Eye, EyeOff, Loader, ShieldCheck, Fingerprint } from 'lucide-react'
+import { useLanguage } from '@/context/LanguageContext'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -13,6 +14,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const { login } = useAuth()
+  const { t } = useLanguage()
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,7 +67,7 @@ export default function LoginPage() {
         <div className="hidden lg:flex flex-col justify-center p-12 bg-gradient-to-br from-green-600 to-green-700 rounded-3xl text-white shadow-2xl">
           <div className="mb-8">
             <div className="text-6xl mb-4">🌿</div>
-            <h1 className="text-5xl font-bold mb-4">Welcome Back!</h1>
+            <h1 className="text-5xl font-bold mb-4">{t('welcomeBack')}!</h1>
             <p className="text-green-100 text-lg">Access your organic food marketplace</p>
           </div>
           
@@ -94,7 +96,7 @@ export default function LoginPage() {
 
         <div className="bg-white rounded-3xl shadow-2xl p-8 lg:p-12">
           <div className="mb-8">
-            <h2 className="text-3xl font-bold mb-2">Sign In</h2>
+            <h2 className="text-3xl font-bold mb-2">{t('signIn')}</h2>
             <p className="text-gray-600">Enter your credentials to access your account</p>
           </div>
 
@@ -106,7 +108,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium mb-2">Email Address</label>
+              <label className="block text-sm font-medium mb-2">{t('email')}</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                 <input
@@ -121,7 +123,7 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Password</label>
+              <label className="block text-sm font-medium mb-2">{t('password')}</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                 <input
@@ -150,10 +152,10 @@ export default function LoginPage() {
               {loading ? (
                 <>
                   <Loader className="animate-spin" size={20} />
-                  Signing in...
+                  {t('signIn')}...
                 </>
               ) : (
-                'Sign In'
+                t('signIn')
               )}
             </button>
           </form>
@@ -192,9 +194,9 @@ export default function LoginPage() {
 
           <div className="mt-8 text-center">
             <p className="text-gray-600">
-              Don't have an account?{' '}
+              {t('dontHaveAccount')}{' '}
               <Link href="/register" className="text-green-600 font-medium hover:text-green-700">
-                Sign up
+                {t('signUp')}
               </Link>
             </p>
           </div>

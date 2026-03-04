@@ -2,8 +2,10 @@
 
 import { useState } from 'react'
 import { Mail, Phone, MapPin, Send } from 'lucide-react'
+import { useLanguage } from '@/context/LanguageContext'
 
 export default function ContactPage() {
+  const { t } = useLanguage()
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' })
   const [isSubmitted, setIsSubmitted] = useState(false)
 
@@ -37,14 +39,14 @@ export default function ContactPage() {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-5xl font-bold text-center mb-6">Contact Us</h1>
+        <h1 className="text-5xl font-bold text-center mb-6">{t('contactUs')}</h1>
         <p className="text-xl text-gray-600 text-center mb-12">
-          We'd love to hear from you. Send us a message!
+          {t('getInTouch')}
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <div>
-            <h2 className="text-2xl font-bold mb-6">Get in Touch</h2>
+            <h2 className="text-2xl font-bold mb-6">{t('getInTouch')}</h2>
             
             <div className="space-y-6 mb-8">
               <div className="flex items-start gap-4">
@@ -52,7 +54,7 @@ export default function ContactPage() {
                   <Phone className="text-green-600" size={24} />
                 </div>
                 <div>
-                  <h3 className="font-bold mb-1">Phone</h3>
+                  <h3 className="font-bold mb-1">{t('phone')}</h3>
                   <p className="text-gray-600">+91 98765 43210</p>
                   <p className="text-sm text-gray-500">Mon-Fri 9am-6pm IST</p>
                 </div>
@@ -63,7 +65,7 @@ export default function ContactPage() {
                   <Mail className="text-blue-600" size={24} />
                 </div>
                 <div>
-                  <h3 className="font-bold mb-1">Email</h3>
+                  <h3 className="font-bold mb-1">{t('email')}</h3>
                   <p className="text-gray-600">info@organicfood.in</p>
                   <p className="text-sm text-gray-500">We'll respond within 24 hours</p>
                 </div>
@@ -74,7 +76,7 @@ export default function ContactPage() {
                   <MapPin className="text-purple-600" size={24} />
                 </div>
                 <div>
-                  <h3 className="font-bold mb-1">Address</h3>
+                  <h3 className="font-bold mb-1">{t('address')}</h3>
                   <p className="text-gray-600">123 MG Road, Koramangala</p>
                   <p className="text-gray-600">Bangalore, Karnataka 560034</p>
                   <p className="text-gray-600">India</p>
@@ -83,7 +85,7 @@ export default function ContactPage() {
             </div>
 
             <div className="bg-green-50 p-6 rounded-xl">
-              <h3 className="font-bold text-lg mb-3">Business Hours</h3>
+              <h3 className="font-bold text-lg mb-3">{t('businessHours')}</h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Monday - Friday</span>
@@ -102,7 +104,7 @@ export default function ContactPage() {
           </div>
 
           <div className="bg-white rounded-xl shadow-lg p-8">
-            <h2 className="text-2xl font-bold mb-6">Send us a Message</h2>
+            <h2 className="text-2xl font-bold mb-6">{t('sendMessage')}</h2>
             
             {isSubmitted && (
               <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6">
@@ -112,7 +114,7 @@ export default function ContactPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Name</label>
+                <label className="block text-sm font-medium mb-2">{t('name')}</label>
                 <input
                   type="text"
                   required
@@ -124,7 +126,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Email</label>
+                <label className="block text-sm font-medium mb-2">{t('email')}</label>
                 <input
                   type="email"
                   required
@@ -136,7 +138,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Subject</label>
+                <label className="block text-sm font-medium mb-2">{t('subject')}</label>
                 <input
                   type="text"
                   required
@@ -148,7 +150,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Message</label>
+                <label className="block text-sm font-medium mb-2">{t('message')}</label>
                 <textarea
                   required
                   rows={5}
@@ -164,7 +166,7 @@ export default function ContactPage() {
                 className="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition flex items-center justify-center gap-2"
               >
                 <Send size={20} />
-                Send Message
+                {t('sendMessage')}
               </button>
             </form>
           </div>

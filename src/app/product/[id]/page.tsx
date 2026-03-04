@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useCart } from '@/hooks/useCart'
+import { useLanguage } from '@/context/LanguageContext'
 import { formatPrice } from '@/utils/format'
 import type { Product } from '@/types'
 import { Star, ShoppingCart, Minus, Plus, Truck, Shield, ArrowLeft } from 'lucide-react'
@@ -14,6 +15,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   const [quantity, setQuantity] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
   const { addItem } = useCart()
+  const { t } = useLanguage()
 
   useEffect(() => {
     fetch(`/api/products/${params.id}`)
@@ -51,7 +53,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   return (
     <div className="container mx-auto px-4 py-8">
       <Link href="/products" className="inline-flex items-center gap-2 text-green-600 hover:underline mb-6">
-        <ArrowLeft size={20} /> Back to Products
+        <ArrowLeft size={20} /> {t('products')}
       </Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -94,7 +96,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 ))}
               </div>
               <span className="font-medium">{product.rating}</span>
-              <span className="text-gray-500">({product.reviews} reviews)</span>
+              <span className="text-gray-500">({product.reviews} {t('reviews')})</span>
             </div>
 
             <p className="text-gray-600 text-lg leading-relaxed">{product.description}</p>
@@ -104,16 +106,16 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             <div className="text-4xl font-bold text-green-600 mb-2">{formatPrice(product.price)}</div>
             <p className="text-gray-600">
               {product.stock > 0 ? (
-                <span className="text-green-600 font-medium">✓ In Stock ({product.stock} available)</span>
+                <span className="text-green-600 font-medium">✓ {t('inStock')} ({product.stock})</span>
               ) : (
-                <span className="text-red-600 font-medium">Out of Stock</span>
+                <span className="text-red-600 font-medium">{t('outOfStock')}</span>
               )}
             </p>
           </div>
 
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <span className="font-medium">Quantity:</span>
+              <span className="font-medium">{t('quantity')}:</span>
               <div className="flex items-center border border-gray-300 rounded-lg">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -139,7 +141,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               className="w-full bg-green-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               <ShoppingCart size={24} />
-              Add to Cart
+              {t('addToCart')}
             </button>
           </div>
 
@@ -147,15 +149,15 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-lg">
               <Truck className="text-blue-600 flex-shrink-0" size={24} />
               <div>
-                <h3 className="font-bold mb-1">Fast Delivery</h3>
+                <h3 className="font-bold mb-1">{t('fastDelivery')}</h3>
                 <p className="text-sm text-gray-600">Same-day delivery available</p>
               </div>
             </div>
             <div className="flex items-start gap-3 p-4 bg-purple-50 rounded-lg">
               <Shield className="text-purple-600 flex-shrink-0" size={24} />
               <div>
-                <h3 className="font-bold mb-1">Quality Assured</h3>
-                <p className="text-sm text-gray-600">100% organic certified</p>
+                <h3 className="font-bold mb-1">{t('qualityAssured')}</h3>
+                <p className="text-sm text-gray-600">{t('certified')}</p>
               </div>
             </div>
           </div>

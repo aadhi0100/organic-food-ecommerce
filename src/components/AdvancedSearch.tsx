@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useLanguage } from '@/context/LanguageContext'
 import { Search, Filter, X, SlidersHorizontal } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -18,6 +19,7 @@ export interface SearchFilters {
 }
 
 export default function AdvancedSearch({ onSearch, categories = [] }: AdvancedSearchProps) {
+  const { t } = useLanguage()
   const [query, setQuery] = useState('')
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState<SearchFilters>({
@@ -52,7 +54,7 @@ export default function AdvancedSearch({ onSearch, categories = [] }: AdvancedSe
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            placeholder="Search products..."
+            placeholder={t('searchProducts')}
             className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 dark:bg-gray-800 dark:text-white"
           />
         </div>
@@ -66,7 +68,7 @@ export default function AdvancedSearch({ onSearch, categories = [] }: AdvancedSe
           onClick={handleSearch}
           className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
         >
-          Search
+          {t('search')}
         </button>
       </div>
 
@@ -80,21 +82,21 @@ export default function AdvancedSearch({ onSearch, categories = [] }: AdvancedSe
           >
             <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="font-semibold dark:text-white">Filters</h3>
+                <h3 className="font-semibold dark:text-white">{t('filters')}</h3>
                 <button onClick={resetFilters} className="text-sm text-green-600 hover:underline">
-                  Reset All
+                  {t('resetAll')}
                 </button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2 dark:text-white">Category</label>
+                  <label className="block text-sm font-medium mb-2 dark:text-white">{t('category')}</label>
                   <select
                     value={filters.category}
                     onChange={(e) => setFilters({ ...filters, category: e.target.value })}
                     className="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   >
-                    <option value="">All Categories</option>
+                    <option value="">{t('allCategories')}</option>
                     {categories.map(cat => (
                       <option key={cat} value={cat}>{cat}</option>
                     ))}
@@ -102,7 +104,7 @@ export default function AdvancedSearch({ onSearch, categories = [] }: AdvancedSe
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2 dark:text-white">Min Price (₹)</label>
+                  <label className="block text-sm font-medium mb-2 dark:text-white">{t('minPrice')} (₹)</label>
                   <input
                     type="number"
                     value={filters.minPrice}
@@ -112,7 +114,7 @@ export default function AdvancedSearch({ onSearch, categories = [] }: AdvancedSe
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2 dark:text-white">Max Price (₹)</label>
+                  <label className="block text-sm font-medium mb-2 dark:text-white">{t('maxPrice')} (₹)</label>
                   <input
                     type="number"
                     value={filters.maxPrice}
@@ -122,16 +124,16 @@ export default function AdvancedSearch({ onSearch, categories = [] }: AdvancedSe
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2 dark:text-white">Sort By</label>
+                  <label className="block text-sm font-medium mb-2 dark:text-white">{t('sortBy')}</label>
                   <select
                     value={filters.sortBy}
                     onChange={(e) => setFilters({ ...filters, sortBy: e.target.value as any })}
                     className="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   >
-                    <option value="name">Name</option>
-                    <option value="price-low">Price: Low to High</option>
-                    <option value="price-high">Price: High to Low</option>
-                    <option value="newest">Newest First</option>
+                    <option value="name">{t('nameSort')}</option>
+                    <option value="price-low">{t('priceLowToHigh')}</option>
+                    <option value="price-high">{t('priceHighToLow')}</option>
+                    <option value="newest">{t('newestFirst')}</option>
                   </select>
                 </div>
               </div>
@@ -143,7 +145,7 @@ export default function AdvancedSearch({ onSearch, categories = [] }: AdvancedSe
                   onChange={(e) => setFilters({ ...filters, inStock: e.target.checked })}
                   className="w-4 h-4 text-green-600 rounded"
                 />
-                <span className="text-sm dark:text-white">In Stock Only</span>
+                <span className="text-sm dark:text-white">{t('inStockOnly')}</span>
               </label>
             </div>
           </motion.div>

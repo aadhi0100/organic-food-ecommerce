@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/context/AuthContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { useRouter } from 'next/navigation'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 import { Package, DollarSign, ShoppingCart, Users, TrendingUp, Store, MapPin, UserCheck, Activity, Trash2, X, Save } from 'lucide-react'
@@ -13,6 +14,7 @@ const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'
 
 export default function AdminDashboard() {
   const { user } = useAuth()
+  const { t } = useLanguage()
   const router = useRouter()
   const [stats, setStats] = useState<any>(null)
   const [shops, setShops] = useState<Shop[]>([])
@@ -101,8 +103,8 @@ export default function AdminDashboard() {
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <h1 className="heading-responsive font-bold">Admin Dashboard</h1>
-              <p className="text-responsive text-gray-600">Welcome back, {user?.name}</p>
+              <h1 className="heading-responsive font-bold">{t('adminDashboard')}</h1>
+              <p className="text-responsive text-gray-600">{t('welcomeBack')}, {user?.name}</p>
             </div>
             <button
               onClick={() => {
@@ -111,7 +113,7 @@ export default function AdminDashboard() {
               }}
               className="btn-mobile bg-green-600 text-white font-bold hover:bg-green-700 transition"
             >
-              Download Report
+{t('downloadReport')}
             </button>
           </div>
         </div>
@@ -124,7 +126,7 @@ export default function AdminDashboard() {
               </div>
               <span className="text-green-600 text-sm font-medium">+12.5%</span>
             </div>
-            <h3 className="text-gray-600 text-sm mb-1">Total Revenue</h3>
+            <h3 className="text-gray-600 text-sm mb-1">{t('totalRevenue')}</h3>
             <p className="text-3xl font-bold">₹{stats?.totalRevenue?.toLocaleString('en-IN') || 0}</p>
           </div>
 
@@ -135,7 +137,7 @@ export default function AdminDashboard() {
               </div>
               <span className="text-blue-600 text-sm font-medium">+8.2%</span>
             </div>
-            <h3 className="text-gray-600 text-sm mb-1">Total Orders</h3>
+            <h3 className="text-gray-600 text-sm mb-1">{t('totalOrders')}</h3>
             <p className="text-3xl font-bold">{stats?.totalOrders || 0}</p>
           </div>
 
@@ -146,7 +148,7 @@ export default function AdminDashboard() {
               </div>
               <span className="text-purple-600 text-sm font-medium">Active</span>
             </div>
-            <h3 className="text-gray-600 text-sm mb-1">Total Vendors</h3>
+            <h3 className="text-gray-600 text-sm mb-1">{t('totalVendors')}</h3>
             <p className="text-3xl font-bold">{vendors.length}</p>
           </div>
 
@@ -157,7 +159,7 @@ export default function AdminDashboard() {
               </div>
               <span className="text-orange-600 text-sm font-medium">+15.3%</span>
             </div>
-            <h3 className="text-gray-600 text-sm mb-1">Total Customers</h3>
+            <h3 className="text-gray-600 text-sm mb-1">{t('totalCustomers')}</h3>
             <p className="text-3xl font-bold">{stats?.totalCustomers || 0}</p>
           </div>
         </div>
@@ -165,7 +167,7 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold">Vendor Revenue</h3>
+              <h3 className="text-lg font-bold">{t('vendorRevenue')}</h3>
               <Activity size={24} />
             </div>
             <p className="text-4xl font-bold mb-2">₹{totalVendorRevenue.toLocaleString('en-IN')}</p>
@@ -174,7 +176,7 @@ export default function AdminDashboard() {
 
           <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold">Vendor Orders</h3>
+              <h3 className="text-lg font-bold">{t('vendorOrders')}</h3>
               <ShoppingCart size={24} />
             </div>
             <p className="text-4xl font-bold mb-2">{totalVendorOrders.toLocaleString()}</p>
@@ -183,7 +185,7 @@ export default function AdminDashboard() {
 
           <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold">Active Shops</h3>
+              <h3 className="text-lg font-bold">{t('activeShops')}</h3>
               <Store size={24} />
             </div>
             <p className="text-4xl font-bold mb-2">{shops.length}</p>
@@ -195,7 +197,7 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-xl shadow-md p-6">
             <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
               <TrendingUp className="text-green-600" />
-              Monthly Revenue
+              {t('monthlyRevenue')}
             </h2>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={stats?.monthlyRevenue || []}>
@@ -212,7 +214,7 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-xl shadow-md p-6">
             <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
               <Store className="text-blue-600" />
-              Vendor Revenue Distribution
+              {t('vendorRevenueDistribution')}
             </h2>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={vendorRevenueData}>
@@ -229,7 +231,7 @@ export default function AdminDashboard() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <div className="bg-white rounded-xl shadow-md p-6">
-            <h2 className="text-xl font-bold mb-6">Sales by Category</h2>
+            <h2 className="text-xl font-bold mb-6">{t('salesByCategory')}</h2>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -255,14 +257,14 @@ export default function AdminDashboard() {
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold flex items-center gap-2">
                 <UserCheck className="text-purple-600" />
-                Vendor Management
+                {t('vendorManagement')}
               </h2>
               <button
                 onClick={() => setShowAddVendor(true)}
                 className="bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700 transition flex items-center gap-2"
               >
                 <Users size={18} />
-                Add Vendor
+                {t('addVendor')}
               </button>
             </div>
             <div className="space-y-4">
@@ -279,7 +281,7 @@ export default function AdminDashboard() {
                       </div>
                       <div className="flex gap-2">
                         <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
-                          Active
+                          {t('active')}
                         </span>
                         <button
                           onClick={() => handleDeleteVendor(vendor.id)}
@@ -292,15 +294,15 @@ export default function AdminDashboard() {
                     </div>
                     <div className="grid grid-cols-3 gap-4 mt-4">
                       <div>
-                        <p className="text-xs text-gray-600">Shops</p>
+                        <p className="text-xs text-gray-600">{t('shops')}</p>
                         <p className="text-xl font-bold">{vendorShops.length}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-600">Orders</p>
+                        <p className="text-xs text-gray-600">{t('orders')}</p>
                         <p className="text-xl font-bold">{vendorOrders}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-600">Revenue</p>
+                        <p className="text-xs text-gray-600">{t('revenue')}</p>
                         <p className="text-xl font-bold text-green-600">₹{vendorRevenue.toLocaleString('en-IN')}</p>
                       </div>
                     </div>
@@ -314,7 +316,7 @@ export default function AdminDashboard() {
         <div className="bg-white rounded-xl shadow-md p-6 mb-8">
           <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
             <Store className="text-green-600" />
-            Shops Overview
+            {t('shopsOverview')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {shops.map(shop => (
@@ -347,17 +349,17 @@ export default function AdminDashboard() {
         </div>
 
         <div className="bg-white rounded-xl shadow-md p-6">
-          <h2 className="text-2xl font-bold mb-6">Recent Orders</h2>
+          <h2 className="text-2xl font-bold mb-6">{t('recentOrders')}</h2>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left py-3 px-4">Order ID</th>
-                  <th className="text-left py-3 px-4">Customer</th>
-                  <th className="text-left py-3 px-4">Items</th>
-                  <th className="text-left py-3 px-4">Total</th>
-                  <th className="text-left py-3 px-4">Status</th>
-                  <th className="text-left py-3 px-4">Date</th>
+                  <th className="text-left py-3 px-4">{t('orderId')}</th>
+                  <th className="text-left py-3 px-4">{t('customer')}</th>
+                  <th className="text-left py-3 px-4">{t('items')}</th>
+                  <th className="text-left py-3 px-4">{t('total')}</th>
+                  <th className="text-left py-3 px-4">{t('status')}</th>
+                  <th className="text-left py-3 px-4">{t('date')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -392,7 +394,7 @@ export default function AdminDashboard() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl max-w-md w-full p-8">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">Add New Vendor</h2>
+              <h2 className="text-2xl font-bold">{t('addNewVendor')}</h2>
               <button onClick={() => setShowAddVendor(false)}>
                 <X size={24} />
               </button>
@@ -400,7 +402,7 @@ export default function AdminDashboard() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Name</label>
+                <label className="block text-sm font-medium mb-2">{t('name')}</label>
                 <input
                   type="text"
                   value={vendorForm.name}
@@ -411,7 +413,7 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Email</label>
+                <label className="block text-sm font-medium mb-2">{t('email')}</label>
                 <input
                   type="email"
                   value={vendorForm.email}
@@ -422,7 +424,7 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Password</label>
+                <label className="block text-sm font-medium mb-2">{t('password')}</label>
                 <input
                   type="password"
                   value={vendorForm.password}
@@ -433,7 +435,7 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Phone</label>
+                <label className="block text-sm font-medium mb-2">{t('phone')}</label>
                 <input
                   type="tel"
                   value={vendorForm.phone}
@@ -444,7 +446,7 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Address</label>
+                <label className="block text-sm font-medium mb-2">{t('address')}</label>
                 <textarea
                   value={vendorForm.address}
                   onChange={(e) => setVendorForm({ ...vendorForm, address: e.target.value })}
@@ -460,13 +462,13 @@ export default function AdminDashboard() {
                   className="flex-1 bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition flex items-center justify-center gap-2"
                 >
                   <Save size={20} />
-                  Add Vendor
+                  {t('addVendor')}
                 </button>
                 <button
                   onClick={() => setShowAddVendor(false)}
                   className="px-6 py-3 border border-gray-300 rounded-lg font-bold hover:bg-gray-50 transition"
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
               </div>
             </div>

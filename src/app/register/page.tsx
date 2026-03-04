@@ -3,12 +3,14 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
+import { useLanguage } from '@/context/LanguageContext'
 import Link from 'next/link'
 import { Mail, Lock, User, UserPlus, ShoppingBag, Sparkles } from 'lucide-react'
 
 export default function RegisterPage() {
   const router = useRouter()
   const { login } = useAuth()
+  const { t } = useLanguage()
   const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' })
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -59,7 +61,7 @@ export default function RegisterPage() {
         <div className="hidden lg:flex flex-col justify-center p-12 bg-gradient-to-br from-blue-600 to-purple-700 rounded-3xl text-white shadow-2xl">
           <div className="mb-8">
             <div className="text-6xl mb-4">🛒</div>
-            <h1 className="text-5xl font-bold mb-4">Join Us Today!</h1>
+            <h1 className="text-5xl font-bold mb-4">{t('joinUs')}!</h1>
             <p className="text-blue-100 text-lg">Start your organic food journey</p>
           </div>
           
@@ -88,7 +90,7 @@ export default function RegisterPage() {
 
         <div className="bg-white rounded-3xl shadow-2xl p-8 lg:p-12">
           <div className="mb-8">
-            <h2 className="text-3xl font-bold mb-2">Create Account</h2>
+            <h2 className="text-3xl font-bold mb-2">{t('createAccount')}</h2>
             <p className="text-gray-600">Join our organic food community</p>
           </div>
 
@@ -100,7 +102,7 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium mb-2">Full Name</label>
+              <label className="block text-sm font-medium mb-2">{t('fullName')}</label>
               <div className="relative">
                 <User className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                 <input
@@ -115,7 +117,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Email Address</label>
+              <label className="block text-sm font-medium mb-2">{t('email')}</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                 <input
@@ -130,7 +132,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Password</label>
+              <label className="block text-sm font-medium mb-2">{t('password')}</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                 <input
@@ -146,7 +148,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Confirm Password</label>
+              <label className="block text-sm font-medium mb-2">{t('confirmPassword')}</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                 <input
@@ -165,10 +167,10 @@ export default function RegisterPage() {
               disabled={isLoading}
               className="w-full bg-gradient-to-r from-blue-600 to-purple-700 text-white py-4 rounded-xl font-bold hover:from-blue-700 hover:to-purple-800 transition shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              {isLoading ? 'Creating account...' : (
+              {isLoading ? `${t('createAccount')}...` : (
                 <>
                   <UserPlus size={20} />
-                  Create Account
+                  {t('createAccount')}
                 </>
               )}
             </button>
@@ -176,9 +178,9 @@ export default function RegisterPage() {
 
           <div className="mt-8 text-center">
             <p className="text-gray-600">
-              Already have an account?{' '}
+              {t('alreadyHaveAccount')}{' '}
               <Link href="/login" className="text-blue-600 font-medium hover:text-blue-700">
-                Sign in
+                {t('signIn')}
               </Link>
             </p>
           </div>

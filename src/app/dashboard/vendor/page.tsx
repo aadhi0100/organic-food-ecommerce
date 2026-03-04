@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/context/AuthContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { useRouter } from 'next/navigation'
 import { Package, Plus, Edit, Trash2, TrendingUp, DollarSign, ShoppingBag, AlertCircle, Save, X } from 'lucide-react'
 import Image from 'next/image'
@@ -10,6 +11,7 @@ import type { Product, Shop } from '@/types'
 
 export default function VendorDashboard() {
   const { user } = useAuth()
+  const { t } = useLanguage()
   const router = useRouter()
   const [products, setProducts] = useState<Product[]>([])
   const [shops, setShops] = useState<Shop[]>([])
@@ -112,8 +114,8 @@ export default function VendorDashboard() {
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Vendor Dashboard</h1>
-          <p className="text-gray-600">Manage your products and inventory</p>
+          <h1 className="text-4xl font-bold mb-2">{t('vendorDashboard')}</h1>
+          <p className="text-gray-600">{t('manageProductsAndInventory')}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -123,7 +125,7 @@ export default function VendorDashboard() {
                 <Package className="text-green-600" size={24} />
               </div>
             </div>
-            <h3 className="text-gray-600 text-sm mb-1">Total Products</h3>
+            <h3 className="text-gray-600 text-sm mb-1">{t('totalProducts')}</h3>
             <p className="text-3xl font-bold">{products.length}</p>
           </div>
 
@@ -133,7 +135,7 @@ export default function VendorDashboard() {
                 <ShoppingBag className="text-blue-600" size={24} />
               </div>
             </div>
-            <h3 className="text-gray-600 text-sm mb-1">Total Stock</h3>
+            <h3 className="text-gray-600 text-sm mb-1">{t('totalStock')}</h3>
             <p className="text-3xl font-bold">{totalStock}</p>
           </div>
 
@@ -143,7 +145,7 @@ export default function VendorDashboard() {
                 <DollarSign className="text-purple-600" size={24} />
               </div>
             </div>
-            <h3 className="text-gray-600 text-sm mb-1">Est. Revenue</h3>
+            <h3 className="text-gray-600 text-sm mb-1">{t('estRevenue')}</h3>
             <p className="text-3xl font-bold">₹{totalRevenue.toFixed(0)}</p>
           </div>
 
@@ -153,7 +155,7 @@ export default function VendorDashboard() {
                 <AlertCircle className="text-red-600" size={24} />
               </div>
             </div>
-            <h3 className="text-gray-600 text-sm mb-1">Low Stock</h3>
+            <h3 className="text-gray-600 text-sm mb-1">{t('lowStock')}</h3>
             <p className="text-3xl font-bold">{lowStockProducts.length}</p>
           </div>
         </div>
@@ -162,7 +164,7 @@ export default function VendorDashboard() {
           <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-8">
             <div className="flex items-center gap-2 mb-2">
               <AlertCircle className="text-red-600" size={20} />
-              <h3 className="font-bold text-red-800">Low Stock Alert</h3>
+              <h3 className="font-bold text-red-800">{t('lowStockAlert')}</h3>
             </div>
             <p className="text-red-700 text-sm">
               {lowStockProducts.length} product(s) have stock below 20 units. Please restock soon.
@@ -172,13 +174,13 @@ export default function VendorDashboard() {
 
         <div className="bg-white rounded-xl shadow-md p-6 mb-8">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">Product Inventory</h2>
+            <h2 className="text-2xl font-bold">{t('productInventory')}</h2>
             <button
               onClick={() => { setShowAddModal(true); setFormData({ ...formData, shopId: shops[0]?.id || '' }) }}
               className="bg-green-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-700 transition flex items-center gap-2"
             >
               <Plus size={20} />
-              Add Product
+              {t('addProduct')}
             </button>
           </div>
 
@@ -186,13 +188,13 @@ export default function VendorDashboard() {
             <table className="w-full">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left py-3 px-4">Image</th>
-                  <th className="text-left py-3 px-4">Product</th>
-                  <th className="text-left py-3 px-4">Category</th>
-                  <th className="text-left py-3 px-4">Price</th>
-                  <th className="text-left py-3 px-4">Stock</th>
-                  <th className="text-left py-3 px-4">Status</th>
-                  <th className="text-left py-3 px-4">Actions</th>
+                  <th className="text-left py-3 px-4">{t('image')}</th>
+                  <th className="text-left py-3 px-4">{t('product')}</th>
+                  <th className="text-left py-3 px-4">{t('category')}</th>
+                  <th className="text-left py-3 px-4">{t('price')}</th>
+                  <th className="text-left py-3 px-4">{t('stock')}</th>
+                  <th className="text-left py-3 px-4">{t('status')}</th>
+                  <th className="text-left py-3 px-4">{t('actions')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -220,7 +222,7 @@ export default function VendorDashboard() {
                         product.stock < 20 ? 'bg-yellow-100 text-yellow-700' :
                         'bg-green-100 text-green-700'
                       }`}>
-                        {product.stock === 0 ? 'Out of Stock' : product.stock < 20 ? 'Low Stock' : 'In Stock'}
+                        {product.stock === 0 ? t('outOfStock') : product.stock < 20 ? t('lowStock') : t('inStock')}
                       </span>
                     </td>
                     <td className="py-3 px-4">
@@ -251,7 +253,7 @@ export default function VendorDashboard() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
+              <h2 className="text-2xl font-bold">{editingProduct ? t('editProduct') : t('addNewProduct')}</h2>
               <button onClick={() => { setShowAddModal(false); setEditingProduct(null); resetForm() }}>
                 <X size={24} />
               </button>
@@ -259,7 +261,7 @@ export default function VendorDashboard() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-2">Product Name</label>
+                <label className="block text-sm font-medium mb-2">{t('productName')}</label>
                 <input
                   type="text"
                   value={formData.name}
@@ -271,7 +273,7 @@ export default function VendorDashboard() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Price (₹)</label>
+                  <label className="block text-sm font-medium mb-2">{t('priceInRupees')}</label>
                   <input
                     type="number"
                     step="0.01"
@@ -280,10 +282,10 @@ export default function VendorDashboard() {
                     className="w-full px-4 py-3 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     placeholder="499.00"
                   />
-                  <p className="text-xs text-gray-500 mt-1">Enter price in Indian Rupees</p>
+                  <p className="text-xs text-gray-500 mt-1">{t('enterPriceInRupees')}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Stock</label>
+                  <label className="block text-sm font-medium mb-2">{t('stock')}</label>
                   <input
                     type="number"
                     value={formData.stock}
@@ -296,7 +298,7 @@ export default function VendorDashboard() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Category</label>
+                  <label className="block text-sm font-medium mb-2">{t('category')}</label>
                   <select
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
@@ -314,7 +316,7 @@ export default function VendorDashboard() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Shop</label>
+                  <label className="block text-sm font-medium mb-2">{t('shop')}</label>
                   <select
                     value={formData.shopId}
                     onChange={(e) => setFormData({ ...formData, shopId: e.target.value })}
@@ -328,7 +330,7 @@ export default function VendorDashboard() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Description</label>
+                <label className="block text-sm font-medium mb-2">{t('description')}</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -339,7 +341,7 @@ export default function VendorDashboard() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Image URL</label>
+                <label className="block text-sm font-medium mb-2">{t('imageUrl')}</label>
                 <input
                   type="text"
                   value={formData.image}
@@ -355,13 +357,13 @@ export default function VendorDashboard() {
                   className="flex-1 bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition flex items-center justify-center gap-2"
                 >
                   <Save size={20} />
-                  {editingProduct ? 'Update Product' : 'Add Product'}
+                  {editingProduct ? t('updateProduct') : t('addProduct')}
                 </button>
                 <button
                   onClick={() => { setShowAddModal(false); setEditingProduct(null); resetForm() }}
                   className="px-6 py-3 border border-gray-300 rounded-lg font-bold hover:bg-gray-50 transition"
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
               </div>
             </div>

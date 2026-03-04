@@ -3,8 +3,11 @@
 import Link from 'next/link'
 import { CheckCircle, Package, Home } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useLanguage } from '@/context/LanguageContext'
 
 export default function OrderSuccessPage() {
+  const { t } = useLanguage()
+  
   return (
     <div className="container mx-auto px-4 py-16">
       <motion.div
@@ -13,9 +16,9 @@ export default function OrderSuccessPage() {
         className="max-w-2xl mx-auto text-center"
       >
         <CheckCircle size={80} className="text-green-600 mx-auto mb-6" />
-        <h1 className="text-4xl font-bold mb-4">Order Placed Successfully!</h1>
+        <h1 className="text-4xl font-bold mb-4">{t('orderSuccess')}!</h1>
         <p className="text-xl text-gray-600 mb-8">
-          Thank you for your order. We'll send you a confirmation email shortly.
+          {t('thankYouOrder')}
         </p>
         
         <div className="bg-green-50 border-2 border-green-200 rounded-lg p-6 mb-8">
@@ -43,13 +46,13 @@ export default function OrderSuccessPage() {
             className="inline-flex items-center gap-2 bg-green-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-green-700 transition"
           >
             <Home size={20} />
-            Back to Home
+            {t('home')}
           </Link>
           <Link
             href="/products"
             className="inline-flex items-center gap-2 border-2 border-green-600 text-green-600 px-8 py-3 rounded-lg font-bold hover:bg-green-50 transition"
           >
-            Continue Shopping
+            {t('continueShopping')}
           </Link>
         </div>
       </motion.div>
