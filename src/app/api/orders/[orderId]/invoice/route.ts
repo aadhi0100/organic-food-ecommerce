@@ -24,35 +24,43 @@ export async function GET(
     const itemsWithDetails = await Promise.all(
       order.items.map(async (item: any) => {
         const product = await db.products.findById(item.productId)
+        const itemPrice = item.product?.price || item.price || product?.price || 0
+        const itemName = item.product?.name || item.name || product?.name || 'Product'
         return {
-          name: item.name || product?.name || 'Product',
-          quantity: item.quantity,
-          price: item.price || product?.price || 0,
-          total: (item.price || product?.price || 0) * item.quantity
+          name: itemName,
+          quantity: item.quantity || 1,
+          price: itemPrice,
+          total: itemPrice * (item.quantity || 1)
         }
       })
     )
 
+    // Calculate totals from items
+    const subtotal = itemsWithDetails.reduce((sum, item) => sum + item.total, 0)
+    const tax = subtotal * 0.05
+    const shipping = subtotal >= 500 ? 0 : 50
+    const total = subtotal + tax + shipping
+
     const invoiceData = {
       orderId: order.id,
       orderDate: order.orderDate || order.createdAt || new Date().toISOString(),
-      customerName: order.customerName || 'Customer',
+      customerName: order.customerName || order.shippingAddress?.fullName || 'Customer',
       customerEmail: order.customerEmail || '',
-      customerPhone: order.customerPhone || '',
+      customerPhone: order.customerPhone || order.shippingAddress?.phone || '',
       shippingAddress: {
-        street: order.shippingAddress.street || '',
-        city: order.shippingAddress.city || '',
-        state: order.shippingAddress.state || '',
-        zipCode: order.shippingAddress.zipCode || '',
-        country: order.shippingAddress.country || 'India'
+        street: order.shippingAddress?.street || '',
+        city: order.shippingAddress?.city || '',
+        state: order.shippingAddress?.state || '',
+        zipCode: order.shippingAddress?.zipCode || '',
+        country: order.shippingAddress?.country || 'India'
       },
       items: itemsWithDetails,
-      subtotal: order.total * 0.95,
-      tax: order.total * 0.05,
-      shipping: 0,
-      total: order.total,
+      subtotal,
+      tax,
+      shipping,
+      total,
       deliveryDate: order.deliveryDate || new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
-      trackingNumber: order.trackingNumber || 'N/A',
+      trackingNumber: order.trackingNumber || `TRK${order.id.slice(-8)}`,
       paymentMethod: order.paymentMethod || 'Cash on Delivery'
     }
 

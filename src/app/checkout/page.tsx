@@ -9,7 +9,7 @@ import { formatPrice } from '@/utils/format'
 import Image from 'next/image'
 import { CreditCard, MapPin, User as UserIcon } from 'lucide-react'
 import type { Address } from '@/types'
-import LocationPicker from '@/components/LocationPicker'
+import { LocationPicker } from '@/components/LocationPicker'
 
 export default function CheckoutPage() {
   const router = useRouter()

@@ -35,10 +35,10 @@ export async function POST(request: Request) {
         country: order.shippingAddress.country || 'India'
       },
       items: order.items.map((item: any) => ({
-        name: item.name || item.product?.name || 'Product',
-        quantity: item.quantity,
-        price: item.price || item.product?.price || 0,
-        total: (item.price || item.product?.price || 0) * item.quantity
+        name: item.product?.name || item.name || 'Product',
+        quantity: item.quantity || 1,
+        price: item.product?.price || item.price || 0,
+        total: (item.product?.price || item.price || 0) * (item.quantity || 1)
       })),
       subtotal: order.total * 0.95,
       tax: order.total * 0.05,
@@ -49,20 +49,29 @@ export async function POST(request: Request) {
       paymentMethod: order.paymentMethod || 'Cash on Delivery'
     }
     
-    const pdfDoc = generateProfessionalInvoice(invoiceData)
-    const pdfBuffer = Buffer.from(pdfDoc.output('arraybuffer'))
+    let pdfBuffer: Buffer | null = null
+    try {
+      const pdfDoc = generateProfessionalInvoice(invoiceData)
+      pdfBuffer = Buffer.from(pdfDoc.output('arraybuffer'))
+    } catch (pdfError) {
+      console.error('PDF generation error:', pdfError)
+    }
     
     // Send invoice email
-    if (order.customerEmail) {
-      await sendInvoiceEmail({
-        to: order.customerEmail,
-        orderId: order.id,
-        customerName: order.customerName || 'Customer',
-        total: order.total,
-        deliveryDate,
-        trackingNumber,
-        pdfBuffer
-      })
+    if (order.customerEmail && pdfBuffer) {
+      try {
+        await sendInvoiceEmail({
+          to: order.customerEmail,
+          orderId: order.id,
+          customerName: order.customerName || 'Customer',
+          total: order.total,
+          deliveryDate,
+          trackingNumber,
+          pdfBuffer
+        })
+      } catch (emailError) {
+        console.error('Email sending error:', emailError)
+      }
     }
     
     return NextResponse.json({

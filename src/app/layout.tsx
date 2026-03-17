@@ -7,7 +7,7 @@ import { LanguageProvider } from '@/context/LanguageContext'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import { ServiceWorkerRegistration } from '@/components/ServiceWorkerRegistration'
-import FestivalOfferBanner from '@/components/FestivalOfferBanner'
+import { FestivalOfferBanner } from '@/components/FestivalOfferBanner'
 
 export const metadata: Metadata = {
   title: 'Organic Food Store - Fresh Organic Products Delivered',

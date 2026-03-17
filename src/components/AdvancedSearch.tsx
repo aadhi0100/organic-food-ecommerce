@@ -18,7 +18,7 @@ export interface SearchFilters {
   sortBy: 'name' | 'price-low' | 'price-high' | 'newest'
 }
 
-export default function AdvancedSearch({ onSearch, categories = [] }: AdvancedSearchProps) {
+export function AdvancedSearch({ onSearch, categories = [] }: AdvancedSearchProps) {
   const { t } = useLanguage()
   const [query, setQuery] = useState('')
   const [showFilters, setShowFilters] = useState(false)

@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer'
 import type { Transporter } from 'nodemailer'
-import { sendTestEmail } from './testEmailSender'
 
 const isEmailConfigured = process.env.EMAIL_USER && process.env.EMAIL_PASSWORD && 
   process.env.EMAIL_USER !== 'your-email@gmail.com'
@@ -178,17 +177,22 @@ export async function sendInvoiceEmail(data: EmailInvoiceData) {
     </html>
   `
 
-  // Save invoice locally
-  const fs = require('fs')
-  const path = require('path')
-  const receiptsDir = path.join(process.cwd(), 'data', 'receipts')
-  
-  if (!fs.existsSync(receiptsDir)) {
-    fs.mkdirSync(receiptsDir, { recursive: true })
+  // Save invoice locally (skip on serverless environments)
+  try {
+    const fs = require('fs')
+    const path = require('path')
+    const receiptsDir = path.join(process.cwd(), 'data', 'receipts')
+    
+    if (!fs.existsSync(receiptsDir)) {
+      fs.mkdirSync(receiptsDir, { recursive: true })
+    }
+    
+    const invoicePath = path.join(receiptsDir, `invoice-${data.orderId}.pdf`)
+    fs.writeFileSync(invoicePath, data.pdfBuffer)
+    console.log(`✅ Invoice saved to: ${invoicePath}`)
+  } catch (fsError) {
+    console.log('ℹ️  File system not available (serverless environment), skipping local save')
   }
-  
-  const invoicePath = path.join(receiptsDir, `invoice-${data.orderId}.pdf`)
-  fs.writeFileSync(invoicePath, data.pdfBuffer)
 
   // If email is not configured, use test email sender
   if (!isEmailConfigured || !transporter) {
@@ -196,7 +200,6 @@ export async function sendInvoiceEmail(data: EmailInvoiceData) {
     console.log('📧 USING TEST EMAIL SERVICE (Ethereal Email)')
     console.log('='.repeat(70))
     console.log('✅ Invoice Generated Successfully!')
-    console.log(`📁 Saved to: ${invoicePath}`)
     console.log('')
     console.log('Order Details:')
     console.log(`  • Order ID: ${data.orderId}`)
@@ -206,30 +209,11 @@ export async function sendInvoiceEmail(data: EmailInvoiceData) {
     console.log(`  • Tracking: ${data.trackingNumber}`)
     console.log(`  • Delivery: ${deliveryDateFormatted}`)
     console.log('='.repeat(70))
-    console.log('\n🚀 Sending test email...')
-    
-    // Send test email
-    const testResult = await sendTestEmail(
-      data.to,
-      `✅ Order Confirmed #${data.orderId} - Invoice Attached | Organic Food Store`,
-      emailHTML,
-      data.pdfBuffer,
-      data.orderId
-    )
-    
-    if (testResult.success) {
-      return { 
-        success: true, 
-        message: 'Invoice sent via test email service. Check console for preview URL.',
-        invoicePath,
-        previewUrl: testResult.previewUrl
-      }
-    }
+    console.log('\n⚠️  Email service not configured. Invoice generated successfully.')
     
     return { 
       success: true, 
-      message: 'Invoice generated and saved locally.',
-      invoicePath 
+      message: 'Invoice generated successfully.'
     }
   }
 
@@ -258,25 +242,21 @@ export async function sendInvoiceEmail(data: EmailInvoiceData) {
     console.log(`📧 To: ${data.to}`)
     console.log(`🏷️  Order: ${data.orderId}`)
     console.log(`💰 Amount: ₹${data.total.toFixed(2)}`)
-    console.log(`📁 Invoice: ${invoicePath}`)
     console.log(`✉️  Message ID: ${info.messageId}`)
     console.log('='.repeat(70) + '\n')
     
     return { 
       success: true, 
       messageId: info.messageId,
-      invoicePath,
       message: 'Invoice sent successfully to email' 
     }
   } catch (error) {
     console.error('\n❌ Failed to send invoice email:', error)
-    console.log(`ℹ️  Invoice saved locally at: ${invoicePath}\n`)
     
     return { 
       success: false, 
       error: String(error),
-      invoicePath,
-      message: 'Invoice saved locally but email delivery failed' 
+      message: 'Invoice generated but email delivery failed' 
     }
   }
 }

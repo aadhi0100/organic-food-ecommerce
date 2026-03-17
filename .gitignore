@@ -430,3 +430,7 @@ FodyWeavers.xsd
 *.msp
 .vercel
 .env*.local
+
+# App data (local persistence). Keep directories via `.gitkeep`.
+data/**
+!data/**/.gitkeep

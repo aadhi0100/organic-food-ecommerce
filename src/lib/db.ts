@@ -1,234 +1,73 @@
-import type { Product, User, Order, Message, Transaction, Shop } from '@/types'
-import { enhancedProducts } from './enhancedProducts'
+import type { Product, Order, Message, Transaction, Shop } from '@/types'
 import { FileStorage } from './fileStorage'
+import { allProducts } from './allProducts'
+import { PRODUCT_IMAGE_PATHS } from './productImages.generated'
 
-// Enhanced Products with real images from Unsplash
-export const mockProducts: Product[] = enhancedProducts.length > 0 ? enhancedProducts : [
-  { 
-    id: '1', 
-    name: 'Organic Apples', 
-    price: 5, 
-    description: 'Fresh organic apples from local farms. Crisp, sweet, and packed with nutrients. Perfect for snacking or baking.',
-    image: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=500',
-    category: 'Fruits', 
-    stock: 50, 
-    rating: 4.5, 
-    reviews: 120, 
-    organic: true, 
-    featured: true,
-    shopId: '1',
-    images: [
-      'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=500',
-      'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=500',
-      'https://images.unsplash.com/photo-1619546813926-a78fa6372cd2?w=500'
-    ]
-  },
-  { 
-    id: '2', 
-    name: 'Organic Bananas', 
-    price: 3, 
-    description: 'Sweet organic bananas rich in potassium. Naturally ripened for perfect sweetness.',
-    image: 'https://images.unsplash.com/photo-1603833665858-e61d17a86224?w=500',
-    category: 'Fruits', 
-    stock: 80, 
-    rating: 4.7, 
-    reviews: 95, 
-    organic: true, 
-    featured: false,
-    shopId: '1',
-    images: [
-      'https://images.unsplash.com/photo-1603833665858-e61d17a86224?w=500',
-      'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=500'
-    ]
-  },
-  { 
-    id: '3', 
-    name: 'Organic Carrots', 
-    price: 3, 
-    description: 'Crunchy organic carrots loaded with beta-carotene. Great for salads and cooking.',
-    image: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=500',
-    category: 'Vegetables', 
-    stock: 60, 
-    rating: 4.6, 
-    reviews: 78, 
-    organic: true, 
-    featured: true,
-    shopId: '2',
-    images: [
-      'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=500',
-      'https://images.unsplash.com/photo-1582515073490-39981397c445?w=500'
-    ]
-  },
-  { 
-    id: '4', 
-    name: 'Organic Spinach', 
-    price: 4, 
-    description: 'Fresh organic spinach leaves packed with iron and vitamins. Perfect for smoothies and salads.',
-    image: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=500',
-    category: 'Vegetables', 
-    stock: 40, 
-    rating: 4.8, 
-    reviews: 102, 
-    organic: true, 
-    featured: false,
-    shopId: '2',
-    images: [
-      'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=500',
-      'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=500'
-    ]
-  },
-  { 
-    id: '5', 
-    name: 'Organic Tomatoes', 
-    price: 5, 
-    description: 'Juicy organic tomatoes bursting with flavor. Vine-ripened for maximum taste.',
-    image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500',
-    category: 'Vegetables', 
-    stock: 55, 
-    rating: 4.4, 
-    reviews: 88, 
-    organic: true, 
-    featured: true,
-    shopId: '2',
-    images: [
-      'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500',
-      'https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=500',
-      'https://images.unsplash.com/photo-1561136594-7f68413baa99?w=500'
-    ]
-  },
-  { 
-    id: '6', 
-    name: 'Organic Milk', 
-    price: 7, 
-    description: 'Fresh organic whole milk from grass-fed cows. Rich, creamy, and nutritious.',
-    image: 'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=500',
-    category: 'Dairy', 
-    stock: 30, 
-    rating: 4.9, 
-    reviews: 156, 
-    organic: true, 
-    featured: false,
-    shopId: '3',
-    images: [
-      'https://images.unsplash.com/photo-1563636619-e9143da7973b?w=500',
-      'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500'
-    ]
-  },
-  { 
-    id: '7', 
-    name: 'Organic Eggs', 
-    price: 8, 
-    description: 'Free-range organic eggs from happy hens. Rich in protein and omega-3.',
-    image: 'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=500',
-    category: 'Dairy', 
-    stock: 45, 
-    rating: 4.7, 
-    reviews: 134, 
-    organic: true, 
-    featured: true,
-    shopId: '3',
-    images: [
-      'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=500',
-      'https://images.unsplash.com/photo-1518569656558-1f25e69d93d7?w=500'
-    ]
-  },
-  { 
-    id: '8', 
-    name: 'Organic Bread', 
-    price: 6, 
-    description: 'Whole grain organic bread baked fresh daily. No preservatives or additives.',
-    image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500',
-    category: 'Bakery', 
-    stock: 25, 
-    rating: 4.5, 
-    reviews: 67, 
-    organic: true, 
-    featured: false,
-    shopId: '4',
-    images: [
-      'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500',
-      'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=500'
-    ]
-  },
-  { 
-    id: '9', 
-    name: 'Organic Honey', 
-    price: 13, 
-    description: 'Pure organic honey from wildflower meadows. Natural sweetener with health benefits.',
-    image: 'https://images.unsplash.com/photo-1587049352846-4a222e784422?w=500',
-    category: 'Pantry', 
-    stock: 35, 
-    rating: 4.9, 
-    reviews: 201, 
-    organic: true, 
-    featured: true,
-    shopId: '4',
-    images: [
-      'https://images.unsplash.com/photo-1587049352846-4a222e784422?w=500',
-      'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=500'
-    ]
-  },
-  { 
-    id: '10', 
-    name: 'Organic Quinoa', 
-    price: 9, 
-    description: 'Premium organic quinoa - complete protein source. Perfect for healthy meals.',
-    image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500',
-    category: 'Grains', 
-    stock: 50, 
-    rating: 4.6, 
-    reviews: 89, 
-    organic: true, 
-    featured: false,
-    shopId: '4',
-    images: [
-      'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500',
-      'https://images.unsplash.com/photo-1612457935-5f1f9f6d6f1e?w=500'
-    ]
-  },
-  { 
-    id: '11', 
-    name: 'Organic Avocados', 
-    price: 7, 
-    description: 'Creamy organic avocados rich in healthy fats. Perfect for toast and salads.',
-    image: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=500',
-    category: 'Fruits', 
-    stock: 40, 
-    rating: 4.8, 
-    reviews: 145, 
-    organic: true, 
-    featured: true,
-    shopId: '1',
-    images: [
-      'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=500',
-      'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=500'
-    ]
-  },
-  { 
-    id: '12', 
-    name: 'Organic Blueberries', 
-    price: 10, 
-    description: 'Sweet organic blueberries packed with antioxidants. Great for smoothies.',
-    image: 'https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=500',
-    category: 'Fruits', 
-    stock: 30, 
-    rating: 4.9, 
-    reviews: 178, 
-    organic: true, 
-    featured: true,
-    shopId: '1',
-    images: [
-      'https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=500',
-      'https://images.unsplash.com/photo-1588165171080-c89acfa5ee83?w=500'
-    ]
-  },
-]
+function slugify(input: string) {
+  return input
+    .toLowerCase()
+    .replace(/&/g, ' and ')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+function basenameNoExt(p: string) {
+  const base = p.split('/').pop() || p
+  return base.replace(/\.[a-z0-9]+$/i, '')
+}
+
+function scoreImageMatch(productSlug: string, imageBase: string) {
+  // Prefer exact-ish matches first, then partial matches.
+  if (imageBase === productSlug) return 100
+  if (imageBase.startsWith(productSlug + '-')) return 90
+  if (imageBase.startsWith(productSlug)) return 80
+  if (imageBase.includes(productSlug)) return 70
+
+  // Some files include prefixes like "organic-" or "fresh-". Try matching without them.
+  const stripped = productSlug.replace(/^(organic|fresh)-/, '')
+  if (stripped && imageBase === stripped) return 60
+  if (stripped && imageBase.startsWith(stripped + '-')) return 55
+  if (stripped && imageBase.includes(stripped)) return 50
+
+  return 0
+}
+
+function pickImagesForProductName(name: string) {
+  const productSlug = slugify(name)
+  const scored = PRODUCT_IMAGE_PATHS.map((p) => {
+    const base = basenameNoExt(p)
+    return { p, score: scoreImageMatch(productSlug, base), base }
+  }).filter((x) => x.score > 0)
+
+  scored.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score
+    // Prefer shorter/cleaner names (often without numeric suffix).
+    if (a.base.length !== b.base.length) return a.base.length - b.base.length
+    return a.p.localeCompare(b.p)
+  })
+
+  if (scored.length === 0) {
+    // Safe fallback: always exists in the repo.
+    return ['/images/products/apples.jpg']
+  }
+
+  return scored.slice(0, 4).map((x) => x.p)
+}
+
+export const mockProducts: Product[] = (allProducts as Product[]).map((p) => {
+  const images = pickImagesForProductName(String((p as any).name || ''))
+  return {
+    ...p,
+    image: images[0] || '/images/products/apples.jpg',
+    images,
+  }
+})
 
 export const mockShops: Shop[] = [
   {
     id: '1',
     name: 'Fresh Fruits Farm',
-    owner: 'vendor@organic.com',
+    owner: 'vendor-1',
     description: 'Premium organic fruits directly from our farm',
     location: { lat: 40.7128, lng: -74.0060, address: '123 Farm Road, New York, NY 10001' },
     rating: 4.8,
@@ -240,7 +79,7 @@ export const mockShops: Shop[] = [
   {
     id: '2',
     name: 'Green Valley Vegetables',
-    owner: 'vendor@organic.com',
+    owner: 'vendor-1',
     description: 'Fresh organic vegetables grown with care',
     location: { lat: 40.7580, lng: -73.9855, address: '456 Green Street, New York, NY 10002' },
     rating: 4.7,
@@ -252,7 +91,7 @@ export const mockShops: Shop[] = [
   {
     id: '3',
     name: 'Dairy Delight',
-    owner: 'vendor2@organic.com',
+    owner: 'vendor-2',
     description: 'Organic dairy products from grass-fed cows',
     location: { lat: 40.7489, lng: -73.9680, address: '789 Dairy Lane, New York, NY 10003' },
     rating: 4.9,
@@ -264,7 +103,7 @@ export const mockShops: Shop[] = [
   {
     id: '4',
     name: 'Organic Pantry',
-    owner: 'vendor2@organic.com',
+    owner: 'vendor-2',
     description: 'Organic pantry essentials and baked goods',
     location: { lat: 40.7614, lng: -73.9776, address: '321 Pantry Ave, New York, NY 10004' },
     rating: 4.6,
@@ -275,19 +114,10 @@ export const mockShops: Shop[] = [
   },
 ]
 
-export const mockUsers: User[] = [
-  { id: '1', email: 'admin@organic.com', name: 'Admin User', role: 'admin', password: 'admin123', phone: '+1234567890', address: '123 Admin St, NY' },
-  { id: '2', email: 'vendor@organic.com', name: 'Vendor User', role: 'vendor', password: 'vendor123', phone: '+1234567891', address: '456 Vendor Ave, NY' },
-  { id: '3', email: 'vendor2@organic.com', name: 'Vendor Two', role: 'vendor', password: 'vendor123', phone: '+1234567893', address: '789 Vendor Blvd, NY' },
-  { id: '4', email: 'customer@organic.com', name: 'Customer User', role: 'customer', password: 'customer123', phone: '+1234567892', address: '789 Customer Rd, NY' },
-  { id: '5', email: 'customer2@organic.com', name: 'John Smith', role: 'customer', password: 'customer123', phone: '+1234567894', address: '321 Main St, NY' },
-]
-
 // Initialize file storage on server start
 if (typeof window === 'undefined') {
   try {
     FileStorage.init()
-    mockUsers.forEach(user => FileStorage.users.save(user))
     FileStorage.products.saveAll(mockProducts)
   } catch (error) {
     console.log('File storage initialization skipped')
@@ -344,15 +174,6 @@ export const db = {
         product.stock -= quantity
       }
     }
-  },
-  users: {
-    findByEmail: async (email: string) => mockUsers.find(u => u.email === email),
-    create: async (user: Omit<User, 'id'>) => {
-      const newUser = { ...user, id: String(mockUsers.length + 1) }
-      mockUsers.push(newUser)
-      storage.save('users', mockUsers)
-      return newUser
-    },
   },
   shops: {
     findMany: async () => mockShops,
@@ -501,7 +322,7 @@ export const db = {
       const totalRevenue = transactions.reduce((sum, t) => sum + t.amount, 0)
       const totalOrders = orders.length
       const totalProducts = mockProducts.length
-      const totalCustomers = mockUsers.filter(u => u.role === 'customer').length
+      const totalCustomers = 0
       
       return {
         totalRevenue,

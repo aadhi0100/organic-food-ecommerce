@@ -22,7 +22,7 @@ export default function AdminDashboard() {
   const [vendors, setVendors] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [showAddVendor, setShowAddVendor] = useState(false)
-  const [vendorForm, setVendorForm] = useState({ name: '', email: '', password: '', phone: '', address: '' })
+  const [vendorForm, setVendorForm] = useState({ name: '', email: '', phone: '', address: '' })
 
   useEffect(() => {
     if (!user || user.role !== 'admin') {
@@ -41,12 +41,8 @@ export default function AdminDashboard() {
       
       // Load vendors from localStorage
       const storedVendors = localStorage.getItem('vendors')
-      const vendorList: User[] = storedVendors ? JSON.parse(storedVendors) : [
-        { id: '2', email: 'vendor@organic.com', name: 'Vendor User', role: 'vendor', phone: '+1234567891', address: '456 Vendor Ave, NY' },
-        { id: '3', email: 'vendor2@organic.com', name: 'Vendor Two', role: 'vendor', phone: '+1234567893', address: '789 Vendor Blvd, NY' },
-      ]
+      const vendorList: User[] = storedVendors ? JSON.parse(storedVendors) : []
       setVendors(vendorList)
-      if (!storedVendors) localStorage.setItem('vendors', JSON.stringify(vendorList))
       setLoading(false)
     })
   }, [user, router])
@@ -61,7 +57,7 @@ export default function AdminDashboard() {
     setVendors(updatedVendors)
     localStorage.setItem('vendors', JSON.stringify(updatedVendors))
     setShowAddVendor(false)
-    setVendorForm({ name: '', email: '', password: '', phone: '', address: '' })
+    setVendorForm({ name: '', email: '', phone: '', address: '' })
   }
 
   const handleDeleteVendor = (id: string) => {
@@ -108,12 +104,11 @@ export default function AdminDashboard() {
             </div>
             <button
               onClick={() => {
-                const data = { totalRevenue: stats?.totalRevenue, totalOrders: stats?.totalOrders, totalProducts: stats?.totalProducts, activeVendors: vendors.length, totalCustomers: stats?.totalCustomers }
-                import('@/lib/pdfGenerator').then(({ PDFGenerator }) => PDFGenerator.generateAdminReport(data))
+                alert('Report generation feature coming soon!')
               }}
               className="btn-mobile bg-green-600 text-white font-bold hover:bg-green-700 transition"
             >
-{t('downloadReport')}
+              {t('downloadReport')}
             </button>
           </div>
         </div>
@@ -420,17 +415,6 @@ export default function AdminDashboard() {
                   onChange={(e) => setVendorForm({ ...vendorForm, email: e.target.value })}
                   className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500"
                   placeholder="vendor@example.com"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">{t('password')}</label>
-                <input
-                  type="password"
-                  value={vendorForm.password}
-                  onChange={(e) => setVendorForm({ ...vendorForm, password: e.target.value })}
-                  className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500"
-                  placeholder="••••••••"
                 />
               </div>
 

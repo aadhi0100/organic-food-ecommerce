@@ -7,7 +7,7 @@ import { useTheme } from '@/context/ThemeContext'
 import { useLanguage } from '@/context/LanguageContext'
 import { ShoppingCart, User, Menu, Moon, Sun } from 'lucide-react'
 import { useState } from 'react'
-import LanguageSelector from './LanguageSelector'
+import { LanguageSelector } from './LanguageSelector'
 
 export function Header() {
   const { getItemCount } = useCart()

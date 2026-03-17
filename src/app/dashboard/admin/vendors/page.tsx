@@ -62,42 +62,21 @@ export default function AdminVendors() {
       return
     }
 
-    fetch('/api/shops')
-      .then(r => r.json())
-      .then((shopsData: Shop[]) => {
-        const vendorList: VendorDetails[] = [
-          {
-            id: '2',
-            email: 'vendor@organic.com',
-            name: 'Vendor User',
-            role: 'vendor',
-            phone: '+1234567891',
-            address: '456 Vendor Ave, NY',
-            shops: shopsData.filter(s => s.owner === 'vendor@organic.com'),
-            totalRevenue: shopsData.filter(s => s.owner === 'vendor@organic.com').reduce((sum, s) => sum + s.revenue, 0),
-            totalOrders: shopsData.filter(s => s.owner === 'vendor@organic.com').reduce((sum, s) => sum + s.totalOrders, 0),
-            avgRating: 4.8,
-            status: 'active',
-            joinedDate: '2023-06-15'
-          },
-          {
-            id: '3',
-            email: 'vendor2@organic.com',
-            name: 'Vendor Two',
-            role: 'vendor',
-            phone: '+1234567893',
-            address: '789 Vendor Blvd, NY',
-            shops: shopsData.filter(s => s.owner === 'vendor2@organic.com'),
-            totalRevenue: shopsData.filter(s => s.owner === 'vendor2@organic.com').reduce((sum, s) => sum + s.revenue, 0),
-            totalOrders: shopsData.filter(s => s.owner === 'vendor2@organic.com').reduce((sum, s) => sum + s.totalOrders, 0),
-            avgRating: 4.6,
-            status: 'active',
-            joinedDate: '2023-08-20'
-          }
-        ]
-        setVendors(vendorList)
-        setFilteredVendors(vendorList)
-      })
+    Promise.all([
+      fetch('/api/shops').then(r => r.json() as Promise<Shop[]>),
+      fetch('/api/admin/vendors').then(r => r.json() as Promise<{ vendors: any[] }>),
+    ]).then(([shopsData, vendorsData]) => {
+      const vendorList: VendorDetails[] = (vendorsData.vendors || []).map((v) => ({
+        ...v,
+        shops: shopsData.filter(s => s.owner === v.email),
+        totalRevenue: shopsData.filter(s => s.owner === v.email).reduce((sum, s) => sum + s.revenue, 0),
+        totalOrders: shopsData.filter(s => s.owner === v.email).reduce((sum, s) => sum + s.totalOrders, 0),
+        avgRating: 0,
+      }))
+
+      setVendors(vendorList)
+      setFilteredVendors(vendorList)
+    })
   }, [user, router])
 
   useEffect(() => {

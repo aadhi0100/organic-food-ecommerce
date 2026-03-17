@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { getActiveFestivalOffer, type FestivalOffer } from '@/lib/festivalOffers'
 import { Sparkles, X } from 'lucide-react'
 
-export default function FestivalOfferBanner() {
+export function FestivalOfferBanner() {
   const [offer, setOffer] = useState<FestivalOffer | null>(null)
   const [visible, setVisible] = useState(true)
 

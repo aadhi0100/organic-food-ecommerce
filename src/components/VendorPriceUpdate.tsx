@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { DollarSign, Calendar, Percent, Save } from 'lucide-react'
 
-export default function VendorPriceUpdate({ vendorId, products }: any) {
+function VendorPriceUpdate({ vendorId, products }: any) {
   const [selectedProduct, setSelectedProduct] = useState('')
   const [dailyPrice, setDailyPrice] = useState('')
   const [discount, setDiscount] = useState('')
@@ -116,3 +116,5 @@ export default function VendorPriceUpdate({ vendorId, products }: any) {
     </div>
   )
 }
+
+export default VendorPriceUpdate

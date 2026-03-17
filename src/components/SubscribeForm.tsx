@@ -67,7 +67,7 @@ export function SubscribeForm() {
           )}
           
           <p className="mt-4 text-xs text-green-200">
-            {t('storedIn')}: data/subscriptions/ | {t('admin')}: admin@organic.com
+            {t('storedIn')}: data/subscriptions/
           </p>
         </div>
       </div>

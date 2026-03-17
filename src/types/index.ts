@@ -19,6 +19,7 @@ export interface User {
   email: string
   name: string
   role: 'customer' | 'vendor' | 'admin'
+  picture?: string
   password?: string
   phone?: string
   address?: string

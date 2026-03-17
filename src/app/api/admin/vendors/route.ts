@@ -2,6 +2,50 @@ import { NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
 
+function parseVendorFile(content: string) {
+  const lines = content.split('\n').map(l => l.trim()).filter(Boolean)
+  const data: Record<string, string> = {}
+  for (const line of lines) {
+    const idx = line.indexOf(':')
+    if (idx === -1) continue
+    const key = line.slice(0, idx).trim().toLowerCase()
+    const value = line.slice(idx + 1).trim()
+    data[key] = value
+  }
+  return data
+}
+
+export async function GET() {
+  try {
+    const dataDir = path.join(process.cwd(), 'data', 'users')
+    if (!fs.existsSync(dataDir)) return NextResponse.json({ vendors: [] })
+
+    const vendors = fs
+      .readdirSync(dataDir)
+      .filter(f => f.startsWith('vendor_') && f.endsWith('.txt'))
+      .map(file => {
+        const content = fs.readFileSync(path.join(dataDir, file), 'utf-8')
+        const parsed = parseVendorFile(content)
+        return {
+          id: parsed.id || file.replace(/^vendor_/, '').replace(/\.txt$/, ''),
+          name: parsed.name || '',
+          email: parsed.email || '',
+          role: 'vendor' as const,
+          phone: parsed.phone || '',
+          address: parsed.address || '',
+          businessName: parsed['business name'] || '',
+          status: (parsed.status as 'active' | 'inactive' | 'pending') || 'active',
+          joinedDate: parsed.joined || parsed.created || '',
+        }
+      })
+      .filter(v => v.id && v.email)
+
+    return NextResponse.json({ vendors })
+  } catch {
+    return NextResponse.json({ vendors: [] }, { status: 500 })
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json()

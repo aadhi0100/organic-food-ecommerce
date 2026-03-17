@@ -6,7 +6,7 @@ import { logActivity } from '@/lib/activityLogger'
 
 interface AuthContextType {
   user: User | null
-  login: (email: string, password: string) => Promise<void>
+  loginWithGoogle: (nextPath?: string) => void
   logout: () => void
   isLoading: boolean
 }
@@ -18,27 +18,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const stored = localStorage.getItem('user')
-    if (stored) {
-      const userData = JSON.parse(stored)
-      setUser(userData)
-    }
-    setIsLoading(false)
+    fetch('/api/auth/session', { credentials: 'include' })
+      .then(async (res) => {
+        if (!res.ok) return null
+        const data = await res.json()
+        return data?.user as User | null
+      })
+      .then((sessionUser) => {
+        if (sessionUser) setUser(sessionUser)
+      })
+      .finally(() => setIsLoading(false))
   }, [])
 
-  const login = async (email: string, password: string) => {
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-      credentials: 'include'
-    })
-    if (!res.ok) throw new Error('Login failed')
-    const userData = await res.json()
-    setUser(userData)
-    localStorage.setItem('user', JSON.stringify(userData))
-    
-    logActivity.userLogin(userData.id, userData.email)
+  const loginWithGoogle = (nextPath?: string) => {
+    const safeNext = nextPath && nextPath.startsWith('/') ? nextPath : '/'
+    window.location.href = `/api/auth/google/start?next=${encodeURIComponent(safeNext)}`
   }
 
   const logout = async () => {
@@ -52,10 +46,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })
     
     setUser(null)
-    localStorage.removeItem('user')
   }
 
-  return <AuthContext.Provider value={{ user, login, logout, isLoading }}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={{ user, loginWithGoogle, logout, isLoading }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export function useAuth() {

@@ -50,15 +50,15 @@ export function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-2">
                 <Phone size={16} />
-                <span>(555) 123-4567</span>
+                <span>+91 98765 43210</span>
               </li>
               <li className="flex items-center gap-2">
                 <Mail size={16} />
-                <span>info@organicfood.com</span>
+                <span>info@organicfood.in</span>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin size={16} className="mt-1" />
-                <span>123 Organic Street<br />Green City, GC 12345</span>
+                <span>123 MG Road, Koramangala<br />Bangalore, Karnataka 560034</span>
               </li>
             </ul>
           </div>

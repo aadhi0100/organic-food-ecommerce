@@ -245,8 +245,8 @@ export default function CustomerDashboard() {
                 <ShoppingBag className="text-green-600" size={24} />
               </div>
             </div>
-            <h3 className="text-gray-600 text-sm mb-1">Total Carts</h3>
-            <p className="text-3xl font-bold">{totalCarts}</p>
+            <h3 className="text-gray-600 text-sm mb-1">Total Items</h3>
+            <p className="text-3xl font-bold">{orders.reduce((sum, o) => sum + (o.items?.length || 0), 0)}</p>
           </div>
 
           <div className="bg-white rounded-xl shadow-md p-6">

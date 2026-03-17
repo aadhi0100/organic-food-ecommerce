@@ -3,7 +3,7 @@
 import { useLanguage } from '@/context/LanguageContext'
 import { Globe } from 'lucide-react'
 
-export default function LanguageSelector() {
+export function LanguageSelector() {
   const { language, setLanguage } = useLanguage()
 
   const languages = [

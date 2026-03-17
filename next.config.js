@@ -4,9 +4,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: ['@prisma/client'],
-  },
   images: {
     remotePatterns: [
       {
@@ -16,10 +13,6 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'source.unsplash.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
       },
     ],
     formats: ['image/avif', 'image/webp'],
@@ -44,9 +37,6 @@ const nextConfig = {
       ],
     },
   ],
-  env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
-  },
 }
 
 module.exports = withBundleAnalyzer(nextConfig)

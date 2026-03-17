@@ -8,7 +8,7 @@ interface LocationPickerProps {
   initialLocation?: { lat: number; lng: number; address: string } | undefined
 }
 
-export default function LocationPicker({ onLocationSelect, initialLocation }: LocationPickerProps) {
+export function LocationPicker({ onLocationSelect, initialLocation }: LocationPickerProps) {
   const [location, setLocation] = useState(initialLocation || { lat: 28.6139, lng: 77.2090, address: '' })
   const [loading, setLoading] = useState(false)
 

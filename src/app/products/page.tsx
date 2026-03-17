@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { ProductCard } from '@/components/ProductCard'
-import AdvancedSearch, { SearchFilters } from '@/components/AdvancedSearch'
+import { AdvancedSearch } from '@/components/AdvancedSearch'
+import type { SearchFilters } from '@/components/AdvancedSearch'
 import { LoadingScreen, MiniLoader } from '@/components/LoadingScreen'
 import { useLanguage } from '@/context/LanguageContext'
 import { translateProducts } from '@/utils/productTranslate'
