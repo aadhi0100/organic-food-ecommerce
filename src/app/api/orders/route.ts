@@ -1,57 +1,67 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { generateProfessionalInvoice, calculateDeliveryDate, generateTrackingNumber } from '@/lib/professionalInvoice'
+import { generateProfessionalInvoice } from '@/lib/professionalInvoice'
 import { sendInvoiceEmail } from '@/lib/invoiceEmailService'
+import { OrderCreateSchema } from '@/lib/validation'
+import { SESSION_COOKIE_NAME, verifySession } from '@/lib/auth/session'
+import { buildInvoiceData } from '@/lib/invoiceData'
+
+async function getSessionUser(request: Request) {
+  const cookieHeader = request.headers.get('cookie') || ''
+  const match = cookieHeader.match(new RegExp(`(?:^|; )${SESSION_COOKIE_NAME}=([^;]+)`))
+  const token = match ? decodeURIComponent(match[1] || '') : ''
+  if (!token) return null
+  try {
+    return await verifySession(token)
+  } catch {
+    return null
+  }
+}
 
 export async function POST(request: Request) {
   try {
-    const orderData = await request.json()
-    
-    // Add delivery tracking info
-    const trackingNumber = generateTrackingNumber()
-    const deliveryDate = calculateDeliveryDate(orderData.orderDate || new Date().toISOString())
-    
-    const enhancedOrderData = {
-      ...orderData,
-      trackingNumber,
-      deliveryDate,
-      status: 'confirmed'
+    const sessionUser = await getSessionUser(request)
+    if (!sessionUser) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
     }
-    
-    const order = await db.orders.create(enhancedOrderData)
-    
-    // Generate professional invoice
-    const invoiceData = {
-      orderId: order.id,
-      orderDate: order.orderDate || new Date().toISOString(),
-      customerName: order.customerName || 'Customer',
-      customerEmail: order.customerEmail || '',
-      customerPhone: order.customerPhone || '',
-      shippingAddress: {
-        street: order.shippingAddress.street || '',
-        city: order.shippingAddress.city || '',
-        state: order.shippingAddress.state || '',
-        zipCode: order.shippingAddress.zipCode || '',
-        country: order.shippingAddress.country || 'India'
-      },
-      items: order.items.map((item: any) => ({
-        name: item.product?.name || item.name || 'Product',
-        quantity: item.quantity || 1,
-        price: item.product?.price || item.price || 0,
-        total: (item.product?.price || item.price || 0) * (item.quantity || 1)
+
+    const body = await request.json()
+    const parsed = OrderCreateSchema.safeParse({
+      ...body,
+      userId: sessionUser.id,
+      customerEmail: body.customerEmail || sessionUser.email,
+    })
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues[0]?.message || 'Invalid order payload' },
+        { status: 400 },
+      )
+    }
+
+    const order = await db.orders.create({
+      userId: sessionUser.id,
+      cartId: parsed.data.cartId,
+      customerName: parsed.data.customerName,
+      customerEmail: parsed.data.customerEmail || sessionUser.email,
+      customerPhone: parsed.data.customerPhone,
+      shippingAddress: parsed.data.shippingAddress,
+      paymentMethod: parsed.data.paymentMethod,
+      couponCode: parsed.data.couponCode,
+      deliveryType: parsed.data.deliveryType,
+      items: parsed.data.items.map((item) => ({
+        productId: item.productId,
+        quantity: item.quantity,
       })),
-      subtotal: order.total * 0.95,
-      tax: order.total * 0.05,
-      shipping: 0,
-      total: order.total,
-      deliveryDate,
-      trackingNumber,
-      paymentMethod: order.paymentMethod || 'Cash on Delivery'
-    }
-    
+      status: 'pending',
+      total: 0,
+      orderDate: new Date().toISOString(),
+    })
+
+    const invoiceData = await buildInvoiceData(order)
+
     let pdfBuffer: Buffer | null = null
     try {
-      const pdfDoc = generateProfessionalInvoice(invoiceData)
+      const pdfDoc = await generateProfessionalInvoice(invoiceData)
       pdfBuffer = Buffer.from(pdfDoc.output('arraybuffer'))
     } catch (pdfError) {
       console.error('PDF generation error:', pdfError)
@@ -65,8 +75,8 @@ export async function POST(request: Request) {
           orderId: order.id,
           customerName: order.customerName || 'Customer',
           total: order.total,
-          deliveryDate,
-          trackingNumber,
+          deliveryDate: invoiceData.deliveryDate,
+          trackingNumber: invoiceData.trackingNumber,
           pdfBuffer
         })
       } catch (emailError) {
@@ -76,25 +86,31 @@ export async function POST(request: Request) {
     
     return NextResponse.json({
       ...order,
-      trackingNumber,
-      deliveryDate,
+      trackingNumber: invoiceData.trackingNumber,
+      deliveryDate: invoiceData.deliveryDate,
       message: 'Order created successfully. Invoice sent to email.'
     })
   } catch (error) {
     console.error('Order creation error:', error)
-    return NextResponse.json({ error: 'Failed to create order' }, { status: 500 })
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Failed to create order' }, { status: 500 })
   }
 }
 
 export async function GET(request: Request) {
+  const sessionUser = await getSessionUser(request)
+  if (!sessionUser) {
+    return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+  }
+
   const { searchParams } = new URL(request.url)
   const userId = searchParams.get('userId')
-  
-  if (userId) {
-    const orders = await db.orders.findByUserId(userId)
+
+  if (sessionUser.role === 'admin') {
+    const orders = userId ? await db.orders.findByUserId(userId) : await db.orders.getAll()
     return NextResponse.json(orders)
   }
-  
-  const orders = await db.orders.getAll()
+
+  // Non-admin users can only see their own orders
+  const orders = await db.orders.findByUserId(sessionUser.id)
   return NextResponse.json(orders)
 }

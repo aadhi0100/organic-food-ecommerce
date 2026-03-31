@@ -1,53 +1,69 @@
 'use client'
 
-import { Share2, Facebook, Twitter, Copy } from 'lucide-react'
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { Facebook, Twitter, Copy, MessageCircle } from 'lucide-react'
 import { useNotification } from '@/context/NotificationContext'
 
 interface SocialShareProps {
   url: string
   title: string
+  description?: string
 }
 
-export function SocialShare({ url, title }: SocialShareProps) {
-  const [showMenu, setShowMenu] = useState(false)
+export function SocialShare({ url, title, description }: SocialShareProps) {
   const { notify } = useNotification()
+  const text = description ? `${title} — ${description}` : title
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(url)
-    notify('success', 'Link copied!')
-    setShowMenu(false)
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(url)
+      notify('success', 'Link copied to clipboard!')
+    } catch {
+      notify('error', 'Failed to copy link')
+    }
   }
 
-  return (
-    <div className="relative">
-      <button
-        onClick={() => setShowMenu(!showMenu)}
-        className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600"
-      >
-        <Share2 size={20} />
-        <span className="dark:text-white">Share</span>
-      </button>
+  const shareOptions = [
+    {
+      label: 'WhatsApp',
+      icon: <MessageCircle size={18} />,
+      color: 'bg-green-500 hover:bg-green-600',
+      href: `https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`,
+    },
+    {
+      label: 'Facebook',
+      icon: <Facebook size={18} />,
+      color: 'bg-blue-600 hover:bg-blue-700',
+      href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+    },
+    {
+      label: 'Twitter',
+      icon: <Twitter size={18} />,
+      color: 'bg-sky-500 hover:bg-sky-600',
+      href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+    },
+  ]
 
-      <AnimatePresence>
-        {showMenu && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="absolute top-full mt-2 right-0 bg-white dark:bg-gray-800 rounded-lg shadow-xl p-2 z-50 min-w-[200px]"
-          >
-            <button
-              onClick={copyToClipboard}
-              className="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
-            >
-              <Copy size={20} />
-              <span className="dark:text-white">Copy Link</span>
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      {shareOptions.map((opt) => (
+        <a
+          key={opt.label}
+          href={opt.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-white transition ${opt.color}`}
+        >
+          {opt.icon}
+          {opt.label}
+        </a>
+      ))}
+      <button
+        onClick={copyToClipboard}
+        className="flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+      >
+        <Copy size={18} />
+        Copy Link
+      </button>
     </div>
   )
 }

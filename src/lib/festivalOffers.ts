@@ -8,14 +8,14 @@ export interface FestivalOffer {
   active: boolean
 }
 
-export const indianFestivals2024: FestivalOffer[] = [
+export const indianFestivals: FestivalOffer[] = [
   {
     id: 'diwali',
     name: 'Diwali Dhamaka',
     nameHindi: 'दिवाली धमाका',
     discount: 30,
-    startDate: new Date('2024-10-29'),
-    endDate: new Date('2024-11-03'),
+    startDate: new Date('2025-10-20'),
+    endDate: new Date('2025-10-25'),
     active: false,
   },
   {
@@ -23,8 +23,8 @@ export const indianFestivals2024: FestivalOffer[] = [
     name: 'Holi Special',
     nameHindi: 'होली स्पेशल',
     discount: 25,
-    startDate: new Date('2024-03-23'),
-    endDate: new Date('2024-03-26'),
+    startDate: new Date('2025-03-13'),
+    endDate: new Date('2025-03-15'),
     active: false,
   },
   {
@@ -32,8 +32,8 @@ export const indianFestivals2024: FestivalOffer[] = [
     name: 'Pongal Offer',
     nameHindi: 'पोंगल ऑफर',
     discount: 20,
-    startDate: new Date('2024-01-14'),
-    endDate: new Date('2024-01-17'),
+    startDate: new Date('2025-01-14'),
+    endDate: new Date('2025-01-17'),
     active: false,
   },
   {
@@ -41,8 +41,8 @@ export const indianFestivals2024: FestivalOffer[] = [
     name: 'Eid Mubarak',
     nameHindi: 'ईद मुबारक',
     discount: 25,
-    startDate: new Date('2024-04-10'),
-    endDate: new Date('2024-04-13'),
+    startDate: new Date('2025-03-30'),
+    endDate: new Date('2025-04-02'),
     active: false,
   },
   {
@@ -50,8 +50,8 @@ export const indianFestivals2024: FestivalOffer[] = [
     name: 'Independence Day',
     nameHindi: 'स्वतंत्रता दिवस',
     discount: 15,
-    startDate: new Date('2024-08-14'),
-    endDate: new Date('2024-08-16'),
+    startDate: new Date('2025-08-14'),
+    endDate: new Date('2025-08-16'),
     active: false,
   },
   {
@@ -59,8 +59,8 @@ export const indianFestivals2024: FestivalOffer[] = [
     name: 'Republic Day',
     nameHindi: 'गणतंत्र दिवस',
     discount: 15,
-    startDate: new Date('2024-01-25'),
-    endDate: new Date('2024-01-27'),
+    startDate: new Date('2025-01-25'),
+    endDate: new Date('2025-01-27'),
     active: false,
   },
 ]
@@ -69,7 +69,7 @@ export function getActiveFestivalOffer(): FestivalOffer | null {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
-  for (const festival of indianFestivals2024) {
+  for (const festival of indianFestivals) {
     const start = new Date(festival.startDate)
     const end = new Date(festival.endDate)
     start.setHours(0, 0, 0, 0)

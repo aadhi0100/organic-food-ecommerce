@@ -5,7 +5,7 @@ export interface ActivityLog {
   id: string
   type: 'order' | 'message' | 'transaction' | 'user_action' | 'product_view' | 'cart_action'
   userId: string
-  data: any
+  data: Record<string, unknown>
   timestamp: string
   ipAddress?: string
   userAgent?: string
@@ -27,7 +27,7 @@ class ActivityLogger {
   }
 
   // Log any activity
-  log(type: ActivityLog['type'], userId: string, data: any) {
+  log(type: ActivityLog['type'], userId: string, data: Record<string, unknown>) {
     const activity: ActivityLog = {
       id: String(this.logIdCounter++),
       type,
@@ -126,7 +126,7 @@ export const activityLogger = new ActivityLogger()
 // Helper functions for common activities
 export const logActivity = {
   // Order activities
-  orderPlaced: (userId: string, orderData: any) => {
+  orderPlaced: (userId: string, orderData: Record<string, unknown>) => {
     return activityLogger.log('order', userId, {
       action: 'placed',
       ...orderData
@@ -142,7 +142,7 @@ export const logActivity = {
   },
 
   // Message activities
-  messageSent: (userId: string, messageData: any) => {
+  messageSent: (userId: string, messageData: Record<string, unknown>) => {
     return activityLogger.log('message', userId, {
       action: 'sent',
       ...messageData
@@ -150,7 +150,7 @@ export const logActivity = {
   },
 
   // Transaction activities
-  transactionCompleted: (userId: string, transactionData: any) => {
+  transactionCompleted: (userId: string, transactionData: Record<string, unknown>) => {
     return activityLogger.log('transaction', userId, {
       action: 'completed',
       ...transactionData

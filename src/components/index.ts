@@ -12,5 +12,14 @@ export { SkeletonCard, SkeletonList } from './SkeletonLoader'
 export { LocationPicker } from './LocationPicker'
 export { SubscribeForm } from './SubscribeForm'
 export { ServiceWorkerRegistration } from './ServiceWorkerRegistration'
-export { TestNotifications } from './TestNotifications'
 export { default as VendorPriceUpdate } from './VendorPriceUpdate'
+export {
+  LocalizedText,
+  LocalizedHeading,
+  LocalizedParagraph,
+  LocalizedLabel,
+  LocalizedButton,
+  LocalizedSpan,
+  LocalizedDiv,
+  LocalizedInput,
+} from './LocalizedText'

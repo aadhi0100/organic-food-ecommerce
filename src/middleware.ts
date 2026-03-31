@@ -1,25 +1,14 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { jwtVerify } from 'jose'
-import { SESSION_COOKIE_NAME } from '@/lib/auth/session'
+import { SESSION_COOKIE_NAME, verifySession } from '@/lib/auth/session'
+import { getDashboardPath, hasCompletedOnboarding } from '@/lib/auth/routing'
 
-function getSessionSecret() {
-  const raw = process.env.APP_SESSION_SECRET || process.env.JWT_SECRET
-  if (!raw) return null
-  return new TextEncoder().encode(raw)
-}
-
-async function getRoleFromRequest(request: NextRequest) {
+async function getSessionFromRequest(request: NextRequest) {
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value
   if (!token) return null
 
-  const secret = getSessionSecret()
-  if (!secret) return null
-
   try {
-    const { payload } = await jwtVerify(token, secret, { algorithms: ['HS256'] })
-    const role = payload.role
-    return role === 'admin' || role === 'vendor' || role === 'customer' ? role : null
+    return await verifySession(token)
   } catch {
     return null
   }
@@ -27,29 +16,52 @@ async function getRoleFromRequest(request: NextRequest) {
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
+  const pathWithQuery = `${path}${request.nextUrl.search}`
   const redirectToLogin = () => {
     const loginUrl = new URL('/login', request.url)
-    loginUrl.searchParams.set('next', path)
+    loginUrl.searchParams.set('next', pathWithQuery)
     return NextResponse.redirect(loginUrl)
   }
 
-  const role = await getRoleFromRequest(request)
+  const session = await getSessionFromRequest(request)
+  const role = session?.role || null
 
-  // Admin routes
+  if (path === '/login') {
+    if (role) {
+      return NextResponse.redirect(new URL(getDashboardPath(role), request.url))
+    }
+    return NextResponse.next()
+  }
+
+  if (path === '/register') {
+    if (role && hasCompletedOnboarding(session)) {
+      return NextResponse.redirect(new URL(getDashboardPath(role), request.url))
+    }
+    return NextResponse.next()
+  }
+
+  if (path === '/dashboard') {
+    if (!role) return redirectToLogin()
+    return NextResponse.redirect(new URL(getDashboardPath(role), request.url))
+  }
+
   if (path.startsWith('/dashboard/admin')) {
     if (role !== 'admin') return redirectToLogin()
     return NextResponse.next()
   }
 
-  // Vendor routes
   if (path.startsWith('/dashboard/vendor')) {
     if (role !== 'vendor') return redirectToLogin()
     return NextResponse.next()
   }
 
-  // Customer routes
   if (path.startsWith('/dashboard/customer')) {
     if (role !== 'customer') return redirectToLogin()
+    return NextResponse.next()
+  }
+
+  if (path.startsWith('/profile')) {
+    if (!role) return redirectToLogin()
     return NextResponse.next()
   }
 
@@ -57,5 +69,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*']
+  matcher: ['/dashboard', '/dashboard/:path*', '/profile/:path*', '/login', '/register']
 }

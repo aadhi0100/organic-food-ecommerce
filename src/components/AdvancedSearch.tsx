@@ -25,7 +25,7 @@ export function AdvancedSearch({ onSearch, categories = [] }: AdvancedSearchProp
   const [filters, setFilters] = useState<SearchFilters>({
     category: '',
     minPrice: 0,
-    maxPrice: 1000,
+    maxPrice: 5000,
     inStock: false,
     sortBy: 'name'
   })
@@ -38,7 +38,7 @@ export function AdvancedSearch({ onSearch, categories = [] }: AdvancedSearchProp
     setFilters({
       category: '',
       minPrice: 0,
-      maxPrice: 1000,
+      maxPrice: 5000,
       inStock: false,
       sortBy: 'name'
     })
@@ -127,7 +127,7 @@ export function AdvancedSearch({ onSearch, categories = [] }: AdvancedSearchProp
                   <label className="block text-sm font-medium mb-2 dark:text-white">{t('sortBy')}</label>
                   <select
                     value={filters.sortBy}
-                    onChange={(e) => setFilters({ ...filters, sortBy: e.target.value as any })}
+                    onChange={(e) => setFilters({ ...filters, sortBy: e.target.value as SearchFilters['sortBy'] })}
                     className="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   >
                     <option value="name">{t('nameSort')}</option>

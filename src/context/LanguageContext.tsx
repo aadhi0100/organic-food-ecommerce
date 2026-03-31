@@ -1,58 +1,81 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
-import { allTranslations } from '@/utils/translations'
-
-type Language = 'en' | 'hi' | 'ta' | 'te' | 'bn' | 'mr' | 'gu' | 'kn' | 'ml' | 'pa'
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import {
+  createTranslator,
+  DEFAULT_LANGUAGE,
+  LANGUAGE_COOKIE_NAME,
+  languageFontClasses,
+  normalizeLanguage,
+  type Language,
+  clearTranslationCache,
+} from '@/lib/i18n'
 
 interface LanguageContextType {
   language: Language
   setLanguage: (lang: Language) => void
-  t: (key: string) => string
+  t: ReturnType<typeof createTranslator>
   fontClass: string
-}
-
-const translations = allTranslations as Record<Language, Record<string, string>>
-
-const fontClasses: Record<Language, string> = {
-  en: 'font-sans',
-  hi: 'font-hindi',
-  ta: 'font-sans',
-  te: 'font-sans',
-  bn: 'font-sans',
-  mr: 'font-sans',
-  gu: 'font-sans',
-  kn: 'font-sans',
-  ml: 'font-sans',
-  pa: 'font-sans',
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>('en')
+function applyLanguageToDocument(language: Language) {
+  if (typeof document === 'undefined') return
+
+  const fontClass = languageFontClasses[language]
+  const allFontClasses = Object.values(languageFontClasses)
+
+  document.documentElement.lang = language
+  document.documentElement.dir = 'ltr'
+  document.body.classList.remove(...allFontClasses)
+  document.body.classList.add(fontClass)
+}
+
+function persistLanguage(language: Language) {
+  if (typeof window === 'undefined') return
+
+  localStorage.setItem('language', language)
+  document.cookie = `${LANGUAGE_COOKIE_NAME}=${language}; path=/; max-age=31536000; samesite=lax`
+}
+
+export function LanguageProvider({
+  children,
+  initialLanguage = DEFAULT_LANGUAGE,
+}: {
+  children: ReactNode
+  initialLanguage?: Language
+}) {
+  const [language, setLanguageState] = useState<Language>(initialLanguage)
 
   useEffect(() => {
-    const stored = localStorage.getItem('language') as Language
-    const validLanguages: Language[] = ['en', 'hi', 'ta', 'te', 'bn', 'mr', 'gu', 'kn', 'ml', 'pa']
-    if (stored && validLanguages.includes(stored)) {
-      setLanguage(stored)
-      document.documentElement.lang = stored
-      document.body.className = fontClasses[stored]
+    const stored = localStorage.getItem('language')
+    if (stored) {
+      const normalized = normalizeLanguage(stored)
+      if (normalized !== language) {
+        setLanguageState(normalized)
+      }
+      return
     }
+
+    applyLanguageToDocument(language)
+  }, [language])
+
+  useEffect(() => {
+    applyLanguageToDocument(language)
   }, [])
 
-  const changeLanguage = (lang: Language) => {
-    setLanguage(lang)
-    localStorage.setItem('language', lang)
-    document.documentElement.lang = lang
-    document.body.className = fontClasses[lang]
+  const changeLanguage = (nextLanguage: Language) => {
+    clearTranslationCache()
+    setLanguageState(nextLanguage)
+    persistLanguage(nextLanguage)
+    applyLanguageToDocument(nextLanguage)
   }
 
-  const t = (key: string) => translations[language]?.[key] || key
+  const t = createTranslator(language)
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage: changeLanguage, t, fontClass: fontClasses[language] }}>
+    <LanguageContext.Provider value={{ language, setLanguage: changeLanguage, t, fontClass: languageFontClasses[language] }}>
       {children}
     </LanguageContext.Provider>
   )

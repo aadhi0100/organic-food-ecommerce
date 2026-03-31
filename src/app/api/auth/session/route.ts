@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { SESSION_COOKIE_NAME, verifySession } from '@/lib/auth/session'
+import { UserStore } from '@/lib/userStore'
 
 export async function GET(request: Request) {
   const cookieHeader = request.headers.get('cookie') || ''
@@ -11,10 +12,10 @@ export async function GET(request: Request) {
   }
 
   try {
-    const user = await verifySession(token)
+    const sessionUser = await verifySession(token)
+    const user = UserStore.getPublicUser(sessionUser.id) || sessionUser
     return NextResponse.json({ user })
   } catch {
     return NextResponse.json({ user: null }, { status: 401 })
   }
 }
-

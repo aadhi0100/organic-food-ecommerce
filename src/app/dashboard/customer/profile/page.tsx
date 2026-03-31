@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/context/LanguageContext'
 import { useRouter } from 'next/navigation'
-import { User, Mail, Phone, MapPin, Save, Edit, CreditCard, Calendar, DollarSign, Package, Award, Receipt } from 'lucide-react'
+import { User, Mail, Phone, MapPin, Save, Edit, CreditCard, DollarSign, Package, Award, Receipt } from 'lucide-react'
 import type { Order } from '@/types'
 import { formatIndianCurrency } from '@/utils/indianFormat'
 
@@ -30,7 +30,7 @@ export default function CustomerProfile() {
     address: '',
     city: '',
     state: '',
-    zipCode: ''
+    zipCode: '',
   })
 
   useEffect(() => {
@@ -44,27 +44,27 @@ export default function CustomerProfile() {
       email: user.email || '',
       phone: user.phone || '',
       address: user.address || '',
-      city: 'New York',
-      state: 'NY',
-      zipCode: '10001'
+      city: 'Chennai',
+      state: 'Tamil Nadu',
+      zipCode: '600001',
     })
 
     fetch('/api/orders')
-      .then(r => r.json())
+      .then((r) => r.json())
       .then((ordersData: Order[]) => {
-        const userOrders = ordersData.filter(o => o.userId === user.id)
+        const userOrders = ordersData.filter((o) => o.userId === user.id)
         setOrders(userOrders)
-        
-        const paymentHistory: PaymentHistory[] = userOrders.map(order => ({
+
+        const paymentHistory: PaymentHistory[] = userOrders.map((order) => ({
           orderId: order.id,
           date: order.createdAt,
           amount: order.total,
-          method: 'Credit Card',
-          status: 'Completed'
+          method: t('creditCard'),
+          status: t('completed'),
         }))
         setPayments(paymentHistory)
       })
-  }, [user, router])
+  }, [user, router, t])
 
   const handleSave = () => {
     setEditing(false)
@@ -78,49 +78,49 @@ export default function CustomerProfile() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
-        <div className="max-w-6xl mx-auto">
+        <div className="mx-auto max-w-6xl">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2">{t('myProfile')}</h1>
+            <h1 className="mb-2 text-4xl font-bold">{t('myProfile')}</h1>
             <p className="text-gray-600">{t('manageAccountInfo')}</p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
-              <div className="flex items-center justify-between mb-4">
+          <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <div className="rounded-xl bg-gradient-to-br from-green-500 to-green-600 p-6 text-white shadow-lg">
+              <div className="mb-4 flex items-center justify-between">
                 <h3 className="text-lg font-bold">{t('totalSpent')}</h3>
                 <DollarSign size={24} />
               </div>
-              <p className="text-4xl font-bold mb-2">{formatIndianCurrency(totalSpent)}</p>
+              <p className="mb-2 text-4xl font-bold">{formatIndianCurrency(totalSpent)}</p>
               <p className="text-green-100 text-sm">{t('lifetimePurchases')}</p>
             </div>
 
-            <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
-              <div className="flex items-center justify-between mb-4">
+            <div className="rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 p-6 text-white shadow-lg">
+              <div className="mb-4 flex items-center justify-between">
                 <h3 className="text-lg font-bold">{t('totalOrders')}</h3>
                 <Package size={24} />
               </div>
-              <p className="text-4xl font-bold mb-2">{totalOrders}</p>
+              <p className="mb-2 text-4xl font-bold">{totalOrders}</p>
               <p className="text-blue-100 text-sm">{t('completedOrders')}</p>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
-              <div className="flex items-center justify-between mb-4">
+            <div className="rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 p-6 text-white shadow-lg">
+              <div className="mb-4 flex items-center justify-between">
                 <h3 className="text-lg font-bold">{t('points')}</h3>
                 <Award size={24} />
               </div>
-              <p className="text-4xl font-bold mb-2">{loyaltyPoints}</p>
+              <p className="mb-2 text-4xl font-bold">{loyaltyPoints}</p>
               <p className="text-purple-100 text-sm">{t('rewardPoints')}</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-6">
-              <div className="bg-white rounded-xl shadow-md p-8">
-                <div className="flex justify-between items-center mb-6">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+            <div className="space-y-6 lg:col-span-2">
+              <div className="rounded-xl bg-white p-8 shadow-md">
+                <div className="mb-6 flex items-center justify-between">
                   <h2 className="text-2xl font-bold">{t('personalInformation')}</h2>
                   <button
-                    onClick={() => editing ? handleSave() : setEditing(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                    onClick={() => (editing ? handleSave() : setEditing(true))}
+                    className="flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-white transition hover:bg-green-700"
                   >
                     {editing ? <><Save size={18} /> {t('save')}</> : <><Edit size={18} /> {t('edit')}</>}
                   </button>
@@ -128,7 +128,7 @@ export default function CustomerProfile() {
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">{t('fullName')}</label>
+                    <label className="mb-2 block text-sm font-medium">{t('fullName')}</label>
                     <div className="flex items-center gap-3">
                       <User className="text-gray-400" size={20} />
                       <input
@@ -136,26 +136,26 @@ export default function CustomerProfile() {
                         value={profile.name}
                         onChange={(e) => setProfile({ ...profile, name: e.target.value })}
                         disabled={!editing}
-                        className="flex-1 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 disabled:bg-gray-50"
+                        className="flex-1 rounded-lg border px-4 py-3 focus:ring-2 focus:ring-green-500 disabled:bg-gray-50"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2">{t('email')}</label>
+                    <label className="mb-2 block text-sm font-medium">{t('email')}</label>
                     <div className="flex items-center gap-3">
                       <Mail className="text-gray-400" size={20} />
                       <input
                         type="email"
                         value={profile.email}
                         disabled
-                        className="flex-1 px-4 py-3 border rounded-lg bg-gray-50"
+                        className="flex-1 rounded-lg border bg-gray-50 px-4 py-3"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2">{t('phone')}</label>
+                    <label className="mb-2 block text-sm font-medium">{t('phone')}</label>
                     <div className="flex items-center gap-3">
                       <Phone className="text-gray-400" size={20} />
                       <input
@@ -163,13 +163,13 @@ export default function CustomerProfile() {
                         value={profile.phone}
                         onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                         disabled={!editing}
-                        className="flex-1 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 disabled:bg-gray-50"
+                        className="flex-1 rounded-lg border px-4 py-3 focus:ring-2 focus:ring-green-500 disabled:bg-gray-50"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2">{t('address')}</label>
+                    <label className="mb-2 block text-sm font-medium">{t('address')}</label>
                     <div className="flex items-center gap-3">
                       <MapPin className="text-gray-400" size={20} />
                       <input
@@ -177,55 +177,55 @@ export default function CustomerProfile() {
                         value={profile.address}
                         onChange={(e) => setProfile({ ...profile, address: e.target.value })}
                         disabled={!editing}
-                        className="flex-1 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 disabled:bg-gray-50"
+                        className="flex-1 rounded-lg border px-4 py-3 focus:ring-2 focus:ring-green-500 disabled:bg-gray-50"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-sm font-medium mb-2">{t('city')}</label>
+                      <label className="mb-2 block text-sm font-medium">{t('city')}</label>
                       <input
                         type="text"
                         value={profile.city}
                         onChange={(e) => setProfile({ ...profile, city: e.target.value })}
                         disabled={!editing}
-                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 disabled:bg-gray-50"
+                        className="w-full rounded-lg border px-4 py-3 focus:ring-2 focus:ring-green-500 disabled:bg-gray-50"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2">{t('state')}</label>
+                      <label className="mb-2 block text-sm font-medium">{t('state')}</label>
                       <input
                         type="text"
                         value={profile.state}
                         onChange={(e) => setProfile({ ...profile, state: e.target.value })}
                         disabled={!editing}
-                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 disabled:bg-gray-50"
+                        className="w-full rounded-lg border px-4 py-3 focus:ring-2 focus:ring-green-500 disabled:bg-gray-50"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2">{t('zipCode')}</label>
+                      <label className="mb-2 block text-sm font-medium">{t('zipCode')}</label>
                       <input
                         type="text"
                         value={profile.zipCode}
                         onChange={(e) => setProfile({ ...profile, zipCode: e.target.value })}
                         disabled={!editing}
-                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 disabled:bg-gray-50"
+                        className="w-full rounded-lg border px-4 py-3 focus:ring-2 focus:ring-green-500 disabled:bg-gray-50"
                       />
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-md p-8">
-                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+              <div className="rounded-xl bg-white p-8 shadow-md">
+                <h2 className="mb-6 flex items-center gap-2 text-2xl font-bold">
                   <Receipt className="text-green-600" />
                   {t('paymentHistory')}
                 </h2>
-                
+
                 {payments.length === 0 ? (
-                  <div className="text-center py-12">
-                    <CreditCard className="mx-auto text-gray-300 mb-4" size={64} />
+                  <div className="py-12 text-center">
+                    <CreditCard className="mx-auto mb-4 text-gray-300" size={64} />
                     <p className="text-gray-600">{t('noPaymentHistory')}</p>
                   </div>
                 ) : (
@@ -233,26 +233,24 @@ export default function CustomerProfile() {
                     <table className="w-full">
                       <thead>
                         <tr className="border-b">
-                          <th className="text-left py-3 px-4">{t('orderId')}</th>
-                          <th className="text-left py-3 px-4">{t('date')}</th>
-                          <th className="text-left py-3 px-4">{t('totalAmount')}</th>
-                          <th className="text-left py-3 px-4">{t('method')}</th>
-                          <th className="text-left py-3 px-4">{t('status')}</th>
+                          <th className="px-4 py-3 text-left">{t('orderId')}</th>
+                          <th className="px-4 py-3 text-left">{t('date')}</th>
+                          <th className="px-4 py-3 text-left">{t('totalAmount')}</th>
+                          <th className="px-4 py-3 text-left">{t('method')}</th>
+                          <th className="px-4 py-3 text-left">{t('status')}</th>
                         </tr>
                       </thead>
                       <tbody>
                         {payments.map((payment, idx) => (
                           <tr key={idx} className="border-b hover:bg-gray-50">
-                            <td className="py-3 px-4 font-medium">#{payment.orderId}</td>
-                            <td className="py-3 px-4 text-sm text-gray-600">
+                            <td className="px-4 py-3 font-medium">#{payment.orderId}</td>
+                            <td className="px-4 py-3 text-sm text-gray-600">
                               {new Date(payment.date).toLocaleDateString()}
                             </td>
-                            <td className="py-3 px-4 font-bold text-green-600">
-                              {formatIndianCurrency(payment.amount)}
-                            </td>
-                            <td className="py-3 px-4 text-sm">{payment.method}</td>
-                            <td className="py-3 px-4">
-                              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+                            <td className="px-4 py-3 font-bold text-green-600">{formatIndianCurrency(payment.amount)}</td>
+                            <td className="px-4 py-3 text-sm">{payment.method}</td>
+                            <td className="px-4 py-3">
+                              <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
                                 {payment.status}
                               </span>
                             </td>
@@ -266,21 +264,21 @@ export default function CustomerProfile() {
             </div>
 
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-xl shadow-md p-6 sticky top-24">
-                <h2 className="text-xl font-bold mb-6">{t('quickStats')}</h2>
+              <div className="sticky top-24 rounded-xl bg-white p-6 shadow-md">
+                <h2 className="mb-6 text-xl font-bold">{t('quickStats')}</h2>
                 <div className="space-y-4">
                   <div className="border-b pb-4">
-                    <p className="text-sm text-gray-600 mb-1">{t('memberSince')}</p>
+                    <p className="mb-1 text-sm text-gray-600">{t('memberSince')}</p>
                     <p className="font-bold">January 2024</p>
                   </div>
                   <div className="border-b pb-4">
-                    <p className="text-sm text-gray-600 mb-1">{t('averageOrder')}</p>
+                    <p className="mb-1 text-sm text-gray-600">{t('averageOrder')}</p>
                     <p className="font-bold text-green-600">
                       {formatIndianCurrency(totalOrders > 0 ? totalSpent / totalOrders : 0)}
                     </p>
                   </div>
                   <div className="border-b pb-4">
-                    <p className="text-sm text-gray-600 mb-1">{t('loyaltyTier')}</p>
+                    <p className="mb-1 text-sm text-gray-600">{t('loyaltyTier')}</p>
                     <p className="font-bold">
                       {totalSpent >= 50000 ? `💎 ${t('platinum')}` :
                        totalSpent >= 30000 ? `🏆 ${t('gold')}` :
@@ -289,12 +287,12 @@ export default function CustomerProfile() {
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">{t('currentDiscount')}</p>
+                    <p className="mb-1 text-sm text-gray-600">{t('currentDiscount')}</p>
                     <p className="font-bold text-green-600">
-                      {totalSpent >= 50000 ? '20% OFF' :
-                       totalSpent >= 30000 ? '15% OFF' :
-                       totalSpent >= 15000 ? '10% OFF' :
-                       totalSpent >= 5000 ? '5% OFF' : '0% OFF'}
+                      {totalSpent >= 50000 ? t('discount20Off') :
+                       totalSpent >= 30000 ? t('discount15Off') :
+                       totalSpent >= 15000 ? t('discount10Off') :
+                       totalSpent >= 5000 ? t('discount5Off') : '0% OFF'}
                     </p>
                   </div>
                 </div>

@@ -20,9 +20,17 @@ export interface User {
   name: string
   role: 'customer' | 'vendor' | 'admin'
   picture?: string
+  profilePhoto?: string
   password?: string
+  passwordHash?: string
   phone?: string
   address?: string
+  addresses?: Address[]
+  authProvider?: 'google' | 'password' | 'hybrid'
+  defaultAddressId?: string
+  createdAt?: string
+  updatedAt?: string
+  lastLogin?: string
 }
 
 export interface CartItem {
@@ -34,8 +42,19 @@ export interface CartItem {
 export interface Order {
   id: string
   userId: string
+  cartId?: string
   items: CartItem[]
   total: number
+  subtotal?: number
+  discountTotal?: number
+  tax?: number
+  shipping?: number
+  pricingBreakdown?: Array<{
+    label: string
+    type: 'quantity' | 'bundle' | 'coupon' | 'loyalty' | 'shipping'
+    amount: number
+    percent?: number
+  }>
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'confirmed'
   shippingAddress: Address
   createdAt: string
@@ -46,9 +65,30 @@ export interface Order {
   deliveryDate?: string
   trackingNumber?: string
   paymentMethod?: string
+  invoiceUrl?: string
+  deliveryType?: 'express' | 'standard' | 'economy'
+  trackingTimeline?: Array<{
+    key: 'warehouse' | 'packaging' | 'on_the_way' | 'delivered'
+    label: string
+    labelKey: string
+    timestamp: string
+    location: string
+    description: string
+    descriptionKey: string
+    completed: boolean
+  }>
+  warehouse?: {
+    name: string
+    address: string
+    city: string
+    state: string
+    country: string
+  }
 }
 
 export interface Address {
+  id?: string
+  type?: 'home' | 'work' | 'other'
   fullName: string
   street: string
   city: string
@@ -58,6 +98,32 @@ export interface Address {
   country?: string
   lat?: number
   lng?: number
+  isDefault?: boolean
+  location?: {
+    lat: number
+    lng: number
+    address: string
+  }
+}
+
+export interface TrackingEvent {
+  key: 'warehouse' | 'packaging' | 'on_the_way' | 'delivered'
+  label: string
+  timestamp: string
+  location: string
+  description: string
+  completed: boolean
+}
+
+export interface InvoiceLine {
+  productId: string
+  name: string
+  quantity: number
+  unitPrice: number
+  lineSubtotal: number
+  discountPercent: number
+  discountAmount: number
+  lineTotal: number
 }
 
 export interface Shop {

@@ -3,9 +3,9 @@ export function formatPrice(price: number): string {
 }
 
 export function formatDate(date: string): string {
-  return new Date(date).toLocaleDateString('en-US', {
+  return new Date(date).toLocaleDateString('en-IN', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
   })
 }

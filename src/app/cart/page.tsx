@@ -5,10 +5,10 @@ import { useCart } from '@/hooks/useCart'
 import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/context/LanguageContext'
 import Link from 'next/link'
-import Image from 'next/image'
-import { Trash2, Plus, Minus, ShoppingBag, History, TrendingUp, Calendar, DollarSign, Package } from 'lucide-react'
+import { Trash2, Plus, Minus, ShoppingBag, History, TrendingUp, Calendar, Package } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import type { Order } from '@/types'
+import { SafeImage } from '@/components/SafeImage'
 
 interface CartHistoryItem {
   date: string
@@ -18,7 +18,7 @@ interface CartHistoryItem {
 }
 
 export default function CartPage() {
-  const { items, removeItem, updateQuantity, getTotal, clearCart } = useCart()
+  const { items, removeItem, updateQuantity, getTotal, hydrateProducts } = useCart()
   const { user } = useAuth()
   const { t } = useLanguage()
   const router = useRouter()
@@ -28,48 +28,39 @@ export default function CartPage() {
   const [averageCart, setAverageCart] = useState(0)
   const [discountCode, setDiscountCode] = useState('')
   const [discount, setDiscount] = useState(0)
-  const [deliveryOption, setDeliveryOption] = useState<'standard' | 'express' | 'same-day'>('standard')
 
   useEffect(() => {
     if (user) {
       fetch('/api/orders')
-        .then(r => r.json())
+        .then((r) => r.json())
         .then((orders: Order[]) => {
-          const userOrders = orders.filter(o => o.userId === user.id)
-          const history: CartHistoryItem[] = userOrders.map(order => ({
+          const userOrders = Array.isArray(orders) ? orders : []
+          const history: CartHistoryItem[] = userOrders.map((order) => ({
             date: order.createdAt,
             items: order.items.length,
             total: order.total,
-            orderId: order.id
+            orderId: order.id,
           }))
           setCartHistory(history)
-          
           const spent = userOrders.reduce((sum, o) => sum + o.total, 0)
           setTotalSpent(spent)
           setAverageCart(userOrders.length > 0 ? spent / userOrders.length : 0)
-          
-          // Auto-apply discount based on spending
-          if (spent >= 500) setDiscount(20)
-          else if (spent >= 300) setDiscount(15)
-          else if (spent >= 150) setDiscount(10)
-          else if (spent >= 50) setDiscount(5)
+          if (spent >= 50000) setDiscount(20)
+          else if (spent >= 30000) setDiscount(15)
+          else if (spent >= 15000) setDiscount(10)
+          else if (spent >= 5000) setDiscount(5)
         })
     }
   }, [user])
 
+  useEffect(() => { hydrateProducts() }, [hydrateProducts])
+
   const subtotal = getTotal()
   const discountAmount = (subtotal * discount) / 100
   const afterDiscount = subtotal - discountAmount
-  
-  // GST and CGST (9% each = 18% total in India)
   const cgst = afterDiscount * 0.09
   const sgst = afterDiscount * 0.09
-  const totalTax = cgst + sgst
-  
-  // Delivery charges
-  const deliveryCharges = deliveryOption === 'same-day' ? 100 : deliveryOption === 'express' ? 60 : 40
-  
-  const finalTotal = afterDiscount + totalTax + deliveryCharges
+  const finalTotal = afterDiscount + cgst + sgst
 
   const applyDiscountCode = () => {
     const code = discountCode.toUpperCase()
@@ -79,32 +70,24 @@ export default function CartPage() {
     else if (code === 'LOYAL20') setDiscount(20)
     else if (code === 'WELCOME10') setDiscount(10)
     else if (code === 'SAVE15') setDiscount(15)
-    else alert('Invalid discount code')
+    else alert(t('invalidDiscountCode'))
   }
 
   if (items.length === 0 && !showHistory) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
         <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto text-center">
-            <ShoppingBag className="mx-auto text-gray-300 mb-6" size={80} />
-            <h1 className="text-3xl font-bold mb-4">{t('cartEmpty')}</h1>
-            <p className="text-gray-600 mb-8">{t('farmFresh')}</p>
-            
+          <div className="mx-auto max-w-2xl text-center">
+            <ShoppingBag className="mx-auto mb-6 text-gray-300 dark:text-gray-600" size={80} />
+            <h1 className="mb-4 text-3xl font-bold text-gray-900 dark:text-white">{t('cartEmpty')}</h1>
+            <p className="mb-8 text-gray-600 dark:text-gray-400">{t('farmFresh')}</p>
             {user && cartHistory.length > 0 && (
-              <button
-                onClick={() => setShowHistory(true)}
-                className="mb-6 text-green-600 hover:text-green-700 font-medium flex items-center gap-2 mx-auto"
-              >
-                <History size={20} />
-                View Cart History ({cartHistory.length} orders)
+              <button onClick={() => setShowHistory(true)} className="mx-auto mb-6 flex items-center gap-2 font-medium text-green-600 hover:text-green-700">
+                <History size={20} />{t('viewCartHistory')} ({cartHistory.length} {t('orders')})
               </button>
             )}
-            
             <Link href="/products">
-              <button className="bg-green-600 text-white px-8 py-4 rounded-lg font-bold hover:bg-green-700 transition">
-                {t('products')}
-              </button>
+              <button className="rounded-lg bg-green-600 px-8 py-4 font-bold text-white transition hover:bg-green-700">{t('products')}</button>
             </Link>
           </div>
         </div>
@@ -113,86 +96,63 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold">{t('cart')}</h1>
+        <div className="mb-8 flex items-center justify-between">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">{t('cart')}</h1>
           {user && cartHistory.length > 0 && (
-            <button
-              onClick={() => setShowHistory(!showHistory)}
-              className="flex items-center gap-2 text-green-600 hover:text-green-700 font-medium"
-            >
-              <History size={20} />
-              {showHistory ? 'View Current Cart' : 'View History'}
+            <button onClick={() => setShowHistory(!showHistory)} className="flex items-center gap-2 font-medium text-green-600 hover:text-green-700">
+              <History size={20} />{showHistory ? t('viewCurrentCart') : t('viewHistory')}
             </button>
           )}
         </div>
 
         {showHistory ? (
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white rounded-xl shadow-md p-6">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="bg-green-100 p-3 rounded-lg">
-                    <DollarSign className="text-green-600" size={24} />
-                  </div>
+            <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+              <div className="rounded-xl bg-white dark:bg-gray-800 p-6 shadow-md">
+                <div className="mb-4 flex items-center gap-4">
+                  <div className="rounded-lg bg-green-100 dark:bg-green-900/30 p-3"><Package className="text-green-600 dark:text-green-400" size={24} /></div>
                   <div>
-                    <p className="text-sm text-gray-600">Total Spent</p>
-                    <p className="text-2xl font-bold">₹{totalSpent.toFixed(2)}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{t('totalSpent')}</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">₹{totalSpent.toFixed(2)}</p>
                   </div>
                 </div>
               </div>
-
-              <div className="bg-white rounded-xl shadow-md p-6">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="bg-blue-100 p-3 rounded-lg">
-                    <Package className="text-blue-600" size={24} />
-                  </div>
+              <div className="rounded-xl bg-white dark:bg-gray-800 p-6 shadow-md">
+                <div className="mb-4 flex items-center gap-4">
+                  <div className="rounded-lg bg-blue-100 dark:bg-blue-900/30 p-3"><Package className="text-blue-600 dark:text-blue-400" size={24} /></div>
                   <div>
-                    <p className="text-sm text-gray-600">Total Orders</p>
-                    <p className="text-2xl font-bold">{cartHistory.length}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{t('totalOrders')}</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{cartHistory.length}</p>
                   </div>
                 </div>
               </div>
-
-              <div className="bg-white rounded-xl shadow-md p-6">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="bg-purple-100 p-3 rounded-lg">
-                    <TrendingUp className="text-purple-600" size={24} />
-                  </div>
+              <div className="rounded-xl bg-white dark:bg-gray-800 p-6 shadow-md">
+                <div className="mb-4 flex items-center gap-4">
+                  <div className="rounded-lg bg-purple-100 dark:bg-purple-900/30 p-3"><TrendingUp className="text-purple-600 dark:text-purple-400" size={24} /></div>
                   <div>
-                    <p className="text-sm text-gray-600">Avg Cart Value</p>
-                    <p className="text-2xl font-bold">₹{averageCart.toFixed(2)}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{t('avgCartValue')}</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">₹{averageCart.toFixed(2)}</p>
                   </div>
                 </div>
               </div>
             </div>
-
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-2xl font-bold mb-6">Previous Carts</h2>
+            <div className="rounded-xl bg-white dark:bg-gray-800 p-6 shadow-md">
+              <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-white">{t('previousCarts')}</h2>
               <div className="space-y-4">
                 {cartHistory.map((cart, idx) => (
-                  <div key={idx} className="border rounded-lg p-6 hover:shadow-lg transition">
-                    <div className="flex justify-between items-center">
+                  <div key={idx} className="rounded-lg border border-gray-200 dark:border-gray-700 p-6 transition hover:shadow-lg">
+                    <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <div className="bg-green-100 p-3 rounded-lg">
-                          <Calendar className="text-green-600" size={24} />
-                        </div>
+                        <div className="rounded-lg bg-green-100 dark:bg-green-900/30 p-3"><Calendar className="text-green-600 dark:text-green-400" size={24} /></div>
                         <div>
-                          <h3 className="font-bold text-lg">Order #{cart.orderId}</h3>
-                          <p className="text-sm text-gray-600">
-                            {new Date(cart.date).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
-                          </p>
+                          <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('orderNumber')} #{cart.orderId}</h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">{new Date(cart.date).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm text-gray-600">{cart.items} items</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{cart.items} {t('items')}</p>
                         <p className="text-2xl font-bold text-green-600">₹{cart.total.toFixed(2)}</p>
                       </div>
                     </div>
@@ -202,217 +162,118 @@ export default function CartPage() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-4">
-              {items.map(item => item.product && (
-                <div key={item.productId} className="bg-white rounded-xl shadow-md p-6 flex gap-6">
-                  <div className="relative w-32 h-32 rounded-lg overflow-hidden flex-shrink-0">
-                    <Image
-                      src={item.product.image}
-                      alt={item.product.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  
-                  <div className="flex-1">
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h3 className="text-xl font-bold mb-2">{item.product.name}</h3>
-                        <p className="text-gray-600 text-sm mb-2">{item.product.description}</p>
-                        <p className="text-green-600 font-bold text-lg">₹{item.product.price}</p>
-                      </div>
-                      <button
-                        onClick={() => removeItem(item.productId)}
-                        className="text-red-600 hover:bg-red-50 p-2 rounded-lg transition"
-                      >
-                        <Trash2 size={20} />
-                      </button>
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+            <div className="space-y-4 lg:col-span-2">
+              {items.map((item) =>
+                item.product ? (
+                  <div key={item.productId} className="flex gap-6 rounded-xl bg-white dark:bg-gray-800 p-6 shadow-md">
+                    <div className="relative h-32 w-32 flex-shrink-0 overflow-hidden rounded-lg">
+                      <SafeImage src={item.product?.image} alt={item.product?.name || 'Product'} fill className="object-cover" sizes="128px" />
                     </div>
-                    
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-3 bg-gray-100 rounded-lg p-2">
-                        <button
-                          onClick={() => updateQuantity(item.productId, Math.max(1, item.quantity - 1))}
-                          className="w-8 h-8 flex items-center justify-center bg-white rounded hover:bg-gray-50 transition"
-                        >
-                          <Minus size={16} />
-                        </button>
-                        <span className="font-bold w-8 text-center">{item.quantity}</span>
-                        <button
-                          onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                          className="w-8 h-8 flex items-center justify-center bg-white rounded hover:bg-gray-50 transition"
-                        >
-                          <Plus size={16} />
+                    <div className="flex-1">
+                      <div className="mb-4 flex items-start justify-between">
+                        <div>
+                          <h3 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">{item.product.name}</h3>
+                          <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">{item.product.description}</p>
+                          <p className="text-lg font-bold text-green-600">₹{item.product.price}</p>
+                        </div>
+                        <button onClick={() => removeItem(item.productId)} className="rounded-lg p-2 text-red-600 transition hover:bg-red-50 dark:hover:bg-red-900/20">
+                          <Trash2 size={20} />
                         </button>
                       </div>
-                      <div className="text-right flex-1">
-                        <p className="text-sm text-gray-600">Subtotal</p>
-                        <p className="text-xl font-bold">₹{(item.product.price * item.quantity)}</p>
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3 rounded-lg bg-gray-100 dark:bg-gray-700 p-2">
+                          <button onClick={() => updateQuantity(item.productId, Math.max(1, item.quantity - 1))} className="flex h-8 w-8 items-center justify-center rounded bg-white dark:bg-gray-600 transition hover:bg-gray-50 dark:hover:bg-gray-500">
+                            <Minus size={16} className="text-gray-700 dark:text-gray-200" />
+                          </button>
+                          <span className="w-8 text-center font-bold text-gray-900 dark:text-white">{item.quantity}</span>
+                          <button onClick={() => updateQuantity(item.productId, item.quantity + 1)} className="flex h-8 w-8 items-center justify-center rounded bg-white dark:bg-gray-600 transition hover:bg-gray-50 dark:hover:bg-gray-500">
+                            <Plus size={16} className="text-gray-700 dark:text-gray-200" />
+                          </button>
+                        </div>
+                        <div className="flex-1 text-right">
+                          <p className="text-sm text-gray-600 dark:text-gray-400">{t('subtotal')}</p>
+                          <p className="text-xl font-bold text-gray-900 dark:text-white">₹{item.product.price * item.quantity}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ) : null,
+              )}
             </div>
 
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-xl shadow-md p-6 sticky top-24">
-                <h2 className="text-2xl font-bold mb-6">{t('orderSummary')}</h2>
-                
-                <div className="space-y-3 mb-6">
+              <div className="sticky top-24 rounded-xl bg-white dark:bg-gray-800 p-6 shadow-md">
+                <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-white">{t('orderSummary')}</h2>
+                <div className="mb-6 space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">{t('subtotal')}</span>
-                    <span className="font-bold">₹{subtotal.toFixed(2)}</span>
+                    <span className="text-gray-600 dark:text-gray-400">{t('subtotal')}</span>
+                    <span className="font-bold text-gray-900 dark:text-white">₹{subtotal.toFixed(2)}</span>
                   </div>
-                  
                   {discount > 0 && (
                     <div className="flex justify-between text-green-600">
-                      <span>Discount ({discount}%)</span>
+                      <span>{t('discount')} ({discount}%)</span>
                       <span className="font-bold">-₹{discountAmount.toFixed(2)}</span>
                     </div>
                   )}
-                  
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">CGST (9%)</span>
-                    <span className="font-medium">₹{cgst.toFixed(2)}</span>
+                    <span className="text-gray-600 dark:text-gray-400">{t('cgst')} (9%)</span>
+                    <span className="font-medium text-gray-900 dark:text-white">₹{cgst.toFixed(2)}</span>
                   </div>
-                  
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">SGST (9%)</span>
-                    <span className="font-medium">₹{sgst.toFixed(2)}</span>
+                    <span className="text-gray-600 dark:text-gray-400">{t('sgst')} (9%)</span>
+                    <span className="font-medium text-gray-900 dark:text-white">₹{sgst.toFixed(2)}</span>
                   </div>
-                  
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">{t('deliveryCharges')}</span>
-                    <span className="font-medium">₹{deliveryCharges.toFixed(2)}</span>
-                  </div>
-                  
-                  <div className="border-t pt-3">
+                  <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
                     <div className="flex justify-between text-xl">
-                      <span className="font-bold">{t('total')}</span>
+                      <span className="font-bold text-gray-900 dark:text-white">{t('total')}</span>
                       <span className="font-bold text-green-600">₹{finalTotal.toFixed(2)}</span>
                     </div>
                   </div>
                 </div>
-
                 <div className="mb-6">
-                  <label className="block text-sm font-medium mb-2">Delivery Option</label>
-                  <div className="space-y-2">
-                    <label className="flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                      <div className="flex items-center gap-3">
-                        <input
-                          type="radio"
-                          name="delivery"
-                          value="standard"
-                          checked={deliveryOption === 'standard'}
-                          onChange={(e) => setDeliveryOption(e.target.value as any)}
-                          className="w-4 h-4 text-green-600"
-                        />
-                        <div>
-                          <p className="font-medium">Standard Delivery</p>
-                          <p className="text-xs text-gray-600">3-5 business days</p>
-                        </div>
-                      </div>
-                      <span className="font-bold text-green-600">₹40</span>
-                    </label>
-                    
-                    <label className="flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                      <div className="flex items-center gap-3">
-                        <input
-                          type="radio"
-                          name="delivery"
-                          value="express"
-                          checked={deliveryOption === 'express'}
-                          onChange={(e) => setDeliveryOption(e.target.value as any)}
-                          className="w-4 h-4 text-green-600"
-                        />
-                        <div>
-                          <p className="font-medium">Express Delivery</p>
-                          <p className="text-xs text-gray-600">1-2 business days</p>
-                        </div>
-                      </div>
-                      <span className="font-bold text-blue-600">₹60</span>
-                    </label>
-                    
-                    <label className="flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition">
-                      <div className="flex items-center gap-3">
-                        <input
-                          type="radio"
-                          name="delivery"
-                          value="same-day"
-                          checked={deliveryOption === 'same-day'}
-                          onChange={(e) => setDeliveryOption(e.target.value as any)}
-                          className="w-4 h-4 text-green-600"
-                        />
-                        <div>
-                          <p className="font-medium">Same Day Delivery</p>
-                          <p className="text-xs text-gray-600">Within 24 hours</p>
-                        </div>
-                      </div>
-                      <span className="font-bold text-orange-600">₹100</span>
-                    </label>
-                  </div>
-                </div>
-
-                <div className="mb-6">
-                  <label className="block text-sm font-medium mb-2">Discount Code</label>
+                  <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">{t('discountCode')}</label>
                   <div className="flex gap-2">
                     <input
                       type="text"
                       value={discountCode}
                       onChange={(e) => setDiscountCode(e.target.value)}
-                      placeholder="Enter code"
-                      className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                      placeholder={t('enterCode')}
+                      className="flex-1 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-2 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-green-500"
                     />
-                    <button
-                      onClick={applyDiscountCode}
-                      className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition font-medium"
-                    >
-                      Apply
+                    <button onClick={applyDiscountCode} className="rounded-lg bg-gray-100 dark:bg-gray-700 px-4 py-2 font-medium text-gray-700 dark:text-gray-200 transition hover:bg-gray-200 dark:hover:bg-gray-600">
+                      {t('apply')}
                     </button>
                   </div>
-                  {discount > 0 && (
-                    <p className="text-sm text-green-600 mt-2">✓ {discount}% discount applied!</p>
-                  )}
+                  {discount > 0 && <p className="mt-2 text-sm text-green-600">✓ {discount}% {t('discountApplied')}</p>}
                 </div>
-
                 {user && totalSpent > 0 && (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-                    <p className="text-sm font-medium text-green-800 mb-1">Loyalty Rewards</p>
-                    <p className="text-xs text-green-700">
-                      You've spent ₹{totalSpent.toFixed(2)} total. 
-                      {totalSpent >= 50000 ? ' You have 20% off!' :
-                       totalSpent >= 30000 ? ' You have 15% off!' :
-                       totalSpent >= 15000 ? ' You have 10% off!' :
-                       totalSpent >= 5000 ? ' You have 5% off!' :
-                       ` Spend ₹${(5000 - totalSpent).toFixed(2)} more for 5% off!`}
+                  <div className="mb-6 rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-4">
+                    <p className="mb-1 text-sm font-medium text-green-800 dark:text-green-300">{t('loyaltyRewards')}</p>
+                    <p className="text-xs text-green-700 dark:text-green-400">
+                      {t('youHaveSpentTotal', { amount: totalSpent.toFixed(2) })}{' '}
+                      {totalSpent >= 50000 ? t('discount20Off') : totalSpent >= 30000 ? t('discount15Off') : totalSpent >= 15000 ? t('discount10Off') : totalSpent >= 5000 ? t('discount5Off') : t('spendMoreForDiscount', { amount: (5000 - totalSpent).toFixed(2) })}
                     </p>
                   </div>
                 )}
-
                 <Link href="/checkout">
-                  <button 
+                  <button
                     onClick={() => {
                       if (user && items.length > 0) {
-                        const cartSnapshot = {
-                          date: new Date().toISOString(),
-                          items: items,
-                          total: finalTotal
-                        }
-                        const existingHistory = JSON.parse(localStorage.getItem(`cartHistory_${user.id}`) || '[]')
-                        existingHistory.push(cartSnapshot)
-                        localStorage.setItem(`cartHistory_${user.id}`, JSON.stringify(existingHistory))
+                        const snap = { date: new Date().toISOString(), items, total: finalTotal }
+                        const existing = JSON.parse(localStorage.getItem(`cartHistory_${user.id}`) || '[]')
+                        existing.push(snap)
+                        localStorage.setItem(`cartHistory_${user.id}`, JSON.stringify(existing))
+                        localStorage.setItem('pendingCouponCode', discountCode)
                       }
                     }}
-                    className="w-full bg-green-600 text-white py-4 rounded-lg font-bold hover:bg-green-700 transition mb-3"
+                    className="mb-3 w-full rounded-lg bg-green-600 py-4 font-bold text-white transition hover:bg-green-700"
                   >
                     {t('proceedToCheckout')}
                   </button>
                 </Link>
-                
                 <Link href="/products">
-                  <button className="w-full border border-gray-300 py-4 rounded-lg font-bold hover:bg-gray-50 transition">
+                  <button className="w-full rounded-lg border border-gray-300 dark:border-gray-600 py-4 font-bold text-gray-700 dark:text-gray-200 transition hover:bg-gray-50 dark:hover:bg-gray-700">
                     {t('continueShopping')}
                   </button>
                 </Link>

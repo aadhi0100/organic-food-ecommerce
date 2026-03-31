@@ -434,3 +434,5 @@ FodyWeavers.xsd
 # App data (local persistence). Keep directories via `.gitkeep`.
 data/**
 !data/**/.gitkeep
+
+.vercel

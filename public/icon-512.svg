@@ -1,4 +1,82 @@
-<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-  <rect width="512" height="512" fill="#16a34a" rx="80"/>
-  <text x="256" y="320" font-family="Arial, sans-serif" font-size="280" fill="white" text-anchor="middle">🌿</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#15803d"/>
+      <stop offset="100%" stop-color="#065f46"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#bbf7d0"/>
+      <stop offset="60%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+    <linearGradient id="stem" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="35%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="dew" cx="40%" cy="35%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#a7f3d0" stop-opacity="0.3"/>
+    </radialGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#052e16" flood-opacity="0.4"/>
+    </filter>
+    <filter id="leafglow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+
+  <!-- Subtle inner glow overlay -->
+  <rect width="512" height="512" rx="112" fill="url(#glow)"/>
+
+  <!-- Leaf body -->
+  <g filter="url(#shadow)">
+    <path d="M256 72
+      C200 72 148 108 132 162
+      C116 216 130 272 162 310
+      C186 338 218 356 248 362
+      L248 400
+      L264 400
+      L264 362
+      C294 356 326 338 350 310
+      C382 272 396 216 380 162
+      C364 108 312 72 256 72 Z"
+      fill="url(#leaf)"
+      filter="url(#leafglow)"
+    />
+  </g>
+
+  <!-- Central vein -->
+  <path d="M256 110 L256 370"
+    stroke="#15803d" stroke-width="5" stroke-linecap="round" opacity="0.5"/>
+
+  <!-- Left veins -->
+  <path d="M256 180 Q220 168 196 178" stroke="#15803d" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.45"/>
+  <path d="M256 220 Q212 205 184 218" stroke="#15803d" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.4"/>
+  <path d="M256 260 Q216 248 192 260" stroke="#15803d" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.35"/>
+  <path d="M256 300 Q224 292 206 302" stroke="#15803d" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.3"/>
+
+  <!-- Right veins -->
+  <path d="M256 180 Q292 168 316 178" stroke="#15803d" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.45"/>
+  <path d="M256 220 Q300 205 328 218" stroke="#15803d" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.4"/>
+  <path d="M256 260 Q296 248 320 260" stroke="#15803d" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.35"/>
+  <path d="M256 300 Q288 292 306 302" stroke="#15803d" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.3"/>
+
+  <!-- Highlight sheen on leaf -->
+  <path d="M256 80 C230 90 200 115 188 148 C178 175 182 205 192 228 C210 200 230 160 256 140 C282 160 302 200 320 228 C330 205 334 175 324 148 C312 115 282 90 256 80 Z"
+    fill="white" opacity="0.12"/>
+
+  <!-- Stem -->
+  <rect x="246" y="398" width="20" height="44" rx="10" fill="url(#stem)"/>
+
+  <!-- Dewdrop -->
+  <ellipse cx="218" cy="195" rx="10" ry="13" fill="url(#dew)" opacity="0.85" transform="rotate(-15 218 195)"/>
+  <ellipse cx="222" cy="191" rx="3.5" ry="4.5" fill="white" opacity="0.7" transform="rotate(-15 222 191)"/>
 </svg>

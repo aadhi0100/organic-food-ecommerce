@@ -85,13 +85,19 @@ export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
-    
+
     if (!id) {
       return NextResponse.json({ error: 'Vendor ID required' }, { status: 400 })
     }
-    
+
+    const dataDir = path.join(process.cwd(), 'data', 'users')
+    const filePath = path.join(dataDir, `vendor_${id}.txt`)
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath)
+    }
+
     return NextResponse.json({ success: true, message: 'Vendor deleted' })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to delete vendor' }, { status: 500 })
   }
 }

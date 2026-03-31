@@ -1,46 +1,63 @@
 'use client'
 
+import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { useLanguage } from '@/context/LanguageContext'
 
-const loadingMessages = [
-  { emoji: '🛒', text: 'Loading fresh products...' },
-  { emoji: '🥬', text: 'Picking organic vegetables...' },
-  { emoji: '🍎', text: 'Selecting fresh fruits...' },
-  { emoji: '🥛', text: 'Getting dairy products...' },
-  { emoji: '🌾', text: 'Gathering grains...' },
+const loadingKeys = [
+  'loadingFreshProducts',
+  'loadingVegetables',
+  'loadingFruits',
+  'loadingDairy',
+  'loadingGrains',
 ]
 
 export function LoadingScreen() {
-  const index = Math.floor(Math.random() * loadingMessages.length)
-  const randomMessage = loadingMessages[index]!
+  const { t } = useLanguage()
+  const key = loadingKeys[Math.floor(Math.random() * loadingKeys.length)]!
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center z-50">
-      <div className="text-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
+      <div className="flex flex-col items-center gap-6">
         <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            rotate: [0, 10, -10, 0],
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="text-8xl mb-6"
+          animate={{ scale: [1, 1.08, 1], rotate: [0, 6, -6, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          className="relative"
         >
-          {randomMessage.emoji}
+          {/* Glow ring */}
+          <motion.div
+            animate={{ opacity: [0.4, 0.8, 0.4], scale: [1, 1.15, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute inset-0 rounded-2xl bg-green-400 blur-xl dark:bg-green-600"
+          />
+          <Image
+            src="/icon-512.svg"
+            alt="OrganicFood"
+            width={96}
+            height={96}
+            className="relative rounded-2xl shadow-2xl"
+          />
         </motion.div>
-        
-        <motion.h2
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-2xl font-bold text-green-600 dark:text-green-400 mb-4"
-        >
-          {randomMessage.text}
-        </motion.h2>
-        
-        <div className="flex gap-2 justify-center">
+
+        <div className="text-center">
+          <motion.p
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-xl font-bold text-green-700 dark:text-green-400 tracking-tight"
+          >
+            Organi<span className="text-emerald-500">Food</span>
+          </motion.p>
+          <motion.h2
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.15 }}
+            className="mt-1 text-sm font-medium text-gray-500 dark:text-gray-400"
+          >
+            {t(key)}
+          </motion.h2>
+        </div>
+
+        <div className="flex justify-center gap-2">
           {[0, 1, 2].map((i) => (
             <motion.div
               key={i}
@@ -52,7 +69,7 @@ export function LoadingScreen() {
                 repeat: Infinity,
                 delay: i * 0.2,
               }}
-              className="w-3 h-3 bg-green-600 dark:bg-green-400 rounded-full"
+              className="h-3 w-3 rounded-full bg-green-600 dark:bg-green-400"
             />
           ))}
         </div>
@@ -66,8 +83,8 @@ export function MiniLoader() {
     <div className="flex items-center justify-center p-8">
       <motion.div
         animate={{ rotate: 360 }}
-        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-        className="w-12 h-12 border-4 border-green-200 border-t-green-600 rounded-full"
+        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+        className="h-12 w-12 rounded-full border-4 border-green-200 border-t-green-600"
       />
     </div>
   )

@@ -82,7 +82,7 @@ export async function sendInvoiceEmail(data: EmailInvoiceData) {
         <div class="header">
           <div style="font-size: 48px; margin-bottom: 10px;">🌿</div>
           <h1>ORGANIC FOOD STORE</h1>
-          <p class="tagline">Premium Organic Products | Farm to Table</p>
+          <p class="tagline">Premium Organic Products | Farm-to-Table</p>
         </div>
         
         <div class="content">

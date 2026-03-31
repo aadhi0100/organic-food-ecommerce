@@ -2,21 +2,24 @@
 
 import { useState } from 'react'
 import { DollarSign, Calendar, Percent, Save } from 'lucide-react'
+import { useLanguage } from '@/context/LanguageContext'
 
-function VendorPriceUpdate({ vendorId, products }: any) {
+function VendorPriceUpdate({ vendorId, products }: { vendorId: string; products: { id: string; name: string; price: number }[] }) {
   const [selectedProduct, setSelectedProduct] = useState('')
   const [dailyPrice, setDailyPrice] = useState('')
   const [discount, setDiscount] = useState('')
   const [reason, setReason] = useState('')
+  const { t } = useLanguage()
 
   const handleUpdate = async () => {
     if (!selectedProduct || !dailyPrice) {
-      alert('Please fill all required fields')
+      alert(t('pleaseFillAllRequiredFields'))
       return
     }
 
-    const product = products.find((p: any) => p.id === selectedProduct)
-    
+    const product = products.find((p) => p.id === selectedProduct)
+    if (!product) return
+
     const res = await fetch('/api/vendor/price-update', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -31,86 +34,88 @@ function VendorPriceUpdate({ vendorId, products }: any) {
     })
 
     if (res.ok) {
-      alert('Price updated successfully!')
+      alert(t('priceUpdatedSuccessfully'))
       setSelectedProduct('')
       setDailyPrice('')
       setDiscount('')
       setReason('')
     } else {
-      alert('Failed to update price')
+      alert(t('failedToUpdatePrice'))
     }
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-6">
-      <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+    <div className="rounded-xl bg-white p-6 shadow-md">
+      <h2 className="mb-6 flex items-center gap-2 text-2xl font-bold">
         <DollarSign className="text-green-600" />
-        Daily Price Update
+        {t('dailyPriceUpdate')}
       </h2>
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-2">Select Product</label>
+          <label className="mb-2 block text-sm font-medium">{t('selectProduct')}</label>
           <select
             value={selectedProduct}
             onChange={(e) => setSelectedProduct(e.target.value)}
-            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500"
+            className="w-full rounded-lg border px-4 py-3 focus:ring-2 focus:ring-green-500"
           >
-            <option value="">Choose a product</option>
-            {products.map((p: any) => (
+            <option value="">{t('chooseProduct')}</option>
+            {products.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.name} (Base: ₹{p.price})
+                {p.name} ({t('basePrice')}: ₹{p.price})
               </option>
             ))}
           </select>
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">Today's Price (₹)</label>
+          <label className="mb-2 block text-sm font-medium">
+            {t('todayPrice')} (₹)
+          </label>
           <input
             type="number"
             value={dailyPrice}
             onChange={(e) => setDailyPrice(e.target.value)}
-            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500"
-            placeholder="Enter today's price"
+            className="w-full rounded-lg border px-4 py-3 focus:ring-2 focus:ring-green-500"
+            placeholder={t('enterTodaysPrice')}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">Discount (%)</label>
+          <label className="mb-2 block text-sm font-medium">{t('discountPercentage')}</label>
           <input
             type="number"
             value={discount}
             onChange={(e) => setDiscount(e.target.value)}
-            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500"
-            placeholder="Optional discount"
+            className="w-full rounded-lg border px-4 py-3 focus:ring-2 focus:ring-green-500"
+            placeholder={t('optionalDiscount')}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">Reason</label>
+          <label className="mb-2 block text-sm font-medium">{t('reason')}</label>
           <input
             type="text"
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500"
-            placeholder="e.g., Fresh stock, Market rate"
+            className="w-full rounded-lg border px-4 py-3 focus:ring-2 focus:ring-green-500"
+            placeholder={t('reasonPlaceholder')}
           />
         </div>
 
         <button
           onClick={handleUpdate}
-          className="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition flex items-center justify-center gap-2"
+          className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 py-3 font-bold text-white transition hover:bg-green-700"
         >
           <Save size={20} />
-          Update Price
+          {t('updatePrice')}
         </button>
       </div>
 
-      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+      <div className="mt-6 rounded-lg bg-blue-50 p-4">
         <p className="text-sm text-blue-800">
-          <Calendar className="inline mr-2" size={16} />
-          Price updates are effective for today only. Update daily for best results.
+          <Calendar className="mr-2 inline" size={16} />
+          {t('priceUpdatesEffectiveForTodayOnly')}
         </p>
       </div>
     </div>

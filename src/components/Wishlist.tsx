@@ -38,6 +38,7 @@ export function useWishlist() {
 export function WishlistButton({ productId }: { productId: string }) {
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist()
   const inWishlist = isInWishlist(productId)
+  const { t } = useLanguage()
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -50,10 +51,11 @@ export function WishlistButton({ productId }: { productId: string }) {
       onClick={handleClick}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
-      className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+      aria-label={inWishlist ? t('removeFromWishlist') : t('addToWishlist')}
+      className="p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white dark:hover:bg-gray-700"
     >
       <Heart
-        size={24}
+        size={20}
         className={inWishlist ? 'fill-red-500 text-red-500' : 'text-gray-400'}
       />
     </motion.button>

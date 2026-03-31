@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server'
 import { verifyGoogleIdToken } from '@/lib/auth/google'
-import { signSession, SESSION_COOKIE_NAME, SESSION_MAX_AGE_SECONDS } from '@/lib/auth/session'
-import { FileStorage } from '@/lib/fileStorage'
+import { applySessionCookie, SESSION_COOKIE_NAME, toSessionUser } from '@/lib/auth/session'
+import { getDashboardPath } from '@/lib/auth/routing'
+import { UserStore } from '@/lib/userStore'
+import { sendWelcomeEmail } from '@/lib/welcomeEmailService'
+import { AuthEventStore } from '@/lib/authEventStore'
 
 export const runtime = 'nodejs'
 
@@ -112,35 +115,43 @@ export async function GET(request: Request) {
       ...(profile.picture ? { picture: profile.picture } : {}),
     } as const
 
-    try {
-      FileStorage.init()
-      FileStorage.users.save({
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-      })
-    } catch {
-      // ignore persistence failures (serverless/readonly FS)
-    }
+    const existingUser = UserStore.findByEmail(profile.email)
+    const isNewUser = !existingUser
 
-    const session = await signSession(user)
+    const storedUser = UserStore.upsertGoogleUser({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      ...(user.picture ? { picture: user.picture } : {}),
+    })
+
+    AuthEventStore.record({
+      type: isNewUser ? 'signup' : 'login',
+      userId: storedUser.id,
+      email: storedUser.email,
+      name: storedUser.name,
+      provider: 'google',
+      ip: request.headers.get('x-forwarded-for') || undefined,
+      userAgent: request.headers.get('user-agent') || undefined,
+    })
+
+    // Send welcome email (non-blocking)
+    sendWelcomeEmail({
+      to: storedUser.email,
+      name: storedUser.name,
+      isNewUser,
+    }).catch(() => {})
 
     const response = NextResponse.redirect(
       new URL(
-        nextPath && nextPath.startsWith('/') ? nextPath : `/dashboard/${role}`,
+        nextPath && nextPath.startsWith('/') ? nextPath : getDashboardPath(storedUser.role),
         request.url,
       ),
     )
     const secure = process.env.NODE_ENV === 'production'
 
-    response.cookies.set(SESSION_COOKIE_NAME, session, {
-      httpOnly: true,
-      secure,
-      sameSite: 'lax',
-      maxAge: SESSION_MAX_AGE_SECONDS,
-      path: '/',
-    })
+    await applySessionCookie(response, toSessionUser(storedUser))
 
     // Clear one-time OAuth cookies
     for (const name of ['g_oauth_state', 'g_oauth_nonce', 'g_oauth_verifier', 'g_oauth_next']) {
