@@ -97,14 +97,14 @@ export async function generateProfessionalInvoice(data: InvoiceData): Promise<js
     doc.text(val, PW - R, ry, { align: 'right' })
   })
 
-  let y = HH + 18
+  let y: number = HH + 18
 
   // ── 2. BILL TO + ORDER META STRIP ─────────────────────────────────────────
-  const STRIP_H = 52
+  const stripHeight: number = 52
   doc.setFillColor(...S50)
   doc.setDrawColor(...S200)
   doc.setLineWidth(0.4)
-  doc.roundedRect(L, y, CW, STRIP_H, 4, 4, 'FD')
+  doc.roundedRect(L, y, CW, stripHeight, 4, 4, 'FD')
 
   // Bill To (left 55%)
   const BW = CW * 0.55
@@ -123,7 +123,7 @@ export async function generateProfessionalInvoice(data: InvoiceData): Promise<js
 
   // Divider
   doc.setDrawColor(...S200)
-  doc.line(L + BW, y + 8, L + BW, y + STRIP_H - 8)
+  doc.line(L + BW, y + 8, L + BW, y + stripHeight - 8)
 
   // Order meta (right 45%) — 3 cells
   const metaCols: [string, string][] = [
@@ -144,11 +144,11 @@ export async function generateProfessionalInvoice(data: InvoiceData): Promise<js
     doc.text(val, cx, y + 32)
     if (i < 2) {
       doc.setDrawColor(...S200)
-      doc.line(L + BW + (i + 1) * MC, y + 8, L + BW + (i + 1) * MC, y + STRIP_H - 8)
+      doc.line(L + BW + (i + 1) * MC, y + 8, L + BW + (i + 1) * MC, y + stripHeight - 8)
     }
   })
 
-  y += STRIP_H + 14
+  y += stripHeight + 14 as number
 
   // ── 3. ITEMS TABLE ────────────────────────────────────────────────────────
   (doc as any).autoTable({
