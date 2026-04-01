@@ -1,5 +1,5 @@
 import jsPDF from 'jspdf'
-import autoTable from 'jspdf-autotable'
+import 'jspdf-autotable'
 import QRCode from 'qrcode'
 import type { InvoiceData } from '@/lib/invoiceData'
 
@@ -36,7 +36,11 @@ async function qrDataUrl(text: string): Promise<string> {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 export async function generateProfessionalInvoice(data: InvoiceData): Promise<jsPDF> {
-  const doc = new jsPDF({ unit: 'pt', format: 'a4' })
+  if (!data || !data.items || data.items.length === 0) {
+    throw new Error('Invalid invoice data: missing items')
+  }
+  
+  const doc = new jsPDF({ unit: 'pt', format: 'a4', compress: true })
   const PW  = doc.internal.pageSize.width   // 595.28
   const PH  = doc.internal.pageSize.height  // 841.89
   const L   = 44
@@ -147,7 +151,7 @@ export async function generateProfessionalInvoice(data: InvoiceData): Promise<js
   y += STRIP_H + 14
 
   // ── 3. ITEMS TABLE ────────────────────────────────────────────────────────
-  autoTable(doc, {
+  (doc as any).autoTable({
     startY: y,
     head: [['#', 'Product', 'Qty', 'Unit Price', 'Discount', 'Total']],
     body: data.items.map((item, idx) => [
@@ -189,7 +193,7 @@ export async function generateProfessionalInvoice(data: InvoiceData): Promise<js
     tableLineWidth: 0.4,
   })
 
-  y = ((doc as any).lastAutoTable?.finalY ?? y) + 18
+  y = ((doc as any).lastAutoTable?.finalY ?? y) + 20
 
   // ── 4. BOTTOM SECTION: QR  |  PAYMENT  |  SUMMARY ────────────────────────
   const QR_SIZE  = 88
