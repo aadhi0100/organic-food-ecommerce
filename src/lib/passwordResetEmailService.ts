@@ -22,7 +22,7 @@ export async function sendPasswordResetEmail(data: {
   customerName: string
   resetUrl: string
 }) {
-  const appName = 'Organic Food Store'
+  const appName = 'Organic'
 
   if (!transporter) {
     console.log(`[password-reset] reset link for ${data.to}: ${data.resetUrl}`)

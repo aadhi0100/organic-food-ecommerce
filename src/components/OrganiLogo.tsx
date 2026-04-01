@@ -100,7 +100,7 @@ export function OrganiLogo({ href = '/', className = '', size = 'md', variant = 
       <LeafIcon size={s.icon} variant={variant} />
       <div className="flex flex-col leading-none">
         <span className={`font-bold ${s.text} ${textColor} tracking-tight`}>
-          Organi<span className={variant === 'light' ? 'text-green-200' : 'text-green-600 dark:text-green-400'}>Food</span>
+          Organic<span className={variant === 'light' ? 'text-green-200' : 'text-green-600 dark:text-green-400'}>Food</span>
         </span>
         <span className={`font-medium ${s.sub} ${subColor} opacity-80 mt-0.5`}>
           Fresh &amp; Pure
@@ -120,7 +120,7 @@ export function LogoBrand({ className = '', size = 'md' }: { className?: string;
     <div className={`flex flex-col items-center justify-center gap-4 ${className}`}>
       <OrganiLogo size={size} variant="dark" />
       <div className="text-center">
-        <p className="font-semibold text-gray-900 dark:text-white">Organic Food Store</p>
+        <p className="font-semibold text-gray-900 dark:text-white">Organic Food</p>
         <p className="text-sm text-gray-600 dark:text-gray-400">Fresh &amp; Pure from Farm-to-Table</p>
       </div>
     </div>

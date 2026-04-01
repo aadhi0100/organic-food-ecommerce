@@ -9,14 +9,14 @@ import { cookies } from 'next/headers'
 import { languageFontClasses, normalizeLanguage } from '@/lib/i18n'
 
 export const metadata: Metadata = {
-  title: 'Organic Food Store - Fresh Organic Products Delivered',
+  title: 'Organic — Fresh Organic Products Delivered',
   description: 'Shop 100% certified organic fruits, vegetables, dairy, and more. Fresh organic food delivered to your door.',
   keywords: ['organic food', 'fresh produce', 'organic vegetables', 'organic fruits', 'healthy food'],
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Organic Food',
+    title: 'Organic',
   },
   icons: {
     icon: [{ url: '/icon-192.svg', sizes: '192x192', type: 'image/svg+xml' }, { url: '/icon-512.svg', sizes: '512x512', type: 'image/svg+xml' }],

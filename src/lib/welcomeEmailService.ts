@@ -32,14 +32,14 @@ export async function sendWelcomeEmail(data: {
 
   const firstName = data.name?.split(' ')[0] || 'there'
   const subject = data.isNewUser
-    ? '🌿 Welcome to Organi — Your Organic Journey Begins!'
-    : `🌿 Welcome back to Organi, ${firstName}!`
+    ? '🌿 Welcome to Organic — Your Organic Journey Begins!'
+    : `🌿 Welcome back to Organic, ${firstName}!`
 
   const html = data.isNewUser ? newUserHtml(firstName) : returningUserHtml(firstName)
 
   try {
     await transporter.sendMail({
-      from: { name: 'Organi — Organic Food Store', address: process.env.EMAIL_USER! },
+      from: { name: 'Organic — Organic Food Store', address: process.env.EMAIL_USER! },
       to: data.to,
       subject,
       html,
@@ -69,7 +69,7 @@ function newUserHtml(firstName: string) {
     <div style="background:linear-gradient(135deg,#16a34a 0%,#059669 60%,#047857 100%);padding:56px 40px 48px;text-align:center;">
       <div style="font-size:64px;line-height:1;margin-bottom:16px;">🌿</div>
       <h1 style="margin:0;color:#ffffff;font-size:32px;font-weight:800;letter-spacing:-0.5px;line-height:1.2;">
-        Welcome to Organi!
+        Welcome to Organic!
       </h1>
       <p style="margin:14px 0 0;color:#bbf7d0;font-size:16px;font-weight:400;">
         India's Premium Organic Food Marketplace
@@ -82,7 +82,7 @@ function newUserHtml(firstName: string) {
         Hi ${firstName}! 👋
       </p>
       <p style="margin:0 0 28px;font-size:15px;color:#4b5563;line-height:1.85;">
-        We're absolutely thrilled to have you join the <strong>Organi family</strong>! 🎉<br/>
+        We're absolutely thrilled to have you join the <strong>Organic family</strong>! 🎉<br/>
         You've just taken a wonderful step towards a <strong>healthier, greener lifestyle</strong>.<br/>
         Every product on our platform is <strong>100% certified organic</strong> — sourced directly from trusted Indian farmers who care about the earth as much as you do.
       </p>
@@ -171,7 +171,7 @@ function returningUserHtml(firstName: string) {
         Hey ${firstName}! 👋
       </p>
       <p style="margin:0 0 28px;font-size:15px;color:#4b5563;line-height:1.85;">
-        We've missed you! 🎉 You've just signed back into <strong>Organi</strong> — India's most trusted organic food marketplace.<br/>
+        We've missed you! 🎉 You've just signed back into <strong>Organic</strong> — India's most trusted organic food marketplace.<br/>
         Fresh arrivals, new seasonal produce, and exclusive member deals are all waiting for you right now.
       </p>
 
@@ -252,13 +252,13 @@ function benefitRow(icon: string, title: string, desc: string) {
 function emailFooter() {
   return `<div style="background:#1f2937;padding:32px 40px;text-align:center;">
     <div style="font-size:32px;margin-bottom:10px;">🌿</div>
-    <p style="margin:0 0 4px;color:#d1d5db;font-size:15px;font-weight:700;">Organi — Organic Food Store</p>
+    <p style="margin:0 0 4px;color:#d1d5db;font-size:15px;font-weight:700;">Organic — Organic Food Store</p>
     <p style="margin:0 0 16px;color:#9ca3af;font-size:13px;">100% Certified Organic | Farm-to-Table | Delivered Across India</p>
     <div style="margin-bottom:16px;">
       <a href="${APP_URL}/products" style="color:#4ade80;text-decoration:none;font-size:13px;margin:0 10px;">Shop</a>
       <a href="${APP_URL}/about" style="color:#4ade80;text-decoration:none;font-size:13px;margin:0 10px;">About</a>
       <a href="${APP_URL}/contact" style="color:#4ade80;text-decoration:none;font-size:13px;margin:0 10px;">Contact</a>
     </div>
-    <p style="margin:0;color:#6b7280;font-size:12px;">© ${YEAR} Organi. All rights reserved.</p>
+    <p style="margin:0;color:#6b7280;font-size:12px;">© ${YEAR} Organic. All rights reserved.</p>
   </div>`
 }

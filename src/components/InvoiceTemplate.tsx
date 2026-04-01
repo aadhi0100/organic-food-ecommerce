@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import Image from 'next/image';
 import { format } from 'date-fns';
 import { Building2, Mail, Phone, MapPin, Download, Printer, Loader2, Send, Edit3, Save, Gift, Tag, Trash2, Plus } from 'lucide-react';
 import html2canvas from 'html2canvas';
@@ -318,7 +319,7 @@ export const InvoiceTemplate: React.FC<InvoiceTemplateProps> = ({
           {/* Company Info */}
           <div className="flex-1">
             {data.company.logo ? (
-              <img src={data.company.logo} alt={`${data.company.name} Logo`} className="h-16 object-contain mb-6 drop-shadow-sm" />
+              <Image src={data.company.logo} alt={`${data.company.name} Logo`} width={160} height={64} className="h-16 w-auto object-contain mb-6 drop-shadow-sm" />
             ) : (
               <div className="flex items-center space-x-3 mb-6 animate-in fade-in slide-in-from-left duration-500">
                 <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center text-white shadow-xl transform rotate-3">

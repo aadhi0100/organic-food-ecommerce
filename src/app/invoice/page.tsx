@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { InvoiceTemplate, InvoiceData } from '@/components/InvoiceTemplate';
+// NOTE: This page is a standalone invoice demo/editor. Production invoices are at /invoice/[orderId]
 
 const mockInvoiceData: InvoiceData = {
   invoiceNumber: 'INV-2026-0089',

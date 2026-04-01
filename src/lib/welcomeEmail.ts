@@ -15,7 +15,7 @@ export async function sendWelcomeEmail(params: {
     {
       to_email: params.toEmail,
       to_name: params.toName,
-      app_name: 'Organic Food Store',
+      app_name: 'Organic',
     },
     { publicKey: EMAILJS_PUBLIC_KEY },
   )
@@ -33,7 +33,7 @@ export async function sendPasswordResetEmail(params: {
       to_email: params.toEmail,
       to_name: params.toName,
       reset_url: params.resetUrl,
-      app_name: 'Organic Food Store',
+      app_name: 'Organic',
     },
     { publicKey: EMAILJS_PUBLIC_KEY },
   )

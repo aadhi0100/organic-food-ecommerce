@@ -10,8 +10,7 @@ function requiredEnv(name: string) {
 }
 
 function appBaseUrl() {
-  const base = requiredEnv('APP_BASE_URL').replace(/\/+$/g, '')
-  return base
+  return requiredEnv('APP_BASE_URL').replace(/\/+$/g, '')
 }
 
 export async function GET(request: Request) {
@@ -45,34 +44,12 @@ export async function GET(request: Request) {
     const response = NextResponse.redirect(authUrl)
     const secure = process.env.NODE_ENV === 'production'
 
-    response.cookies.set('g_oauth_state', state, {
-      httpOnly: true,
-      secure,
-      sameSite: 'lax',
-      maxAge: 10 * 60,
-      path: '/api/auth/google',
-    })
-    response.cookies.set('g_oauth_nonce', nonce, {
-      httpOnly: true,
-      secure,
-      sameSite: 'lax',
-      maxAge: 10 * 60,
-      path: '/api/auth/google',
-    })
-    response.cookies.set('g_oauth_verifier', verifier, {
-      httpOnly: true,
-      secure,
-      sameSite: 'lax',
-      maxAge: 10 * 60,
-      path: '/api/auth/google',
-    })
-    response.cookies.set('g_oauth_next', safeNext, {
-      httpOnly: true,
-      secure,
-      sameSite: 'lax',
-      maxAge: 10 * 60,
-      path: '/api/auth/google',
-    })
+    // Use path '/' so cookies are accessible at /api/auth/google/callback
+    const cookieOpts = { httpOnly: true, secure, sameSite: 'lax' as const, maxAge: 10 * 60, path: '/' }
+    response.cookies.set('g_oauth_state', state, cookieOpts)
+    response.cookies.set('g_oauth_nonce', nonce, cookieOpts)
+    response.cookies.set('g_oauth_verifier', verifier, cookieOpts)
+    response.cookies.set('g_oauth_next', safeNext, cookieOpts)
 
     return response
   } catch (error: any) {

@@ -51,7 +51,7 @@ const FEATURES = [
 
 const TESTIMONIALS = [
   { name: 'Priya Sharma', city: 'Mumbai', rating: 5, text: 'Best organic store I\'ve found! The vegetables are incredibly fresh and the delivery is always on time.' },
-  { name: 'Rajesh Kumar', city: 'Bangalore', rating: 5, text: 'The quality is unmatched. My family has switched completely to Organi for all our grocery needs.' },
+  { name: 'Rajesh Kumar', city: 'Bangalore', rating: 5, text: 'The quality is unmatched. My family has switched completely to Organic for all our grocery needs.' },
   { name: 'Anita Patel', city: 'Chennai', rating: 5, text: 'Love the variety of organic products. The spices especially are so aromatic and pure!' },
 ]
 

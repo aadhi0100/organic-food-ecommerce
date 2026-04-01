@@ -3,6 +3,7 @@ import { applySessionCookie, toSessionUser } from '@/lib/auth/session'
 import { EmailRegisterSchema } from '@/lib/validation'
 import { UserStore } from '@/lib/userStore'
 import { hashPassword } from '@/lib/auth/password'
+import { sendWelcomeEmail } from '@/lib/welcomeEmailService'
 
 export async function POST(request: Request) {
   try {
@@ -36,6 +37,9 @@ export async function POST(request: Request) {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     })
+
+    // Send welcome email (non-blocking)
+    sendWelcomeEmail({ to: user.email, name: user.name, isNewUser: true }).catch(() => {})
 
     const response = NextResponse.json({
       success: true,

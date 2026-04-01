@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { verifyGoogleIdToken } from '@/lib/auth/google'
-import { applySessionCookie, SESSION_COOKIE_NAME, toSessionUser } from '@/lib/auth/session'
+import { applySessionCookie, toSessionUser } from '@/lib/auth/session'
 import { getDashboardPath } from '@/lib/auth/routing'
 import { UserStore } from '@/lib/userStore'
 import { sendWelcomeEmail } from '@/lib/welcomeEmailService'
@@ -15,8 +15,7 @@ function requiredEnv(name: string) {
 }
 
 function appBaseUrl() {
-  const base = requiredEnv('APP_BASE_URL').replace(/\/+$/g, '')
-  return base
+  return requiredEnv('APP_BASE_URL').replace(/\/+$/g, '')
 }
 
 function parseEmailList(value: string | undefined) {
@@ -54,10 +53,10 @@ export async function GET(request: Request) {
       }),
   )
 
-  const expectedState = cookies.g_oauth_state
-  const nonce = cookies.g_oauth_nonce
-  const verifier = cookies.g_oauth_verifier
-  const nextPath = cookies.g_oauth_next
+  const expectedState = cookies['g_oauth_state']
+  const nonce = cookies['g_oauth_nonce']
+  const verifier = cookies['g_oauth_verifier']
+  const nextPath = cookies['g_oauth_next']
 
   if (!expectedState || !nonce || !verifier) {
     return NextResponse.redirect(new URL('/login?error=missing_state', request.url))
@@ -69,7 +68,6 @@ export async function GET(request: Request) {
   try {
     const googleClientId = requiredEnv('GOOGLE_CLIENT_ID')
     const googleClientSecret = requiredEnv('GOOGLE_CLIENT_SECRET')
-
     const redirectUri = `${appBaseUrl()}/api/auth/google/callback`
 
     const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
@@ -107,23 +105,15 @@ export async function GET(request: Request) {
         ? 'vendor'
         : 'customer'
 
-    const user = {
+    const existingUser = UserStore.findByEmail(profile.email)
+    const isNewUser = !existingUser
+
+    const storedUser = UserStore.upsertGoogleUser({
       id: profile.sub,
       email: profile.email,
       name: profile.name,
       role,
       ...(profile.picture ? { picture: profile.picture } : {}),
-    } as const
-
-    const existingUser = UserStore.findByEmail(profile.email)
-    const isNewUser = !existingUser
-
-    const storedUser = UserStore.upsertGoogleUser({
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role,
-      ...(user.picture ? { picture: user.picture } : {}),
     })
 
     AuthEventStore.record({
@@ -136,26 +126,18 @@ export async function GET(request: Request) {
       userAgent: request.headers.get('user-agent') || undefined,
     })
 
-    // Send welcome email (non-blocking)
-    sendWelcomeEmail({
-      to: storedUser.email,
-      name: storedUser.name,
-      isNewUser,
-    }).catch(() => {})
+    sendWelcomeEmail({ to: storedUser.email, name: storedUser.name, isNewUser }).catch(() => {})
 
-    const response = NextResponse.redirect(
-      new URL(
-        nextPath && nextPath.startsWith('/') ? nextPath : getDashboardPath(storedUser.role),
-        request.url,
-      ),
-    )
+    const destination = nextPath && nextPath.startsWith('/') ? nextPath : getDashboardPath(storedUser.role)
+    const response = NextResponse.redirect(new URL(destination, request.url))
     const secure = process.env.NODE_ENV === 'production'
 
     await applySessionCookie(response, toSessionUser(storedUser))
 
-    // Clear one-time OAuth cookies
+    // Clear one-time OAuth cookies (same path '/' used when setting)
+    const clearOpts = { httpOnly: true, secure, sameSite: 'lax' as const, maxAge: 0, path: '/' }
     for (const name of ['g_oauth_state', 'g_oauth_nonce', 'g_oauth_verifier', 'g_oauth_next']) {
-      response.cookies.set(name, '', { httpOnly: true, secure, sameSite: 'lax', maxAge: 0, path: '/api/auth/google' })
+      response.cookies.set(name, '', clearOpts)
     }
 
     return response
