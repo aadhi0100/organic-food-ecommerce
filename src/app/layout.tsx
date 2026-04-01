@@ -19,9 +19,13 @@ export const metadata: Metadata = {
     title: 'Organic',
   },
   icons: {
-    icon: [{ url: '/icon-192.svg', sizes: '192x192', type: 'image/svg+xml' }, { url: '/icon-512.svg', sizes: '512x512', type: 'image/svg+xml' }],
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/icon-192.svg', sizes: '192x192', type: 'image/svg+xml' },
+      { url: '/icon-512.svg', sizes: '512x512', type: 'image/svg+xml' },
+    ],
     apple: '/icon-512.svg',
-    shortcut: '/icon-192.svg',
+    shortcut: '/favicon.svg',
   },
 }
 
@@ -42,6 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#16a34a" />
         <link rel="apple-touch-icon" href="/icon-512.svg" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" type="image/svg+xml" sizes="192x192" href="/icon-192.svg" />
         <link rel="icon" type="image/svg+xml" sizes="512x512" href="/icon-512.svg" />
       </head>

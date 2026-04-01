@@ -496,5 +496,6 @@
   "productNotFound": "Product not found",
   "organic": "Organic",
   "qualityAssured": "Quality Assured",
-  "spendMoreForDiscount": "Spend ₹{{amount}} more to unlock 5% off!"
+  "spendMoreForDiscount": "Spend ₹{{amount}} more to unlock 5% off!",
+  "selectLanguage": "Select Language"
 }

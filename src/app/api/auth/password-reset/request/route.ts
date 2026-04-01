@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { PasswordResetRequestSchema } from '@/lib/validation'
 import { UserStore } from '@/lib/userStore'
+import { sendPasswordResetEmail } from '@/lib/passwordResetEmailService'
 
 function appBaseUrl(request: Request) {
   return (process.env.APP_BASE_URL || new URL(request.url).origin).replace(/\/+$/g, '')
@@ -25,6 +26,13 @@ export async function POST(request: Request) {
     }
 
     const resetUrl = `${appBaseUrl(request)}/reset-password/${reset.token}`
+
+    // Send password reset email server-side (non-blocking)
+    sendPasswordResetEmail({
+      to: reset.user.email,
+      customerName: reset.user.name || 'there',
+      resetUrl,
+    }).catch(() => {})
 
     return NextResponse.json({
       success: true,
