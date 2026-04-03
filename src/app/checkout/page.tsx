@@ -197,8 +197,20 @@ export default function CheckoutPage() {
               <div className="mb-6 space-y-3 border-t border-gray-200 dark:border-gray-700 pt-4">
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">{t('subtotal')}</span>
-                  <span className="font-medium text-gray-900 dark:text-white">{formatPrice(pricing.subtotal + pricing.quantityDiscount)}</span>
+                  <span className="font-medium text-gray-900 dark:text-white">{formatPrice(pricing.itemsTotal)}</span>
                 </div>
+                {pricing.totalDiscount > 0 && (
+                  <div className="flex justify-between text-green-600">
+                    <span>{t('discount')}</span>
+                    <span>-{formatPrice(pricing.totalDiscount)}</span>
+                  </div>
+                )}
+                {pricing.shipping > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 dark:text-gray-400">{t('shipping')}</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{formatPrice(pricing.shipping)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">{t('tax')} (5%)</span>
                   <span className="font-medium text-gray-900 dark:text-white">{formatPrice(pricing.tax)}</span>
