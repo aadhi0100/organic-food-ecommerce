@@ -32,9 +32,9 @@ export const DELIVERY_CONFIG: Record<DeliveryType, {
     },
   },
   standard: {
-    label: 'Standard Delivery (3 Days)',
-    totalDays: 3,
-    offsets: { warehouse: 0, packaging: 1, on_the_way: 2, delivered: 3 },
+    label: 'Standard Delivery (1 Day)',
+    totalDays: 1,
+    offsets: { warehouse: 0, packaging: 0.25, on_the_way: 0.5, delivered: 1 },
     descriptions: {
       warehouse: { text: 'Order collected at the Tamil Nadu warehouse', key: 'trackingOrderCollectedAtWarehouse' },
       packaging: { text: 'Products inspected, packed, and prepared for dispatch', key: 'trackingProductsInspectedPackedPreparedForDispatch' },

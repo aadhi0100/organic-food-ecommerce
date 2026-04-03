@@ -13,13 +13,13 @@ export function LanguageSelector() {
   const { language, setLanguage, t } = useLanguage()
 
   return (
-    <label className="relative flex min-h-[44px] items-center rounded-lg border border-white/15 bg-white/10 pl-3 pr-2 text-white transition hover:bg-white/15">
-      <Globe size={18} className="shrink-0 text-white/90" />
+    <label className="relative flex min-h-[44px] items-center rounded-lg border border-gray-200 bg-transparent pl-3 pr-2 text-gray-600 transition hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">
+      <Globe size={18} className="shrink-0" />
       <span className="sr-only">{t('selectLanguage')}</span>
       <select
         value={language}
         onChange={(event) => setLanguage(event.target.value as Language)}
-        className="w-[5.5rem] appearance-none bg-transparent py-2 pl-2 pr-5 text-sm font-medium text-white outline-none sm:w-auto"
+        className="w-[5.5rem] appearance-none bg-transparent py-2 pl-2 pr-5 text-sm font-medium text-gray-600 outline-none dark:text-gray-300 sm:w-auto"
         aria-label={t('selectLanguage')}
       >
         {supportedLanguages.map((code) => (

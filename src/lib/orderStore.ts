@@ -205,7 +205,7 @@ export const OrderStore = {
     const deliveryType: DeliveryType = input.deliveryType || 'standard'
     const trackingTimeline = generateTrackingTimeline(orderDate, deliveryType)
     const trackingNumber = `ORG${Date.now().toString().slice(-10)}`
-    const deliveryDate = trackingTimeline[trackingTimeline.length - 1]?.timestamp || new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString()
+    const deliveryDate = trackingTimeline[trackingTimeline.length - 1]?.timestamp || new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString()
     const orderId = `ORD${Date.now().toString().slice(-10)}`
 
     const order: StoredOrder = {

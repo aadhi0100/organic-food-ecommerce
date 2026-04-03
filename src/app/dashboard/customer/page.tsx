@@ -400,17 +400,10 @@ export default function CustomerDashboard() {
 
                   <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                     <a
-                      href={`/api/orders/${order.id}/invoice`}
-                      download={`Invoice-${order.id}.pdf`}
+                      href={`/invoice/${order.id}`}
                       className="flex-1 rounded-lg bg-green-600 py-3 text-center font-bold text-white transition hover:bg-green-700"
                     >
                       ↓ {t('downloadInvoice')}
-                    </a>
-                    <a
-                      href={`/invoice/${order.id}`}
-                      className="flex-1 rounded-lg border-2 border-green-600 py-3 text-center font-bold text-green-600 transition hover:bg-green-50"
-                    >
-                      {t('viewInvoice')}
                     </a>
                     {order.trackingNumber && (
                       <button

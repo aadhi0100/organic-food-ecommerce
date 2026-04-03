@@ -98,11 +98,11 @@ export function OrganiLogo({ href = '/', className = '', size = 'md', variant = 
   const logoContent = (
     <div className={`flex items-center ${s.gap} ${className}`}>
       <LeafIcon size={s.icon} variant={variant} />
-      <div className="flex flex-col leading-none">
-        <span className={`font-bold ${s.text} ${textColor} tracking-tight`}>
-          Organic<span className={variant === 'light' ? 'text-green-200' : 'text-green-600 dark:text-green-400'}>Food</span>
+      <div className="flex flex-col gap-0.5">
+        <span className={`font-bold ${s.text} ${textColor} tracking-tight leading-tight`}>
+          Organic <span className={variant === 'light' ? 'text-green-200' : 'text-green-600 dark:text-green-400'}>Food</span>
         </span>
-        <span className={`font-medium ${s.sub} ${subColor} opacity-80 mt-0.5`}>
+        <span className={`font-medium ${s.sub} ${subColor} opacity-80 leading-tight`}>
           Fresh &amp; Pure
         </span>
       </div>

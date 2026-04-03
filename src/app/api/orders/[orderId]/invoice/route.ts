@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { generateProfessionalInvoice } from '@/lib/professionalInvoice'
 import { buildInvoiceData } from '@/lib/invoiceData'
 
 export async function GET(
@@ -9,7 +8,7 @@ export async function GET(
 ) {
   try {
     const { orderId } = await context.params
-    
+
     if (!orderId) {
       return NextResponse.json({ error: 'Order ID is required' }, { status: 400 })
     }
@@ -22,21 +21,11 @@ export async function GET(
     }
 
     const invoiceData = await buildInvoiceData(order)
-    const pdfDoc = await generateProfessionalInvoice(invoiceData)
-    const pdfBuffer = Buffer.from(pdfDoc.output('arraybuffer'))
-
-    return new NextResponse(pdfBuffer, {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="Invoice-${orderId}.pdf"`,
-        'Cache-Control': 'no-cache'
-      }
-    })
+    return NextResponse.json({ success: true, data: invoiceData })
   } catch (error) {
-    console.error('Invoice generation error:', error)
+    console.error('Invoice data error:', error)
     return NextResponse.json(
-      { error: 'Failed to generate invoice', details: String(error) }, 
+      { error: 'Failed to load invoice data', details: String(error) },
       { status: 500 }
     )
   }
