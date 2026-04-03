@@ -9,6 +9,7 @@ import { Trash2, Plus, Minus, ShoppingBag, History, TrendingUp, Calendar, Packag
 import { useRouter } from 'next/navigation'
 import type { Order } from '@/types'
 import { SafeImage } from '@/components/SafeImage'
+import { calculatePricing } from '@/lib/pricing'
 
 interface CartHistoryItem {
   date: string
@@ -55,12 +56,19 @@ export default function CartPage() {
 
   useEffect(() => { hydrateProducts() }, [hydrateProducts])
 
+  const pricing = calculatePricing(
+    items.filter((i) => i.product).map((i) => ({
+      productId: i.productId,
+      name: i.product?.name || '',
+      quantity: i.quantity,
+      unitPrice: i.product?.price || 0,
+    })),
+    { couponCode: discountCode, customerSpend: totalSpent },
+  )
   const subtotal = getTotal()
-  const discountAmount = (subtotal * discount) / 100
-  const afterDiscount = subtotal - discountAmount
-  const cgst = afterDiscount * 0.09
-  const sgst = afterDiscount * 0.09
-  const finalTotal = afterDiscount + cgst + sgst
+  const discountAmount = pricing.totalDiscount
+  const tax = pricing.tax
+  const finalTotal = pricing.grandTotal
 
   const applyDiscountCode = () => {
     const code = discountCode.toUpperCase()
@@ -210,19 +218,15 @@ export default function CartPage() {
                     <span className="text-gray-600 dark:text-gray-400">{t('subtotal')}</span>
                     <span className="font-bold text-gray-900 dark:text-white">₹{subtotal.toFixed(2)}</span>
                   </div>
-                  {discount > 0 && (
+                  {discountAmount > 0 && (
                     <div className="flex justify-between text-green-600">
-                      <span>{t('discount')} ({discount}%)</span>
+                      <span>{t('discount')}</span>
                       <span className="font-bold">-₹{discountAmount.toFixed(2)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">{t('cgst')} (9%)</span>
-                    <span className="font-medium text-gray-900 dark:text-white">₹{cgst.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">{t('sgst')} (9%)</span>
-                    <span className="font-medium text-gray-900 dark:text-white">₹{sgst.toFixed(2)}</span>
+                    <span className="text-gray-600 dark:text-gray-400">GST (5%)</span>
+                    <span className="font-medium text-gray-900 dark:text-white">₹{tax.toFixed(2)}</span>
                   </div>
                   <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
                     <div className="flex justify-between text-xl">

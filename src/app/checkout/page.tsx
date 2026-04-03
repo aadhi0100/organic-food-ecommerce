@@ -205,14 +205,12 @@ export default function CheckoutPage() {
                     <span>-{formatPrice(pricing.totalDiscount)}</span>
                   </div>
                 )}
-                {pricing.shipping > 0 && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">{t('shipping')}</span>
-                    <span className="font-medium text-gray-900 dark:text-white">{formatPrice(pricing.shipping)}</span>
-                  </div>
-                )}
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">{t('tax')} (5%)</span>
+                  <span className="text-gray-600 dark:text-gray-400">{t('shipping')}</span>
+                  <span className="font-medium text-green-600">FREE</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-400">GST (5%)</span>
                   <span className="font-medium text-gray-900 dark:text-white">{formatPrice(pricing.tax)}</span>
                 </div>
                 <div className="flex justify-between border-t border-gray-200 dark:border-gray-700 pt-3 text-xl font-bold">

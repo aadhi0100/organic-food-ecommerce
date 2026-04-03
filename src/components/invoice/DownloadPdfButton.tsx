@@ -209,7 +209,13 @@ export function DownloadPdfButton({ invoice }: { invoice: InvoiceData }) {
       doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.setTextColor(...S300)
       doc.text('Page 1 of 1', PW / 2, FOOTER_Y + 18, { align: 'center' })
 
-      doc.save(`Invoice-${invoice.orderId}.pdf`)
+      const blob = doc.output('blob')
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `Invoice-${invoice.orderId}.pdf`
+      a.click()
+      URL.revokeObjectURL(url)
     } catch (err) {
       console.error('PDF generation error:', err)
       alert('Failed to generate PDF. Please try again.')
