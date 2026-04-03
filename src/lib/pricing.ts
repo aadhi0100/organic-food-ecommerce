@@ -130,7 +130,7 @@ export function calculatePricing(
     subtotalAfterQuantityDiscount - bundleDiscount - loyaltyDiscount - couponDiscount,
   )
 
-  const shipping = afterDiscounts > 0 && afterDiscounts < 500 ? 50 : 0
+  const shipping = 0
   const tax = roundMoney(afterDiscounts * 0.05)
   const totalDiscount = roundMoney(
     quantityDiscount + bundleDiscount + loyaltyDiscount + couponDiscount,

@@ -9,7 +9,7 @@ export function DownloadPdfButton({ invoice }: { invoice: InvoiceData }) {
   const handleDownload = async () => {
     setLoading(true)
     try {
-      const [{ default: jsPDF }, { default: autoTable }, { default: QRCode }] = await Promise.all([
+      const [{ jsPDF }, { default: autoTable }, { default: QRCode }] = await Promise.all([
         import('jspdf'),
         import('jspdf-autotable'),
         import('qrcode'),
