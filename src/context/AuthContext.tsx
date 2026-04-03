@@ -48,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       notify('success', `Welcome${user.name ? `, ${user.name.split(' ')[0]}` : ''}! 🌿`)
     }
     prevUserRef.current = user
-  }, [user])
+  }, [user, notify])
 
   const loginWithGoogle = (nextPath?: string) => {
     const safeNext = nextPath && nextPath.startsWith('/') ? nextPath : '/dashboard'

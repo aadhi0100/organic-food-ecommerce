@@ -4,7 +4,16 @@ import { UserStore } from '@/lib/userStore'
 import { sendPasswordResetEmail } from '@/lib/passwordResetEmailService'
 
 function appBaseUrl(request: Request) {
-  return (process.env.APP_BASE_URL || new URL(request.url).origin).replace(/\/+$/g, '')
+  const configured = process.env.APP_BASE_URL
+  if (configured) {
+    const base = configured.replace(/\/+$/, '')
+    // Enforce HTTPS in production
+    if (process.env.NODE_ENV === 'production') {
+      return base.replace(/^http:\/\//i, 'https://')
+    }
+    return base
+  }
+  return new URL(request.url).origin
 }
 
 export async function POST(request: Request) {
@@ -18,30 +27,20 @@ export async function POST(request: Request) {
       )
     }
 
-    const reset = await UserStore.createPasswordResetToken(parsed.data.identifier)
     const message = 'If an account exists, a password reset link has been sent.'
+    const reset = await UserStore.createPasswordResetToken(parsed.data.identifier)
 
-    if (!reset) {
-      return NextResponse.json({ success: true, message })
+    if (reset) {
+      const resetUrl = `${appBaseUrl(request)}/reset-password/${reset.token}`
+      sendPasswordResetEmail({
+        to: reset.user.email,
+        customerName: reset.user.name || 'there',
+        resetUrl,
+      }).catch(() => {})
     }
 
-    const resetUrl = `${appBaseUrl(request)}/reset-password/${reset.token}`
-
-    // Send password reset email server-side (non-blocking)
-    sendPasswordResetEmail({
-      to: reset.user.email,
-      customerName: reset.user.name || 'there',
-      resetUrl,
-    }).catch(() => {})
-
-    return NextResponse.json({
-      success: true,
-      message,
-      resetUrl,
-      name: reset.user.name || 'there',
-      email: reset.user.email,
-    })
-  } catch (error) {
+    return NextResponse.json({ success: true, message })
+  } catch {
     return NextResponse.json({ error: 'Unable to request password reset' }, { status: 500 })
   }
 }

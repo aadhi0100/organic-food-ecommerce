@@ -6,6 +6,10 @@ import { buildInvoiceData } from '@/lib/invoiceData'
 import { InvoiceTemplate } from '@/components/invoice/InvoiceTemplate'
 import { LANGUAGE_COOKIE_NAME, createTranslator, normalizeLanguage } from '@/lib/i18n'
 
+export const metadata = {
+  title: 'Invoice',
+}
+
 export default async function InvoicePage({
   params,
 }: {
@@ -23,9 +27,17 @@ export default async function InvoicePage({
   const invoice = await buildInvoiceData(order)
 
   return (
-    <div>
+    <>
+      <style>{`
+        @media print {
+          .no-print { display: none !important; }
+          body { margin: 0; background: white; }
+          @page { size: A4; margin: 0; }
+        }
+      `}</style>
+
       {/* Action bar */}
-      <div className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <div className="no-print sticky top-0 z-10 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="flex w-full flex-wrap items-center justify-between gap-3 px-4 py-3">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-green-700">Invoice</p>
@@ -56,6 +68,6 @@ export default async function InvoicePage({
       </div>
 
       <InvoiceTemplate invoice={invoice} t={t} />
-    </div>
+    </>
   )
 }

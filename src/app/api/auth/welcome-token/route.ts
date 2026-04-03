@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     if (!reset) return NextResponse.json({ error: 'User not found' }, { status: 404 })
 
     const resetUrl = `${appBaseUrl(request)}/reset-password/${reset.token}`
-    return NextResponse.json({ resetUrl, name: reset.user.name || 'there' })
+    return NextResponse.json({ name: reset.user.name || 'there' })
   } catch {
     return NextResponse.json({ error: 'Failed to generate token' }, { status: 500 })
   }

@@ -70,13 +70,13 @@ export default function VendorDashboard() {
       description: formData.description,
       category: formData.category,
       stock: parseInt(formData.stock),
-      image: formData.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500',
+      image: formData.image || '/images/products/default.jpg',
       shopId: formData.shopId,
       rating: 4.5,
       reviews: 0,
       organic: true,
       featured: false,
-      images: [formData.image || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500'],
+      images: [formData.image || '/images/products/default.jpg'],
     }
     try {
       await fetch('/api/products', {

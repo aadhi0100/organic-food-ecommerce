@@ -130,12 +130,12 @@ export function calculatePricing(
     subtotalAfterQuantityDiscount - bundleDiscount - loyaltyDiscount - couponDiscount,
   )
 
-  const shipping = afterDiscounts >= 1000 || afterDiscounts === 0 ? 0 : 49
+  const shipping = afterDiscounts > 0 && afterDiscounts < 500 ? 50 : 0
   const tax = roundMoney(afterDiscounts * 0.05)
   const totalDiscount = roundMoney(
     quantityDiscount + bundleDiscount + loyaltyDiscount + couponDiscount,
   )
-  const grandTotal = roundMoney(afterDiscounts + shipping + tax)
+  const grandTotal = roundMoney(afterDiscounts + tax + shipping)
 
   const discounts: PricingDiscount[] = []
   if (quantityDiscount > 0) {
@@ -169,14 +169,6 @@ export function calculatePricing(
       percent: couponPercent,
     })
   }
-  if (shipping === 0 && afterDiscounts > 0) {
-    discounts.push({
-      label: 'Free shipping',
-      type: 'shipping',
-      amount: 0,
-    })
-  }
-
   return {
     subtotal: subtotalAfterQuantityDiscount,
     itemsTotal,

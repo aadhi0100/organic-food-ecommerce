@@ -128,7 +128,7 @@ export async function GET(request: Request) {
 
     sendWelcomeEmail({ to: storedUser.email, name: storedUser.name, isNewUser }).catch(() => {})
 
-    const destination = nextPath && nextPath.startsWith('/') ? nextPath : getDashboardPath(storedUser.role)
+    const destination = nextPath && nextPath.startsWith('/') && !nextPath.startsWith('//') ? nextPath : getDashboardPath(storedUser.role)
     const response = NextResponse.redirect(new URL(destination, request.url))
     const secure = process.env.NODE_ENV === 'production'
 

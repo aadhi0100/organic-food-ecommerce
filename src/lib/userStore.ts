@@ -387,9 +387,9 @@ export const UserStore = {
       type: 'home',
       fullName: updates.name,
       street: updates.address,
-      city: current.addresses?.[0]?.city || 'Chennai',
-      state: current.addresses?.[0]?.state || 'Tamil Nadu',
-      zipCode: current.addresses?.[0]?.zipCode || '600001',
+      city: current.addresses?.[0]?.city || '',
+      state: current.addresses?.[0]?.state || '',
+      zipCode: current.addresses?.[0]?.zipCode || '',
       country: current.addresses?.[0]?.country || 'India',
       phone: updates.phone,
       isDefault: true,
@@ -589,15 +589,26 @@ export const UserStore = {
   },
 
   storeProfilePhoto: (userId: string, fileName: string, buffer: Buffer) => {
-    const userPhotoDir = path.join(USERS_MEDIA, userId)
-    const publicPhotoDir = publicPath('uploads', 'users', userId)
+    const safeUserId = String(userId).replace(/[^a-zA-Z0-9_-]/g, '')
+    const safeFileName = path.basename(String(fileName)).replace(/[^a-zA-Z0-9._-]/g, '')
+    if (!safeUserId || !safeFileName) throw new Error('Invalid userId or fileName')
+
+    const userPhotoDir = path.join(USERS_MEDIA, safeUserId)
+    const publicPhotoDir = publicPath('uploads', 'users', safeUserId)
     ensureDir(userPhotoDir)
     ensureDir(publicPhotoDir)
-    const dataFilePath = path.join(userPhotoDir, fileName)
-    const publicFilePath = path.join(publicPhotoDir, fileName)
+
+    const dataFilePath = path.join(userPhotoDir, safeFileName)
+    const publicFilePath = path.join(publicPhotoDir, safeFileName)
+
+    // Confirm resolved paths stay within intended directories
+    if (!dataFilePath.startsWith(userPhotoDir) || !publicFilePath.startsWith(publicPhotoDir)) {
+      throw new Error('Path traversal detected')
+    }
+
     fs.writeFileSync(dataFilePath, buffer)
     fs.writeFileSync(publicFilePath, buffer)
-    return `/uploads/users/${userId}/${fileName}`
+    return `/uploads/users/${safeUserId}/${safeFileName}`
   },
 }
 

@@ -19,7 +19,7 @@ export function InvoiceTemplate({ invoice, t }: { invoice: InvoiceData; t: Trans
 
   return (
     <div style={{ background: '#0f172a', minHeight: '100vh', padding: '40px 32px', fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif" }}>
-      <div style={{ maxWidth: 1100, margin: '0 auto', background: '#ffffff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 25px 80px rgba(0,0,0,0.4)' }}>
+      <div style={{ width: '210mm', minHeight: '297mm', margin: '0 auto', background: '#ffffff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 25px 80px rgba(0,0,0,0.4)' }}>
 
         {/* ══════════════════════════════════════════
             HEADER — dark slate + emerald accent bar

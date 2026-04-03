@@ -17,7 +17,6 @@ export function ProductCard({ product }: { product: Product }) {
   const { t } = useLanguage()
   const { notify } = useNotification()
   const [isAdding, setIsAdding] = useState(false)
-  const [imgLoaded, setImgLoaded] = useState(false)
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault()
@@ -49,20 +48,15 @@ export function ProductCard({ product }: { product: Product }) {
         
         {/* Real Product Image Container */}
         <Link href={`/product/${product.id}`} className="relative block h-52 w-full overflow-hidden bg-gray-50 dark:bg-gray-800">
-          {!imgLoaded && (
-             <div className="absolute inset-0 animate-pulse bg-gray-200 dark:bg-gray-700" />
-          )}
-
           <SafeImage
             src={product.image}
             alt={product.name}
             fill
-            className={`object-cover transition-transform duration-700 group-hover:scale-105 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            onLoad={() => setImgLoaded(true)}
           />
 
-          <div className="absolute left-2 top-2 z-20 flex flex-col gap-1.5 focus:z-10 relative">
+          <div className="absolute left-2 top-2 z-20 flex flex-col gap-1.5">
             {product.featured && (
               <span className="flex items-center gap-1 w-max rounded-full bg-amber-400/90 px-2.5 py-1 text-xs font-bold text-amber-900 backdrop-blur-md shadow-sm">
                 <Star size={10} className="fill-amber-900 text-amber-900" /> {t('featured')}

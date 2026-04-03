@@ -128,8 +128,8 @@ export function SafeImage({ src, fallbackSrc, alt, onError, className, ...props 
           setCurrentSrc(fallbackSrc)
         } else {
           setFailed(true)
+          onError?.(e)
         }
-        onError?.(e)
       }}
     />
   )

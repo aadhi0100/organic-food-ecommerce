@@ -61,16 +61,21 @@ export async function sendPasswordResetEmail(data: {
     </html>
   `
 
-  await transporter.sendMail({
-    from: {
-      name: appName,
-      address: process.env.EMAIL_USER || 'noreply@organicfood.com',
-    },
-    to: data.to,
-    subject: `${appName} password reset`,
-    html,
-    text: `Reset your password: ${data.resetUrl}`,
-  })
-
-  return { sent: true }
+  try {
+    await transporter.sendMail({
+      from: {
+        name: appName,
+        address: process.env.EMAIL_USER || 'noreply@organicfood.com',
+      },
+      to: data.to,
+      subject: `${appName} password reset`,
+      html,
+      text: `Reset your password: ${data.resetUrl}`,
+    })
+    console.log(`[password-reset] sent to ${data.to}`)
+    return { sent: true }
+  } catch (err) {
+    console.error('[password-reset] failed:', err)
+    return { sent: false }
+  }
 }

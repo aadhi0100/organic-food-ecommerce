@@ -40,9 +40,9 @@ class ActivityLogger {
     this.logs.push(activity)
     this.save()
     
-    // Also log to console in development
+    // Also log to console in development (sanitized)
     if (process.env.NODE_ENV === 'development') {
-      console.log(`[${type}]`, data)
+      console.log(`[${type}]`, JSON.stringify(data))
     }
     
     return activity

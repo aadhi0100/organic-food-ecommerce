@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { Loader, Mail, ShieldCheck } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
-import { sendPasswordResetEmail } from '@/lib/welcomeEmail'
 
 function translateApiMessage(message: string | undefined, t: (key: string, params?: Record<string, string | number>) => string) {
   if (!message) return ''
@@ -21,14 +20,12 @@ export default function ForgotPasswordPage() {
   const [identifier, setIdentifier] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
-  const [resetUrl, setResetUrl] = useState('')
   const { t } = useLanguage()
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     setLoading(true)
     setMessage('')
-    setResetUrl('')
     try {
       const response = await fetch('/api/auth/password-reset/request', {
         method: 'POST',
@@ -38,9 +35,6 @@ export default function ForgotPasswordPage() {
       const payload = await response.json().catch(() => null)
       if (!response.ok) {
         throw new Error(translateApiMessage(payload?.error, t) || t('unableToRequestPasswordReset'))
-      }
-      if (payload?.resetUrl && payload?.email) {
-        await sendPasswordResetEmail({ toEmail: payload.email, toName: payload.name || 'there', resetUrl: payload.resetUrl })
       }
       setMessage(translateApiMessage(payload?.message, t) || t('ifAccountExistsResetLinkSent'))
     } catch (error) {
@@ -78,13 +72,6 @@ export default function ForgotPasswordPage() {
               {message && (
                 <div className="mt-6 rounded-2xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 px-4 py-3 text-sm text-green-700 dark:text-green-400">
                   {message}
-                </div>
-              )}
-
-              {resetUrl && (
-                <div className="mt-4 rounded-2xl border border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 px-4 py-3 text-sm text-amber-800 dark:text-amber-400">
-                  {t('resetLinkForLocalTesting')}{' '}
-                  <a href={resetUrl} className="font-semibold underline">{t('openResetPage')}</a>
                 </div>
               )}
 

@@ -9,7 +9,6 @@ import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/context/LanguageContext'
 import { AuthShell } from '@/components/auth/AuthShell'
 import { getDashboardPath, hasCompletedOnboarding, sanitizeNextPath } from '@/lib/auth/routing'
-import { sendWelcomeEmail } from '@/lib/welcomeEmail'
 import type { User as AppUser } from '@/types'
 
 function translateApiMessage(message: string | undefined, t: (key: string, params?: Record<string, string | number>) => string) {
@@ -106,12 +105,6 @@ export default function RegisterPage() {
       if (!response.ok) throw new Error(translateApiMessage(payload?.error, t))
       await refreshSession()
 
-      try {
-        await sendWelcomeEmail({ toEmail: emailForm.email, toName: emailForm.name })
-      } catch {
-        // email failure should not block registration
-      }
-
       const destination = nextPath === '/dashboard' ? getDashboardPath((payload?.user?.role as AppUser['role'] | undefined) || 'customer') : nextPath
       router.replace(destination)
     } catch (err) {
@@ -164,7 +157,7 @@ export default function RegisterPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ currentPassword: '', newPassword: passwordForm.newPassword, confirmPassword: passwordForm.confirmPassword }),
+        body: JSON.stringify({ newPassword: passwordForm.newPassword, confirmPassword: passwordForm.confirmPassword }),
       })
       const payload = await response.json().catch(() => null)
       if (!response.ok) throw new Error(translateApiMessage(payload?.error || payload?.message, t) || t('unableToSavePassword'))
