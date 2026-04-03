@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Menu, Moon, Search, Settings2, ShoppingCart, Sun, User, X, ChevronDown, Leaf } from 'lucide-react'
+import { Menu, Moon, MoonStar, Search, Settings2, ShoppingCart, Sun, User, X, ChevronDown, Leaf } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCart } from '@/hooks/useCart'
 import { useAuth } from '@/context/AuthContext'
@@ -204,7 +204,7 @@ export function Header() {
                 className="touch-target inline-flex items-center justify-center rounded-lg p-2 text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
                 aria-label={t('toggleTheme')}
               >
-                {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                {theme === 'light' ? <Moon size={20} /> : theme === 'dim' ? <MoonStar size={20} /> : <Sun size={20} />}
               </button>
 
               <Link
@@ -249,13 +249,13 @@ export function Header() {
               ) : (
                 <div className="hidden items-center gap-2 md:flex">
                   <Link
-                    href="/login"
+                    href={`/login?next=${encodeURIComponent(pathname)}`}
                     className="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition hover:text-green-700 dark:text-gray-300"
                   >
                     {t('login')}
                   </Link>
                   <Link
-                    href="/register"
+                    href={`/register?next=${encodeURIComponent(pathname)}`}
                     className="rounded-full bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-green-700 hover:shadow-lg active:scale-95"
                   >
                     Sign Up
@@ -328,10 +328,10 @@ export function Header() {
                     </>
                   ) : (
                     <div className="flex gap-2 pt-2">
-                      <Link href="/login" className="flex-1 rounded-xl border border-gray-200 py-2.5 text-center text-sm font-semibold text-gray-700 transition hover:border-green-300 hover:text-green-700">
+                      <Link href={`/login?next=${encodeURIComponent(pathname)}`} className="flex-1 rounded-xl border border-gray-200 py-2.5 text-center text-sm font-semibold text-gray-700 transition hover:border-green-300 hover:text-green-700">
                         {t('login')}
                       </Link>
-                      <Link href="/register" className="flex-1 rounded-xl bg-green-600 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-green-700">
+                      <Link href={`/register?next=${encodeURIComponent(pathname)}`} className="flex-1 rounded-xl bg-green-600 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-green-700">
                         Sign Up
                       </Link>
                     </div>
