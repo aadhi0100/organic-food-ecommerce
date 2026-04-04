@@ -383,6 +383,15 @@
   .touch-target {
     @apply min-h-[44px] min-w-[44px];
   }
+  .heading-responsive {
+    @apply text-2xl sm:text-3xl lg:text-4xl;
+  }
+  .text-responsive {
+    @apply text-sm sm:text-base;
+  }
+  .btn-mobile {
+    @apply rounded-lg px-4 py-2.5 text-sm sm:px-6 sm:py-3 sm:text-base;
+  }
 
   /* Skeleton animation */
   .skeleton {

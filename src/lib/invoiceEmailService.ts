@@ -132,7 +132,7 @@ export async function sendInvoiceEmail(data: EmailInvoiceData) {
           </div>
           
           <center>
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/dashboard/customer" class="button">
+            <a href="${process.env.APP_BASE_URL || 'https://organic-food-app-ashy.vercel.app'}/dashboard/customer" class="button">
               👁️ View Order Status
             </a>
           </center>

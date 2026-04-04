@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
 import { SESSION_COOKIE_NAME, verifySession } from '@/lib/auth/session'
+import { DATA_ROOT } from '@/lib/storage'
 
 async function requireAdmin(request: Request) {
   const cookieHeader = request.headers.get('cookie') || ''
@@ -36,7 +37,7 @@ export async function GET(request: Request) {
     if (!await requireAdmin(request)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
-    const dataDir = path.join(process.cwd(), 'data', 'users')
+    const dataDir = path.join(DATA_ROOT, 'users')
     if (!fs.existsSync(dataDir)) return NextResponse.json({ vendors: [] })
 
     const vendors = fs
@@ -97,7 +98,7 @@ export async function POST(request: Request) {
       joinedDate,
     }
 
-    const dataDir = path.join(process.cwd(), 'data', 'users')
+    const dataDir = path.join(DATA_ROOT, 'users')
     if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true })
     const filePath = path.join(dataDir, `vendor_${vendorId}.txt`)
     const content = `ID: ${vendorId}\nName: ${name}\nEmail: ${email}\nRole: vendor\nPhone: ${formattedPhone}\nAddress: ${address}\nBusiness Name: ${businessName}\nStatus: active\nJoined: ${joinedDate}\n`
@@ -121,7 +122,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Vendor ID required' }, { status: 400 })
     }
 
-    const dataDir = path.join(process.cwd(), 'data', 'users')
+    const dataDir = path.join(DATA_ROOT, 'users')
     const filePath = path.join(dataDir, `vendor_${id}.txt`)
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath)

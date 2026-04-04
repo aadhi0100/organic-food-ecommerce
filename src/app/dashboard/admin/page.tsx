@@ -112,14 +112,14 @@ export default function AdminDashboard() {
         <div className="mb-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="heading-responsive font-bold">{t('adminDashboard')}</h1>
-              <p className="text-responsive text-gray-600">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold">{t('adminDashboard')}</h1>
+              <p className="text-sm sm:text-base text-gray-600">
                 {t('welcomeBack')}, {user?.name}
               </p>
             </div>
             <button
               onClick={() => notify('info', t('reportGenerationComingSoon'))}
-              className="btn-mobile bg-green-600 font-bold text-white transition hover:bg-green-700"
+              className="rounded-lg px-4 py-2.5 text-sm sm:px-6 sm:py-3 sm:text-base bg-green-600 font-bold text-white transition hover:bg-green-700"
             >
               {t('downloadReport')}
             </button>

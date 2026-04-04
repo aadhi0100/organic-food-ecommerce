@@ -68,7 +68,7 @@ export const languageFontClasses: Record<Language, string> = {
   ta: 'font-tamil',
   te: 'font-telugu',
   bn: 'font-bengali',
-  mr: 'font-marathi',
+  mr: 'font-hindi',
   gu: 'font-gujarati',
   kn: 'font-kannada',
   ml: 'font-malayalam',
