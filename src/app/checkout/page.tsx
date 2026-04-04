@@ -209,6 +209,12 @@ export default function CheckoutPage() {
                   <span className="text-gray-600 dark:text-gray-400">{t('shipping')}</span>
                   <span className="font-medium text-green-600">FREE</span>
                 </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600 dark:text-gray-400">Est. Delivery</span>
+                  <span className="font-medium text-gray-900 dark:text-white">
+                    {new Date(Date.now() + 24 * 60 * 60 * 1000).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                  </span>
+                </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">GST (5%)</span>
                   <span className="font-medium text-gray-900 dark:text-white">{formatPrice(pricing.tax)}</span>

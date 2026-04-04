@@ -70,7 +70,7 @@ export async function generateProfessionalInvoice(data: InvoiceData): Promise<In
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(7)
   doc.setTextColor(...G100)
-  doc.text('FARM TO TABLE  ·  FAST & FRESH', L + 44, HH / 2 + 6)
+  doc.text('FARM TO TABLE  |  FAST & FRESH', L + 44, HH / 2 + 6)
   doc.text('No. 12, Anna Salai, Teynampet, Chennai 600018  |  info@organicfood.in  |  +91 98765 43210', L + 44, HH / 2 + 17)
 
   // INVOICE title + meta — right
@@ -354,7 +354,7 @@ export async function generateProfessionalInvoice(data: InvoiceData): Promise<In
   doc.text('This is a computer-generated invoice and does not require a signature.', L, FOOTER_Y + 18)
   doc.setFont('helvetica', 'bold')
   doc.setTextColor(...S500)
-  doc.text(`© ${new Date().getFullYear()} Organic Food Store  ·  organicfood.in`, PW - R, FOOTER_Y + 18, { align: 'right' })
+  doc.text(`© ${new Date().getFullYear()} Organic Food Store  |  organicfood.in`, PW - R, FOOTER_Y + 18, { align: 'right' })
 
   // Page number
   doc.setFont('helvetica', 'normal')

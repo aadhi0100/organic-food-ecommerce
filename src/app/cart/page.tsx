@@ -229,6 +229,12 @@ export default function CartPage() {
                     <span className="font-medium text-gray-900 dark:text-white">₹{tax.toFixed(2)}</span>
                   </div>
                   <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
+                    <div className="flex justify-between text-sm mb-2">
+                      <span className="text-gray-600 dark:text-gray-400">Est. Delivery</span>
+                      <span className="font-medium text-gray-900 dark:text-white">
+                        {new Date(Date.now() + 24 * 60 * 60 * 1000).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                      </span>
+                    </div>
                     <div className="flex justify-between text-xl">
                       <span className="font-bold text-gray-900 dark:text-white">{t('total')}</span>
                       <span className="font-bold text-green-600">₹{finalTotal.toFixed(2)}</span>
