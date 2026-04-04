@@ -34,7 +34,9 @@ export default function CustomerDashboard() {
       return
     }
 
-    fetch('/api/orders')
+    const controller = new AbortController()
+
+    fetch('/api/orders', { signal: controller.signal })
       .then((r) => r.json())
       .then((ordersData) => {
         const userOrders = Array.isArray(ordersData) ? ordersData : []
@@ -65,14 +67,21 @@ export default function CustomerDashboard() {
           total: order.total,
         }))
         setCartHistory(history)
-        setLoading(false)
-      })
 
-    const savedCartHistory = localStorage.getItem(`cartHistory_${user.id}`)
-    if (savedCartHistory) {
-      const parsedHistory = JSON.parse(savedCartHistory)
-      setCartHistory((prev) => [...parsedHistory, ...prev])
-    }
+        const savedCartHistory = localStorage.getItem(`cartHistory_${user.id}`)
+        if (savedCartHistory) {
+          try {
+            const parsedHistory = JSON.parse(savedCartHistory) as CartHistory[]
+            setCartHistory((prev) => [...parsedHistory, ...prev])
+          } catch { /* ignore malformed localStorage */ }
+        }
+      })
+      .catch((err) => {
+        if (err.name !== 'AbortError') console.error('Failed to load orders:', err)
+      })
+      .finally(() => setLoading(false))
+
+    return () => controller.abort()
   }, [user, router])
 
 
@@ -399,12 +408,14 @@ export default function CustomerDashboard() {
                   )}
 
                   <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-                    <a
-                      href={`/invoice/${order.id}`}
-                      className="flex-1 rounded-lg bg-green-600 py-3 text-center font-bold text-white transition hover:bg-green-700"
-                    >
-                      ↓ {t('downloadInvoice')}
-                    </a>
+                    {order.id && (
+                      <Link
+                        href={`/invoice/${order.id}`}
+                        className="flex-1 rounded-lg bg-green-600 py-3 text-center font-bold text-white transition hover:bg-green-700"
+                      >
+                        ↓ {t('downloadInvoice')}
+                      </Link>
+                    )}
                     {order.trackingNumber && (
                       <button
                         onClick={() => router.push(`/track-order/${order.id}`)}

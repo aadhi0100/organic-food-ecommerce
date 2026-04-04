@@ -5,6 +5,8 @@ import type { CartItem, Product } from '@/types'
 interface CartStore {
   cartId: string
   items: CartItem[]
+  _hasHydrated: boolean
+  setHasHydrated: (v: boolean) => void
   addItem: (product: Product, quantity?: number) => Promise<boolean>
   removeItem: (productId: string) => void
   updateQuantity: (productId: string, quantity: number) => void
@@ -60,6 +62,8 @@ export const useCart = create<CartStore>()(
     (set, get) => ({
       cartId: '',
       items: [],
+      _hasHydrated: false,
+      setHasHydrated: (v) => set({ _hasHydrated: v }),
 
       addItem: async (product, quantity = 1) => {
         const previousItems = get().items
@@ -236,6 +240,9 @@ export const useCart = create<CartStore>()(
     {
       name: 'cart-storage',
       version: 3,
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true)
+      },
       migrate: (persisted: unknown) => {
         const p = persisted as { cartId?: unknown; items?: unknown[] } | null
         const items = Array.isArray(p?.items) ? p.items : []
