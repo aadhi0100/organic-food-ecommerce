@@ -3,6 +3,9 @@ import path from 'path'
 import type { CartItem, Product } from '@/types'
 import { dataPath, ensureDir, readJsonFile, writeJsonFile } from '@/lib/storage'
 import { ProductStore } from '@/lib/productStore'
+import { IS_VERCEL, fsGet, fsSet, fsDelete } from '@/lib/firestoreAdapter'
+
+const FS_CARTS = 'carts'
 
 export type StoredCart = {
   cartId: string
@@ -29,21 +32,22 @@ function userCartFile(userId: string) {
 }
 
 async function loadCart(cartId: string): Promise<StoredCart | null> {
+  if (IS_VERCEL) return fsGet<StoredCart>(FS_CARTS, cartId)
   const cart = readJsonFile<StoredCart | null>(cartFile(cartId), null)
   return cart || null
 }
 
 async function saveCart(cart: StoredCart) {
+  if (IS_VERCEL) {
+    await fsSet(FS_CARTS, cart.cartId, cart)
+    return cart
+  }
   ensureDir(CARTS_ROOT)
   ensureDir(CARTS_BY_ID)
   ensureDir(cartDir(cart.cartId))
-  if (cart.userId) {
-    ensureDir(CARTS_BY_USER)
-  }
+  if (cart.userId) ensureDir(CARTS_BY_USER)
   writeJsonFile(cartFile(cart.cartId), cart)
-  if (cart.userId) {
-    writeJsonFile(userCartFile(cart.userId), { cartId: cart.cartId, updatedAt: cart.updatedAt })
-  }
+  if (cart.userId) writeJsonFile(userCartFile(cart.userId), { cartId: cart.cartId, updatedAt: cart.updatedAt })
   return cart
 }
 
@@ -78,6 +82,7 @@ function toCartItem(product: Product, quantity: number): CartItem {
 
 export const CartStore = {
   init: () => {
+    if (IS_VERCEL) return
     ensureDir(CARTS_ROOT)
     ensureDir(CARTS_BY_ID)
     ensureDir(CARTS_BY_USER)
@@ -187,13 +192,15 @@ export const CartStore = {
     cart.items = []
     cart.updatedAt = new Date().toISOString()
     await saveCart(cart)
+    if (IS_VERCEL) {
+      await fsDelete(FS_CARTS, cartId)
+      return cart
+    }
     try {
       const userIndex = userId ? userCartFile(userId) : null
       if (userIndex && fs.existsSync(userIndex)) fs.unlinkSync(userIndex)
       if (fs.existsSync(cartFile(cartId))) fs.unlinkSync(cartFile(cartId))
-    } catch {
-      // ignore cleanup failures
-    }
+    } catch { /* ignore */ }
     return cart
   },
 
@@ -202,14 +209,16 @@ export const CartStore = {
     cart.items = []
     cart.updatedAt = new Date().toISOString()
     await saveCart(cart)
+    if (IS_VERCEL) {
+      await fsDelete(FS_CARTS, cartId)
+      return cart
+    }
     try {
       if (fs.existsSync(userCartFile(userId || cart.userId || ''))) {
         fs.unlinkSync(userCartFile(userId || cart.userId || ''))
       }
       if (fs.existsSync(cartFile(cartId))) fs.unlinkSync(cartFile(cartId))
-    } catch {
-      // ignore cleanup failures
-    }
+    } catch { /* ignore */ }
     return cart
   },
 

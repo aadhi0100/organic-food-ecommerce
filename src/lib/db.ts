@@ -169,13 +169,14 @@ export const db = {
   },
   analytics: {
     getDashboardStats: async () => {
-      const orders = OrderStore.list()
-      const transactions = TransactionStore.findAll()
+      const orders = await OrderStore.list()
+      const transactions = await TransactionStore.findAll()
       const products = ProductStore.list()
+      const allUsers = await UserStore.findAll()
       const totalRevenue = transactions.reduce((sum, transaction) => sum + transaction.amount, 0)
       const totalOrders = orders.length
       const totalProducts = products.length
-      const totalCustomers = UserStore.findAll().filter((user) => user.role === 'customer').length
+      const totalCustomers = allUsers.filter((user) => user.role === 'customer').length
 
       return {
         totalRevenue,

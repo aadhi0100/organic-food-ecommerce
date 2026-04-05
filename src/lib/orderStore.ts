@@ -2,6 +2,9 @@ import fs from 'fs'
 import path from 'path'
 import type { Address, CartItem, Order, Product } from '@/types'
 import { dataPath, ensureDir, readJsonFile, writeJsonFile } from '@/lib/storage'
+import { IS_VERCEL, fsGet, fsSet, fsList } from '@/lib/firestoreAdapter'
+
+const FS_ORDERS = 'orders'
 import { ProductStore } from '@/lib/productStore'
 import { CartStore } from '@/lib/cartStore'
 import { TransactionStore } from '@/lib/transactionStore'
@@ -118,6 +121,20 @@ async function buildLineItems(items: CartItem[]) {
   return resolved.filter((item): item is NonNullable<typeof item> => Boolean(item))
 }
 
+// ─── Firestore helpers ───────────────────────────────────────────────────────────────────
+
+async function fsSaveOrder(order: StoredOrder): Promise<void> {
+  await fsSet(FS_ORDERS, order.id, order)
+}
+
+async function fsGetOrder(id: string): Promise<StoredOrder | null> {
+  return fsGet<StoredOrder>(FS_ORDERS, id)
+}
+
+async function fsListOrders(): Promise<StoredOrder[]> {
+  return fsList<StoredOrder>(FS_ORDERS)
+}
+
 export const OrderStore = {
   init: () => {
     ensureDir(ORDERS_ROOT)
@@ -187,7 +204,7 @@ export const OrderStore = {
       throw new Error('No items available for order')
     }
 
-    const customerOrders = OrderStore.listByUser(input.userId)
+    const customerOrders = await OrderStore.listByUser(input.userId)
     const customerSpend = customerOrders.reduce((sum, order) => sum + order.total, 0)
     const pricing = calculatePricing(
       resolvedItems.map((item) => ({
@@ -239,81 +256,76 @@ export const OrderStore = {
       warehouse: WAREHOUSE_INFO,
     }
 
-    const saved = persistOrder(order)
+    if (IS_VERCEL) {
+      await fsSaveOrder(order)
+    } else {
+      persistOrder(order)
+    }
 
     TransactionStore.create({
-      orderId: saved.id,
-      amount: saved.total,
+      orderId: order.id,
+      amount: order.total,
       status: 'completed',
       paymentMethod: input.paymentMethod,
       userId: input.userId,
     })
 
-    UserStore.appendOrderHistory(input.userId, {
-      orderId: saved.id,
-      date: saved.createdAt,
-      total: saved.total,
-      status: saved.status,
+    await UserStore.appendOrderHistory(input.userId, {
+      orderId: order.id,
+      date: order.createdAt,
+      total: order.total,
+      status: order.status,
     })
 
     if (input.cartId) {
       await CartStore.finalizeCart(input.cartId, input.userId)
     }
 
-    return saved
+    return order
   },
 
-  list: () => {
+  list: async () => {
+    if (IS_VERCEL) return fsListOrders()
     const ids = loadIndex()
     const orders = ids
       .map((id) => readOrder(id))
       .filter((order): order is StoredOrder => Boolean(order))
     if (orders.length > 0) return orders
-
     const files = fs.existsSync(ORDERS_BY_ID) ? fs.readdirSync(ORDERS_BY_ID) : []
     const fromDisk = files
       .map((file) => readJsonFile<StoredOrder | null>(path.join(ORDERS_BY_ID, file, 'order.json'), null))
       .filter((order): order is StoredOrder => Boolean(order))
-    if (fromDisk.length > 0) {
-      saveIndex(fromDisk.map((order) => order.id))
-    }
+    if (fromDisk.length > 0) saveIndex(fromDisk.map((order) => order.id))
     return fromDisk
   },
 
-  listByUser: (userId: string) => {
-    return OrderStore.list().filter((order) => order.userId === userId)
+  listByUser: async (userId: string) => {
+    const all = await OrderStore.list()
+    return all.filter((order) => order.userId === userId)
   },
 
-  findById: (orderId: string) => {
-    return readOrder(orderId) || OrderStore.list().find((order) => order.id === orderId) || null
+  findById: async (orderId: string) => {
+    if (IS_VERCEL) return fsGetOrder(orderId)
+    return readOrder(orderId) || (await OrderStore.list()).find((order) => order.id === orderId) || null
   },
 
-  updateStatus: (orderId: string, status: Order['status']) => {
-    const current = OrderStore.findById(orderId)
+  updateStatus: async (orderId: string, status: Order['status']) => {
+    const current = await OrderStore.findById(orderId)
     if (!current) return null
-    const updated = persistOrder({
-      ...current,
-      status,
-    })
-    return updated
+    const updated = { ...current, status }
+    if (IS_VERCEL) { await fsSaveOrder(updated); return updated }
+    return persistOrder(updated)
   },
 
-  getTrackingState: (orderId: string) => {
-    const order = OrderStore.findById(orderId)
+  getTrackingState: async (orderId: string) => {
+    const order = await OrderStore.findById(orderId)
     if (!order) return null
     const deliveryType: DeliveryType = (order.deliveryType as DeliveryType) || 'standard'
     const trackingState = getTrackingProgress(order.orderDate || order.createdAt, deliveryType)
     const status = mapStatusFromTracking(order.orderDate || order.createdAt)
-    const updated = persistOrder({
-      ...order,
-      status,
-      deliveryType,
-      trackingTimeline: trackingState.timeline,
-    })
-    return {
-      order: updated,
-      tracking: trackingState,
-    }
+    const updated = { ...order, status: status as Order['status'], deliveryType, trackingTimeline: trackingState.timeline }
+    if (IS_VERCEL) { await fsSaveOrder(updated) } else { persistOrder(updated) }
+    return { order: updated, tracking: trackingState }
   },
 }
 

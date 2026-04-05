@@ -13,7 +13,7 @@ export async function GET(request: Request) {
 
   try {
     const sessionUser = await verifySession(token)
-    const user = UserStore.getPublicUser(sessionUser.id) || sessionUser
+    const user = await UserStore.getPublicUser(sessionUser.id) || sessionUser
     return NextResponse.json({ user })
   } catch {
     return NextResponse.json({ user: null }, { status: 401 })

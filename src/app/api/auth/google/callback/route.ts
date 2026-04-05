@@ -105,10 +105,10 @@ export async function GET(request: Request) {
         ? 'vendor'
         : 'customer'
 
-    const existingUser = UserStore.findByEmail(profile.email)
+    const existingUser = await UserStore.findByEmail(profile.email)
     const isNewUser = !existingUser
 
-    const storedUser = UserStore.upsertGoogleUser({
+    const storedUser = await UserStore.upsertGoogleUser({
       id: profile.sub,
       email: profile.email,
       name: profile.name,

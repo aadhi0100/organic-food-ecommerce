@@ -18,13 +18,13 @@ export async function POST(request: Request) {
 
     const { name, email, phone, password } = parsed.data
 
-    const existing = UserStore.findByEmail(email)
+    const existing = await UserStore.findByEmail(email)
     if (existing) {
       return NextResponse.json({ error: 'An account with this email already exists' }, { status: 409 })
     }
 
     const passwordHash = await hashPassword(password)
-    const user = UserStore.save({
+    const user = await UserStore.save({
       id: `user-${Date.now()}`,
       name,
       email,
@@ -38,12 +38,11 @@ export async function POST(request: Request) {
       updatedAt: new Date().toISOString(),
     })
 
-    // Send welcome email (non-blocking)
     sendWelcomeEmail({ to: user.email, name: user.name, isNewUser: true }).catch(() => {})
 
     const response = NextResponse.json({
       success: true,
-      user: UserStore.getPublicUser(user.id) || user,
+      user: await UserStore.getPublicUser(user.id) || user,
     })
     await applySessionCookie(response, toSessionUser(user))
     return response

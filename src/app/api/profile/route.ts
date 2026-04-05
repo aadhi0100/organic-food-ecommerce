@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
   }
 
-  const user = UserStore.getPublicUser(sessionUser.id)
+  const user = await UserStore.getPublicUser(sessionUser.id)
   if (!user) {
     return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
   }
@@ -87,7 +87,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Profile update failed' }, { status: 500 })
     }
 
-    const response = NextResponse.json({ user: UserStore.getPublicUser(updated.id) || updated })
+    const response = NextResponse.json({ user: await UserStore.getPublicUser(updated.id) || updated })
     await applySessionCookie(response, toSessionUser(updated))
     return response
   } catch (error) {

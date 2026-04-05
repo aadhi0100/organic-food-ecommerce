@@ -11,7 +11,7 @@ export async function GET(
       return NextResponse.json({ error: 'Order ID is required' }, { status: 400 })
     }
 
-    const trackingState = OrderStore.getTrackingState(orderId)
+    const trackingState = await OrderStore.getTrackingState(orderId)
     if (!trackingState) {
       return NextResponse.json({ error: 'Order not found' }, { status: 404 })
     }

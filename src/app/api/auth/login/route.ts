@@ -21,7 +21,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
     }
 
-    const updated = UserStore.updateLastLogin(user.id) || user
+    const updated = await UserStore.updateLastLogin(user.id) || user
 
     AuthEventStore.record({
       type: 'login',
@@ -33,7 +33,6 @@ export async function POST(request: Request) {
       userAgent: request.headers.get('user-agent') || undefined,
     })
 
-    // Send welcome back email (non-blocking)
     sendWelcomeEmail({
       to: updated.email,
       name: updated.name,
@@ -41,7 +40,7 @@ export async function POST(request: Request) {
     }).catch(() => {})
 
     const response = NextResponse.json({
-      user: UserStore.getPublicUser(updated.id) || updated,
+      user: await UserStore.getPublicUser(updated.id) || updated,
     })
     await applySessionCookie(response, toSessionUser(updated))
     return response

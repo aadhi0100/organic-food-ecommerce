@@ -76,7 +76,7 @@ export async function POST(request: Request) {
 
     const response = NextResponse.json({
       success: true,
-      user: UserStore.getPublicUser(updated.id) || updated,
+      user: await UserStore.getPublicUser(updated.id) || updated,
     })
 
     AuthEventStore.record({

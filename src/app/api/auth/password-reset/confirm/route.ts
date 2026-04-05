@@ -20,7 +20,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      user: UserStore.getPublicUser(updated.id) || updated,
+      user: await UserStore.getPublicUser(updated.id) || updated,
     })
   } catch (error) {
     return NextResponse.json({ error: 'Unable to reset password' }, { status: 500 })

@@ -4,6 +4,9 @@ import path from 'path'
 import type { Address, User } from '@/types'
 import { dataPath, ensureDir, normalizePhone, publicPath, readJsonFile, safeSlug, writeJsonFile } from '@/lib/storage'
 import { hashPassword, verifyPassword as comparePassword } from '@/lib/auth/password'
+import { IS_VERCEL, fsGet, fsSet, fsList, fsQueryOne } from '@/lib/firestoreAdapter'
+
+const FS_USERS = 'users'
 
 export type StoredUser = User & {
   addresses?: Address[]
@@ -239,6 +242,22 @@ function persistStoredUser(user: StoredUser) {
   syncLookups(normalized)
 }
 
+// ─── Firestore-backed versions ───────────────────────────────────────────────
+
+async function fsGetUser(id: string): Promise<StoredUser | null> {
+  return fsGet<StoredUser>(FS_USERS, id)
+}
+
+async function fsSaveUser(user: StoredUser): Promise<void> {
+  await fsSet(FS_USERS, user.id, user)
+}
+
+async function fsListUsers(): Promise<StoredUser[]> {
+  return fsList<StoredUser>(FS_USERS)
+}
+
+// ─── Store ────────────────────────────────────────────────────────────────────
+
 export const UserStore = {
   init: () => {
     ensureDir(USERS_ROOT)
@@ -254,22 +273,24 @@ export const UserStore = {
     }
   },
 
-  save: (user: Partial<StoredUser>) => {
+  save: async (user: Partial<StoredUser>) => {
     const record = defaultProfile(user)
+    if (IS_VERCEL) { await fsSaveUser(record); return record }
     persistStoredUser(record)
     return record
   },
 
-  findById: (id: string) => {
+  findById: async (id: string) => {
+    if (IS_VERCEL) return fsGetUser(id)
     return getStoredUser(id)
   },
 
-  findByEmail: (email: string) => {
-    const index = loadIndex()
+  findByEmail: async (email: string) => {
     const key = email.toLowerCase().trim()
+    if (IS_VERCEL) return fsQueryOne<StoredUser>(FS_USERS, 'email', key)
+    const index = loadIndex()
     const entry = index.find((item) => item.email.toLowerCase() === key)
     if (entry) return getStoredUser(entry.id)
-
     const files = fs.existsSync(USERS_BY_ID) ? fs.readdirSync(USERS_BY_ID) : []
     for (const file of files) {
       const profile = getStoredUser(file)
@@ -278,12 +299,12 @@ export const UserStore = {
     return null
   },
 
-  findByPhone: (phone: string) => {
+  findByPhone: async (phone: string) => {
     const normalized = normalizePhone(phone)
+    if (IS_VERCEL) return fsQueryOne<StoredUser>(FS_USERS, 'phone', normalized)
     const index = loadIndex()
     const entry = index.find((item) => normalizePhone(item.phone) === normalized)
     if (entry) return getStoredUser(entry.id)
-
     const files = fs.existsSync(USERS_BY_ID) ? fs.readdirSync(USERS_BY_ID) : []
     for (const file of files) {
       const profile = getStoredUser(file)
@@ -292,15 +313,27 @@ export const UserStore = {
     return null
   },
 
-  findByIdentifier: (identifier: string) => {
+  findByIdentifier: async (identifier: string) => {
     const normalized = identifier.trim()
-    const byEmail = normalized.includes('@') ? UserStore.findByEmail(normalized) : null
+    const byEmail = normalized.includes('@') ? await UserStore.findByEmail(normalized) : null
     if (byEmail) return byEmail
     return UserStore.findByPhone(normalized)
   },
 
-  findByPasswordResetToken: (token: string) => {
+  findByPasswordResetToken: async (token: string) => {
     const tokenHash = hashResetToken(token)
+    if (IS_VERCEL) {
+      const users = await fsListUsers()
+      for (const user of users) {
+        if (user.passwordResetTokenHash !== tokenHash) continue
+        if (user.passwordResetTokenExpiresAt) {
+          const expiresAt = new Date(user.passwordResetTokenExpiresAt).getTime()
+          if (!Number.isFinite(expiresAt) || expiresAt < Date.now()) continue
+        }
+        return user
+      }
+      return null
+    }
     const index = loadIndex()
     for (const entry of index) {
       const auth = readAuthRecord(entry.id)
@@ -315,21 +348,22 @@ export const UserStore = {
     return null
   },
 
-  findAll: () => {
+  findAll: async () => {
+    if (IS_VERCEL) return fsListUsers()
     const index = loadIndex()
     return index
       .map((entry) => getStoredUser(entry.id))
       .filter((user): user is StoredUser => Boolean(user))
   },
 
-  upsertGoogleUser: (input: {
+  upsertGoogleUser: async (input: {
     id: string
     email: string
     name: string
     role: User['role']
     picture?: string
   }) => {
-    const existing = UserStore.findById(input.id) || UserStore.findByEmail(input.email)
+    const existing = await UserStore.findById(input.id) || await UserStore.findByEmail(input.email)
     const merged: StoredUser = defaultProfile({
       ...existing,
       id: existing?.id || input.id,
@@ -347,12 +381,13 @@ export const UserStore = {
       createdAt: existing?.createdAt,
       passwordHash: existing?.passwordHash,
     })
+    if (IS_VERCEL) { await fsSaveUser(merged); return merged }
     persistStoredUser(merged)
     return merged
   },
 
   updateProfile: async (userId: string, updates: Partial<StoredUser>) => {
-    const current = getStoredUser(userId)
+    const current = IS_VERCEL ? await fsGetUser(userId) : getStoredUser(userId)
     if (!current) return null
     const merged = defaultProfile({
       ...current,
@@ -370,6 +405,7 @@ export const UserStore = {
       lastLogin: current.lastLogin,
       orderHistory: current.orderHistory,
     })
+    if (IS_VERCEL) { await fsSaveUser(merged); return merged }
     persistStoredUser(merged)
     return merged
   },
@@ -380,7 +416,7 @@ export const UserStore = {
     address: string
     profilePhoto?: string
   }) => {
-    const current = getStoredUser(userId)
+    const current = IS_VERCEL ? await fsGetUser(userId) : getStoredUser(userId)
     if (!current) return null
     const addressRecord: Address = {
       id: current.defaultAddressId || `address-${Date.now()}`,
@@ -413,12 +449,13 @@ export const UserStore = {
       passwordHash: current.passwordHash,
       orderHistory: current.orderHistory,
     })
+    if (IS_VERCEL) { await fsSaveUser(merged); return merged }
     persistStoredUser(merged)
     return merged
   },
 
   setPassword: async (userId: string, password: string) => {
-    const current = getStoredUser(userId)
+    const current = IS_VERCEL ? await fsGetUser(userId) : getStoredUser(userId)
     if (!current) return null
     const passwordHash = await hashPassword(password)
     const updated: StoredUser = {
@@ -430,33 +467,32 @@ export const UserStore = {
       authProvider: current.authProvider === 'google' ? 'hybrid' : 'password',
       updatedAt: new Date().toISOString(),
     }
+    if (IS_VERCEL) { await fsSaveUser(updated); return updated }
     persistStoredUser(updated)
     return updated
   },
 
   verifyPassword: async (identifier: string, password: string) => {
-    const user = UserStore.findByIdentifier(identifier)
+    const user = await UserStore.findByIdentifier(identifier)
     if (!user?.id) return null
-    const auth = readAuthRecord(user.id)
-    if (!auth.passwordHash) return null
-    const ok = await comparePassword(password, auth.passwordHash)
+    const passwordHash = IS_VERCEL ? user.passwordHash : readAuthRecord(user.id).passwordHash
+    if (!passwordHash) return null
+    const ok = await comparePassword(password, passwordHash)
     if (!ok) return null
-    return getStoredUser(user.id)
+    return IS_VERCEL ? fsGetUser(user.id) : getStoredUser(user.id)
   },
 
-  updateLastLogin: (userId: string) => {
-    const current = getStoredUser(userId)
+  updateLastLogin: async (userId: string) => {
+    const current = IS_VERCEL ? await fsGetUser(userId) : getStoredUser(userId)
     if (!current) return null
-    const updated = {
-      ...current,
-      lastLogin: new Date().toISOString(),
-    }
+    const updated = { ...current, lastLogin: new Date().toISOString() }
+    if (IS_VERCEL) { await fsSaveUser(updated); return updated }
     persistStoredUser(updated)
     return updated
   },
 
-  addAddress: (userId: string, address: Address) => {
-    const current = getStoredUser(userId)
+  addAddress: async (userId: string, address: Address) => {
+    const current = IS_VERCEL ? await fsGetUser(userId) : getStoredUser(userId)
     if (!current) return null
     const nextAddress: Address = {
       ...address,
@@ -475,12 +511,13 @@ export const UserStore = {
       defaultAddressId: nextAddress.isDefault ? nextAddress.id : current.defaultAddressId,
       address: current.address || nextAddress.street,
     }
+    if (IS_VERCEL) { await fsSaveUser(updated); return updated }
     persistStoredUser(updated)
     return updated
   },
 
-  updateAddress: (userId: string, addressId: string, updates: Partial<Address>) => {
-    const current = getStoredUser(userId)
+  updateAddress: async (userId: string, addressId: string, updates: Partial<Address>) => {
+    const current = IS_VERCEL ? await fsGetUser(userId) : getStoredUser(userId)
     if (!current) return null
     const addresses = (current.addresses || []).map((address) =>
       address.id === addressId ? { ...address, ...updates, id: address.id } : address,
@@ -493,12 +530,13 @@ export const UserStore = {
           ? addressId
           : current.defaultAddressId,
     }
+    if (IS_VERCEL) { await fsSaveUser(updated); return updated }
     persistStoredUser(updated)
     return updated
   },
 
-  removeAddress: (userId: string, addressId: string) => {
-    const current = getStoredUser(userId)
+  removeAddress: async (userId: string, addressId: string) => {
+    const current = IS_VERCEL ? await fsGetUser(userId) : getStoredUser(userId)
     if (!current) return null
     const addresses = (current.addresses || []).filter((address) => address.id !== addressId)
     const updated = {
@@ -506,12 +544,13 @@ export const UserStore = {
       addresses,
       defaultAddressId: current.defaultAddressId === addressId ? addresses[0]?.id : current.defaultAddressId,
     }
+    if (IS_VERCEL) { await fsSaveUser(updated); return updated }
     persistStoredUser(updated)
     return updated
   },
 
-  setDefaultAddress: (userId: string, addressId: string) => {
-    const current = getStoredUser(userId)
+  setDefaultAddress: async (userId: string, addressId: string) => {
+    const current = IS_VERCEL ? await fsGetUser(userId) : getStoredUser(userId)
     if (!current) return null
     const addresses = (current.addresses || []).map((address) => ({
       ...address,
@@ -522,28 +561,30 @@ export const UserStore = {
       addresses,
       defaultAddressId: addressId,
     }
+    if (IS_VERCEL) { await fsSaveUser(updated); return updated }
     persistStoredUser(updated)
     return updated
   },
 
-  appendOrderHistory: (userId: string, order: {
+  appendOrderHistory: async (userId: string, order: {
     orderId: string
     date: string
     total: number
     status: string
   }) => {
-    const current = getStoredUser(userId)
+    const current = IS_VERCEL ? await fsGetUser(userId) : getStoredUser(userId)
     if (!current) return null
     const updated = {
       ...current,
       orderHistory: [...(current.orderHistory || []), order],
     }
+    if (IS_VERCEL) { await fsSaveUser(updated); return updated }
     persistStoredUser(updated)
     return updated
   },
 
-  getPublicUser: (userId: string) => {
-    const current = getStoredUser(userId)
+  getPublicUser: async (userId: string) => {
+    const current = IS_VERCEL ? await fsGetUser(userId) : getStoredUser(userId)
     if (!current) return null
     const {
       passwordHash,
@@ -556,10 +597,10 @@ export const UserStore = {
   },
 
   createPasswordResetToken: async (identifier: string) => {
-    const user = UserStore.findByIdentifier(identifier)
+    const user = await UserStore.findByIdentifier(identifier)
     if (!user?.id) return null
 
-    const current = getStoredUser(user.id)
+    const current = IS_VERCEL ? await fsGetUser(user.id) : getStoredUser(user.id)
     if (!current) return null
 
     const token = createResetToken()
@@ -573,7 +614,7 @@ export const UserStore = {
       passwordResetRequestedAt: now.toISOString(),
       updatedAt: now.toISOString(),
     }
-    persistStoredUser(updated)
+    if (IS_VERCEL) { await fsSaveUser(updated) } else { persistStoredUser(updated) }
 
     return {
       user: updated,
@@ -583,7 +624,7 @@ export const UserStore = {
   },
 
   resetPasswordWithToken: async (token: string, newPassword: string) => {
-    const user = UserStore.findByPasswordResetToken(token)
+    const user = await UserStore.findByPasswordResetToken(token)
     if (!user?.id) return null
     return UserStore.setPassword(user.id, newPassword)
   },
