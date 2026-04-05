@@ -1,31 +1,50 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { cookies } from 'next/headers'
-import { notFound } from 'next/navigation'
-import { db } from '@/lib/db'
-import { buildInvoiceData } from '@/lib/invoiceData'
+import type { InvoiceData } from '@/lib/invoiceData'
 import { InvoiceTemplate } from '@/components/invoice/InvoiceTemplate'
-import { LANGUAGE_COOKIE_NAME, createTranslator, normalizeLanguage } from '@/lib/i18n'
 import { DownloadPdfButton } from '@/components/invoice/DownloadPdfButton'
+import { createTranslator } from '@/lib/i18n'
 
-export const metadata = {
-  title: 'Invoice',
-}
+const t = createTranslator('en')
 
-export default async function InvoicePage({
-  params,
-}: {
-  params: Promise<{ orderId: string }>
-}) {
-  const { orderId } = await params
-  const order = await db.orders.findById(orderId)
+export default function InvoicePage() {
+  const { orderId } = useParams<{ orderId: string }>()
+  const router = useRouter()
+  const [invoice, setInvoice] = useState<InvoiceData | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
-  if (!order) {
-    notFound()
+  useEffect(() => {
+    if (!orderId) return
+    fetch(`/api/orders/${orderId}/invoice`)
+      .then((r) => r.json())
+      .then((json) => {
+        if (json.success) setInvoice(json.data)
+        else setError(json.error || 'Order not found')
+      })
+      .catch(() => setError('Failed to load invoice'))
+  }, [orderId])
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-8 text-center">
+        <p className="text-lg text-red-600">{error}</p>
+        <Link href="/" className="rounded-lg bg-green-600 px-6 py-3 font-bold text-white hover:bg-green-700">
+          Return to Home
+        </Link>
+      </div>
+    )
   }
 
-  const language = normalizeLanguage(cookies().get(LANGUAGE_COOKIE_NAME)?.value)
-  const t = createTranslator(language)
-  const invoice = await buildInvoiceData(order)
+  if (!invoice) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-green-600" />
+      </div>
+    )
+  }
 
   return (
     <>
@@ -37,7 +56,6 @@ export default async function InvoicePage({
         }
       `}</style>
 
-      {/* Action bar */}
       <div className="no-print sticky top-0 z-10 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="flex w-full flex-wrap items-center justify-between gap-3 px-4 py-3">
           <div>
@@ -52,12 +70,12 @@ export default async function InvoicePage({
             >
               Track Order
             </Link>
-            <Link
-              href="/dashboard/customer"
+            <button
+              onClick={() => router.back()}
               className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
             >
-              ← Dashboard
-            </Link>
+              ← Back
+            </button>
           </div>
         </div>
       </div>
