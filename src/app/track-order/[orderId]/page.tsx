@@ -29,7 +29,7 @@ const iconMap = {
 
 const deliveryTypeConfig: Record<DeliveryType, { icon: typeof Zap; color: string; bg: string; border: string; subtitle: string }> = {
   express: { icon: Zap, color: 'text-orange-600', bg: 'bg-orange-100', border: 'border-orange-300', subtitle: 'Same-day priority delivery' },
-  standard: { icon: Package, color: 'text-green-700', bg: 'bg-green-100', border: 'border-green-300', subtitle: '3-day standard delivery route' },
+  standard: { icon: Package, color: 'text-green-700', bg: 'bg-green-100', border: 'border-green-300', subtitle: '1-day standard delivery' },
   economy: { icon: Clock, color: 'text-blue-700', bg: 'bg-blue-100', border: 'border-blue-300', subtitle: '7-day economy freight route' },
 }
 
