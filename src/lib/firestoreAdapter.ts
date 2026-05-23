@@ -1,10 +1,17 @@
 /**
  * Firestore adapter — mirrors the file-based storage API.
- * Used only when IS_VERCEL is true (i.e. in production on Vercel).
+ * Used only when IS_VERCEL is true AND Firebase credentials are configured.
+ * Falls back to file-based /tmp storage when credentials are missing.
  */
 import { getAdminDb } from '@/lib/firebaseAdmin'
 
-export const IS_VERCEL = Boolean(process.env.VERCEL)
+const hasFirebaseCredentials = Boolean(
+  process.env.FIREBASE_PROJECT_ID &&
+  process.env.FIREBASE_CLIENT_EMAIL &&
+  process.env.FIREBASE_PRIVATE_KEY,
+)
+
+export const IS_VERCEL = Boolean(process.env.VERCEL) && hasFirebaseCredentials
 
 // ─── Generic helpers ──────────────────────────────────────────────────────────
 

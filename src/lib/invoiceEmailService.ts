@@ -177,21 +177,17 @@ export async function sendInvoiceEmail(data: EmailInvoiceData) {
     </html>
   `
 
-  // Save invoice locally (skip on serverless environments)
-  try {
-    const fs = require('fs')
-    const path = require('path')
-    const receiptsDir = path.join(process.cwd(), 'data', 'receipts')
-    
-    if (!fs.existsSync(receiptsDir)) {
+  // Save invoice locally only in non-Vercel environments
+  if (!process.env.VERCEL) {
+    try {
+      const fs = require('fs') as typeof import('fs')
+      const path = require('path') as typeof import('path')
+      const receiptsDir = path.join('/tmp/organic-data', 'receipts')
       fs.mkdirSync(receiptsDir, { recursive: true })
+      fs.writeFileSync(path.join(receiptsDir, `invoice-${data.orderId}.pdf`), data.pdfBuffer)
+    } catch {
+      // ignore
     }
-    
-    const invoicePath = path.join(receiptsDir, `invoice-${data.orderId}.pdf`)
-    fs.writeFileSync(invoicePath, data.pdfBuffer)
-    console.log(`✅ Invoice saved to: ${invoicePath}`)
-  } catch (fsError) {
-    console.log('ℹ️  File system not available (serverless environment), skipping local save')
   }
 
   // If email is not configured, use test email sender

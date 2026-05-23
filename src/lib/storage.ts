@@ -1,24 +1,32 @@
 import fs from 'fs'
 import path from 'path'
 
-// On Vercel (serverless), the filesystem is read-only except /tmp.
-// We use /tmp as the writable data root in production, seeding from the
-// bundled data/ directory on first access.
+// On Vercel with Firestore credentials, all user/order/cart/transaction data
+// is stored in Firestore. The /tmp filesystem is only used for product catalog
+// (read-heavy, seeded from bundled data/) which is not user-specific.
 const IS_VERCEL = Boolean(process.env.VERCEL)
+const HAS_FIRESTORE = Boolean(
+  process.env.FIREBASE_PROJECT_ID &&
+  process.env.FIREBASE_CLIENT_EMAIL &&
+  process.env.FIREBASE_PRIVATE_KEY,
+)
 const SEED_ROOT = path.join(process.cwd(), 'data')
 export const DATA_ROOT = IS_VERCEL ? '/tmp/organic-data' : path.join(process.cwd(), 'data')
 export const PUBLIC_ROOT = path.join(process.cwd(), 'public')
 
-// Seed /tmp from bundled data/ on first run (Vercel cold start)
+// On Vercel with Firestore: only seed product/static data, skip user data dirs.
+// Without Firestore credentials: seed everything for fallback file-based storage.
 if (IS_VERCEL && !fs.existsSync(DATA_ROOT)) {
   try {
-    function copyDirSync(src: string, dest: string) {
+    const SKIP_DIRS = HAS_FIRESTORE ? new Set(['users', 'orders', 'carts', 'transactions', 'auth-events']) : new Set<string>()
+    function copyDirSync(src: string, dest: string, depth = 0) {
       fs.mkdirSync(dest, { recursive: true })
       for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+        if (depth === 0 && SKIP_DIRS.has(entry.name)) continue
         const srcPath = path.join(src, entry.name)
         const destPath = path.join(dest, entry.name)
         if (entry.isDirectory()) {
-          copyDirSync(srcPath, destPath)
+          copyDirSync(srcPath, destPath, depth + 1)
         } else {
           fs.copyFileSync(srcPath, destPath)
         }

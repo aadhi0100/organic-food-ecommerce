@@ -260,6 +260,7 @@ async function fsListUsers(): Promise<StoredUser[]> {
 
 export const UserStore = {
   init: () => {
+    if (IS_VERCEL) return
     ensureDir(USERS_ROOT)
     ensureDir(USERS_BY_ID)
     ensureDir(USERS_BY_EMAIL)
@@ -630,6 +631,11 @@ export const UserStore = {
   },
 
   storeProfilePhoto: (userId: string, fileName: string, buffer: Buffer) => {
+    if (IS_VERCEL) {
+      // On Vercel the public dir is read-only; skip local write and return null
+      // so callers can omit the photo URL gracefully.
+      return null
+    }
     const safeUserId = String(userId).replace(/[^a-zA-Z0-9_-]/g, '')
     const safeFileName = path.basename(String(fileName)).replace(/[^a-zA-Z0-9._-]/g, '')
     if (!safeUserId || !safeFileName) throw new Error('Invalid userId or fileName')
@@ -642,7 +648,6 @@ export const UserStore = {
     const dataFilePath = path.join(userPhotoDir, safeFileName)
     const publicFilePath = path.join(publicPhotoDir, safeFileName)
 
-    // Confirm resolved paths stay within intended directories
     if (!dataFilePath.startsWith(userPhotoDir) || !publicFilePath.startsWith(publicPhotoDir)) {
       throw new Error('Path traversal detected')
     }

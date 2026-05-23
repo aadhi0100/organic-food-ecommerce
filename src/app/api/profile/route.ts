@@ -51,7 +51,8 @@ export async function PUT(request: Request) {
       if (photo instanceof File && photo.size > 0) {
         const buffer = Buffer.from(await photo.arrayBuffer())
         const fileName = `${Date.now()}-${photo.name || 'profile-photo'}`.replace(/\s+/g, '-')
-        profilePhoto = UserStore.storeProfilePhoto(sessionUser.id, fileName, buffer)
+        const stored = UserStore.storeProfilePhoto(sessionUser.id, fileName, buffer)
+        if (stored) profilePhoto = stored
       }
     } else {
       const body = await request.json()

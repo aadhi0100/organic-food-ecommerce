@@ -4,14 +4,14 @@ import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Camera, Eye, EyeOff, Loader, Lock, Mail, MapPin, Phone, User } from 'lucide-react'
+import { Camera, Eye, EyeOff, Loader, Lock, MapPin, Phone, User } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/context/LanguageContext'
 import { AuthShell } from '@/components/auth/AuthShell'
 import { getDashboardPath, hasCompletedOnboarding, sanitizeNextPath } from '@/lib/auth/routing'
 import type { User as AppUser } from '@/types'
 
-function translateApiMessage(message: string | undefined, t: (key: string, params?: Record<string, string | number>) => string) {
+function translateApiMessage(message: string | undefined, t: (key: string) => string) {
   if (!message) return ''
   const known: Record<string, string> = {
     'Unable to start Google Sign-In': 'unableToStartGoogleSignIn',
@@ -21,8 +21,6 @@ function translateApiMessage(message: string | undefined, t: (key: string, param
     'Profile saved. Set a password so you can sign in with email or phone later.': 'profileSavedSetPassword',
     'Profile created successfully': 'profileCreatedSuccessfully',
     'Password created successfully': 'passwordCreatedSuccessfully',
-    'An account with this email already exists': 'accountAlreadyExists',
-    'Registration failed': 'registrationFailed',
   }
   const key = known[message]
   return key ? t(key) : message
@@ -34,14 +32,12 @@ export default function RegisterPage() {
   const router = useRouter()
   const { t } = useLanguage()
 
-  const [tab, setTab] = useState<'email' | 'google'>('email')
   const [loadingGoogle, setLoadingGoogle] = useState(false)
   const [loadingSubmit, setLoadingSubmit] = useState(false)
   const [passwordLoading, setPasswordLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
-  // Google profile form
   const [fullName, setFullName] = useState('')
   const [phone, setPhone] = useState('')
   const [address, setAddress] = useState('')
@@ -51,11 +47,6 @@ export default function RegisterPage() {
   const [showNewPw, setShowNewPw] = useState(false)
   const [showConfirmPw, setShowConfirmPw] = useState(false)
   const [passwordForm, setPasswordForm] = useState({ newPassword: '', confirmPassword: '' })
-
-  // Email registration form
-  const [emailForm, setEmailForm] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '' })
-  const [showEmailPw, setShowEmailPw] = useState(false)
-  const [showEmailConfirmPw, setShowEmailConfirmPw] = useState(false)
 
   const nextPath = useMemo(() => sanitizeNextPath(searchParams.get('next'), '/dashboard'), [searchParams])
 
@@ -82,35 +73,6 @@ export default function RegisterPage() {
     } catch {
       setLoadingGoogle(false)
       setError(t('unableToStartGoogleSignIn'))
-    }
-  }
-
-  const handleEmailRegister = async (event: React.FormEvent) => {
-    event.preventDefault()
-    if (emailForm.password !== emailForm.confirmPassword) {
-      setError('Passwords do not match')
-      return
-    }
-    setLoadingSubmit(true)
-    setError('')
-    setSuccess('')
-    try {
-      const response = await fetch('/api/auth/register-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(emailForm),
-      })
-      const payload = await response.json().catch(() => null)
-      if (!response.ok) throw new Error(translateApiMessage(payload?.error, t))
-      await refreshSession()
-
-      const destination = nextPath === '/dashboard' ? getDashboardPath((payload?.user?.role as AppUser['role'] | undefined) || 'customer') : nextPath
-      router.replace(destination)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t('registrationFailed'))
-    } finally {
-      setLoadingSubmit(false)
     }
   }
 
@@ -173,7 +135,7 @@ export default function RegisterPage() {
     }
   }
 
-  const showGoogleProfileForm = tab === 'google' && !!user
+  const showGoogleProfileForm = !!user
 
   return (
     <AuthShell
@@ -203,132 +165,14 @@ export default function RegisterPage() {
         </div>
       )}
 
+      {/* Google Sign-In — before profile completion */}
       {!showGoogleProfileForm && (
-        <div className="flex rounded-xl border border-gray-200 bg-gray-50 p-1">
-          <button
-            type="button"
-            onClick={() => { setTab('email'); setError(''); setSuccess('') }}
-            className={`flex-1 rounded-lg py-2 text-sm font-semibold transition ${tab === 'email' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-          >
-            Email & Password
-          </button>
-          <button
-            type="button"
-            onClick={() => { setTab('google'); setError(''); setSuccess('') }}
-            className={`flex-1 rounded-lg py-2 text-sm font-semibold transition ${tab === 'google' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-          >
-            Google
-          </button>
-        </div>
-      )}
-
-      {/* Email + Password Registration */}
-      {tab === 'email' && !showGoogleProfileForm && (
-        <form onSubmit={handleEmailRegister} className="space-y-4">
-          <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-gray-700">{t('fullName')}</label>
-            <div className="relative">
-              <User className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-              <input
-                value={emailForm.name}
-                onChange={(e) => setEmailForm((c) => ({ ...c, name: e.target.value }))}
-                className="h-11 w-full rounded-xl border border-gray-200 bg-white pl-10 pr-4 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100"
-                placeholder={t('enterFullName')}
-                autoComplete="name"
-                required
-              />
-            </div>
+        <div className="space-y-6">
+          <div className="rounded-xl border border-green-100 bg-green-50 px-5 py-4 text-sm text-green-800">
+            <p className="font-semibold mb-1">🌿 Sign up with Google</p>
+            <p className="text-green-700">We use Google for secure, one-click registration. No passwords to remember.</p>
           </div>
 
-          <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-gray-700">{t('email')}</label>
-            <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-              <input
-                type="email"
-                value={emailForm.email}
-                onChange={(e) => setEmailForm((c) => ({ ...c, email: e.target.value }))}
-                className="h-11 w-full rounded-xl border border-gray-200 bg-white pl-10 pr-4 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100"
-                placeholder="you@example.com"
-                autoComplete="email"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-gray-700">{t('phone')}</label>
-            <div className="relative">
-              <Phone className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-              <input
-                value={emailForm.phone}
-                onChange={(e) => setEmailForm((c) => ({ ...c, phone: e.target.value }))}
-                className="h-11 w-full rounded-xl border border-gray-200 bg-white pl-10 pr-4 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100"
-                placeholder={t('phonePlaceholder')}
-                autoComplete="tel"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-gray-700">{t('password')}</label>
-            <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-              <input
-                type={showEmailPw ? 'text' : 'password'}
-                value={emailForm.password}
-                onChange={(e) => setEmailForm((c) => ({ ...c, password: e.target.value }))}
-                className="h-11 w-full rounded-xl border border-gray-200 bg-white pl-10 pr-11 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100"
-                placeholder={t('enterPassword')}
-                autoComplete="new-password"
-                required
-              />
-              <button type="button" onClick={() => setShowEmailPw((v) => !v)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" tabIndex={-1}>
-                {showEmailPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-gray-700">{t('confirmPassword')}</label>
-            <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-              <input
-                type={showEmailConfirmPw ? 'text' : 'password'}
-                value={emailForm.confirmPassword}
-                onChange={(e) => setEmailForm((c) => ({ ...c, confirmPassword: e.target.value }))}
-                className="h-11 w-full rounded-xl border border-gray-200 bg-white pl-10 pr-11 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100"
-                placeholder={t('confirmPassword')}
-                autoComplete="new-password"
-                required
-              />
-              <button type="button" onClick={() => setShowEmailConfirmPw((v) => !v)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" tabIndex={-1}>
-                {showEmailConfirmPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loadingSubmit}
-            className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-green-600 text-sm font-semibold text-white shadow-sm transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {loadingSubmit ? (
-              <>
-                <Loader className="h-4 w-4 animate-spin" />
-                {t('creatingAccount')}...
-              </>
-            ) : (
-              t('createAccount')
-            )}
-          </button>
-        </form>
-      )}
-
-      {/* Google Sign-In Tab */}
-      {tab === 'google' && !user && (
-        <div className="space-y-4">
           <button
             type="button"
             onClick={startGoogle}
@@ -338,7 +182,7 @@ export default function RegisterPage() {
             {loadingGoogle || isLoading ? (
               <Loader className="h-4 w-4 animate-spin text-gray-400" />
             ) : (
-              <svg className="h-4 w-4" viewBox="0 0 24 24">
+              <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
